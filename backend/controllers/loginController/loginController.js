@@ -4,20 +4,24 @@ import { createToken } from "../../JWT.js";
 
 export async function loginUserController(req, res, next) {
   const { username, password } = req.body;
+  console.log(username);
+  console.log(password);
 
   if (!username || !password) {
-    res.status(400).json("username or password missing!");
+    return res.status(400).json("username or password missing!");
   }
 
   try {
     const user = await getUserByUsernameDB(username);
 
-    if (!user) res.status(400).json("No user!");
+    if (!user) {
+      return res.status(400).json("No user!");
+    }
 
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
-      res.status(400).json({ error: "Username or password is wrong" });
+      return res.status(400).json({ error: "Username or password is wrong" });
     }
 
     const accessToken = createToken(user);
@@ -25,7 +29,7 @@ export async function loginUserController(req, res, next) {
       maxAge: 60 * 60 * 24 * 30 * 1000,
     });
 
-    res.json({ message: "Logged in!", "access-token": accessToken });
+    return res.json({ message: "Logged in!", "access-token": accessToken });
   } catch (error) {
     next(error);
   }

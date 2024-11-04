@@ -42,24 +42,26 @@ function Login() {
   );
 
   async function login(params) {
-    const headersList = {
+    const headers = {
       Accept: "*/*",
       "Content-Type": "application/json",
     };
 
     try {
       setInfo();
-      const response = await axios
-        .post(
-          "http://localhost:8080/api/V1/login",
-          { params },
-          { headers: headersList }
-        )
-        .catch((err) => console.log(err));
+      const response = await axios.post(
+        "http://localhost:8080/api/V1/login",
+        params,
+        { headers }
+      );
+      // .catch((err) => console.log(err));
       if (!response.statusText === "OK") {
         setInfo("Failed to login");
       }
-    } catch (error) {}
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 
