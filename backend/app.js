@@ -1,11 +1,8 @@
 import express from "express";
-import dotenv from "dotenv";
 import { errorHandler } from "./middlewares.js";
 import routes from "./routes/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
-dotenv.config();
 
 const app = express();
 

@@ -1,5 +1,5 @@
 import { updateUserFromDB, getUserByIdFromDB } from "../../models/Users.js";
-import { handleDatabaseError } from "./helperFunctions.js";
+import { handleDatabaseError } from "../helperFunctions.js";
 
 export async function updateUserController(req, res, next) {
   const { id } = req.params;

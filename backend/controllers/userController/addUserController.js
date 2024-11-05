@@ -1,5 +1,5 @@
 import { addUserToDB, getUserByIdFromDB } from "../../models/Users.js";
-import { formatUsers, handleDatabaseError } from "./helperFunctions.js";
+import { formatUsers, handleDatabaseError } from "../helperFunctions.js";
 
 export async function addUserController(req, res, next) {
   const userData = extractUserData(req);
@@ -45,7 +45,7 @@ function extractUserData(req) {
   });
 
   if (hasError) {
-    return undefined;
+    return null;
   } else {
     return { username, firstName, lastName, email, password };
   }

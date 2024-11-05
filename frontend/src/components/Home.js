@@ -81,6 +81,8 @@ function Home() {
         "http://localhost:8080/api/V1/users/all"
       );
 
+      console.log("response", response);
+
       if (!response.statusText === "OK") {
         throw new Error("Failed to fetch users");
       }

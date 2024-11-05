@@ -1,6 +1,6 @@
 import { registerUserInDB, getUserByIdFromDB } from "../../models/Users.js";
-import { formatUsers, handleDatabaseError } from "./helperFunctions.js";
 import bcrypt from "bcrypt";
+import { formatUsers } from "../helperFunctions.js";
 
 export async function registerNewUserController(req, res, next) {
   const userData = await extractUserData(req);

@@ -1,5 +1,5 @@
 import { getUserByIdFromDB } from "../../models/Users.js";
-import { formatUsers } from "../helperFunctions.js";
+import { formatUsers } from "./helperFunctions.js";
 
 export async function getUserByIdController(req, res, next) {
   const id = req.params.id;

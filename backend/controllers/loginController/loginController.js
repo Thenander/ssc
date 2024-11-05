@@ -4,8 +4,6 @@ import { createToken } from "../../JWT.js";
 
 export async function loginUserController(req, res, next) {
   const { username, password } = req.body;
-  console.log(username);
-  console.log(password);
 
   if (!username || !password) {
     return res.status(400).json("username or password missing!");

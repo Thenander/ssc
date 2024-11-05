@@ -5,12 +5,25 @@ import pool from "../db.js";
  * @param {Object} params {firstName, lastName, email}
  * @returns json: new user object
  */
-export async function addUserToDB({ firstName, lastName, email }) {
+export async function addUserToDB({
+  firstName,
+  lastName,
+  username,
+  password,
+  email,
+}) {
   const sql =
-    "INSERT INTO users (first_name, last_name, email) VALUES (?, ?, ?);";
+    "INSERT INTO users (first_name, last_name, username, password, email, role) VALUES (?, ?, ?, ?, ?, ?);";
 
   try {
-    const [result] = await pool.query(sql, [firstName, lastName, email]);
+    const [result] = await pool.query(sql, [
+      firstName,
+      lastName,
+      username,
+      password,
+      email,
+      "user",
+    ]);
     const json = JSON.parse(JSON.stringify(result));
 
     if (json.affectedRows) {
@@ -19,6 +32,8 @@ export async function addUserToDB({ firstName, lastName, email }) {
       return {};
     }
   } catch (error) {
+    console.log(error);
+
     throw error;
   }
 }

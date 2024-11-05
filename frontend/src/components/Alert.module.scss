@@ -1,0 +1,32 @@
+.alert {
+  z-index: 1;
+  animation: entering .5s cubic-bezier(.6, 1, .6, 1);
+}
+
+@keyframes entering {
+  0% {
+    top: -20rem;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@media (min-width: 576px) {
+  .alert {
+    position: fixed;
+    right: 2rem;
+    top: 2rem;
+    z-index: 1;
+    animation: entering .5s cubic-bezier(.6, 1, .6, 1);
+  }
+  
+  @keyframes entering {
+    0% {
+      top: -20rem;
+    }
+    100% {
+      top: 2rem;
+    }
+  }
+}

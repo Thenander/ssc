@@ -1,13 +1,12 @@
 export function formatUsers(users) {
-  return users.map((user) => {
-    return {
-      id: user.id,
-      username: user.username,
-      firstName: user.first_name,
-      lastName: user.last_name,
-      email: user.email,
-    };
-  });
+  return users.map((user) => ({
+    id: user.id,
+    username: user.username,
+    firstName: user.first_name,
+    lastName: user.last_name,
+    email: user.email,
+    role: user.role,
+  }));
 }
 
 export function handleDatabaseError(error, res) {

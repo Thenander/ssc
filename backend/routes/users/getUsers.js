@@ -4,6 +4,6 @@ import { validateToken } from "../../JWT.js";
 
 const router = express.Router();
 
-router.get("/", getUsersController);
+router.get("/", validateToken, getUsersController);
 
 export default router;
