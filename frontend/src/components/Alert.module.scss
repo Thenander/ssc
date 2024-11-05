@@ -1,6 +1,7 @@
 .alert {
-  z-index: 1;
   animation: entering .5s cubic-bezier(.6, 1, .6, 1);
+  padding: 2rem 4rem;
+  z-index: 1;
 }
 
 @keyframes entering {

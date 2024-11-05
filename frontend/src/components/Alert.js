@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Alert as AlertBootstrap } from "react-bootstrap";
 import classes from "./Alert.module.scss";
 
-function Alert({ variant, onClose, children }) {
+function Alert({ type, message, onClose }) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 5000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  if (!message) return null;
+
   return (
-    <AlertBootstrap
-      variant={variant}
-      onClose={onClose}
-      closeLabel="Close alert"
-      dismissible={true}
-      className={classes.alert}
-    >
-      {children}
+    <AlertBootstrap variant={type} className={classes.alert}>
+      {message}
     </AlertBootstrap>
   );
 }

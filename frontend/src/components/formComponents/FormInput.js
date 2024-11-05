@@ -14,15 +14,19 @@ function FormInput({
   register,
   required = false,
   inputError,
+  callback = () => {},
+  style = {},
 }) {
   const [value, setValue] = useState();
+
   const hasValue = value ? "" : "*";
 
   return (
-    <Form.Group className={`${className} w-100`}>
+    <Form.Group className={`w-100 ${className}`}>
       <Form.Floating className="mb-3">
         <Form.Control
-          style={getErrorColor("borderColor")}
+          onChange={(e) => callback(e)}
+          style={{ ...style, ...getErrorColor("borderColor") }}
           id={id}
           type={type}
           placeholder={placeholder}
