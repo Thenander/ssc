@@ -24,7 +24,7 @@
   width: 100%;
   text-align: center;
   border-width: 0;
-  border-bottom-width: 1px;
+  height: 100dvh;
   border-radius: 0;
 }
 
@@ -57,6 +57,7 @@
     border-radius: .5rem;
     box-shadow: 0px 4px 16px 0 rgb(0 0 0 / 20%);
     border-width: 1px;
+    height: auto;
   }
 }
 
