@@ -18,7 +18,6 @@ function Check() {
           <div className={classes.wrapper}>
             <CheckLg color="#000" />
             <div className={classes.revealer} />
-            <div className={classes.border} />
           </div>
           <div className={classes["border-revealer"]} />
         </div>

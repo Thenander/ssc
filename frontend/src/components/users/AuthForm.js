@@ -11,10 +11,11 @@ import { Badge } from "react-bootstrap";
 import { Check } from "react-bootstrap-icons";
 import Checked from "../Checked/Check";
 import { MODES } from "./modes.js";
+import Spinner from "../Spinner/Spinner.js";
 
 function AuthForm({ mode }) {
   const isSignUp = mode === "signup";
-  const { register, handleSubmit, getValues } = useForm();
+  const { register, handleSubmit, getValues, reset } = useForm();
 
   // Alerts
   const [inputError, setInputError] = useState(null);
@@ -40,31 +41,18 @@ function AuthForm({ mode }) {
   return (
     <div className={classes.wrapper}>
       <Card className={classes.card}>
+        {loading && <Spinner />}
         <Card.Header className={classes.header}>
           {MODES[mode].action}
         </Card.Header>
         <Card.Body>
           <WelcomeMessage mode={mode} />
-          <Alert
-            type="danger"
-            message={inputError}
-            onClose={() => setInputError(null)}
-          />
-          <Alert
-            type="danger"
-            message={axiosError}
-            onClose={() => setAxiosError(null)}
-          />
-          <Alert
-            type="success"
-            message={success}
-            onClose={() => setSuccess(null)}
-          />
           <Form onSubmit={handleSubmit(onSubmit)}>
             <div className={classes["column-wrapper"]}>
               {isSignUp && (
                 <div className="w-100">
                   <FormInput
+                    success={success}
                     disabled={loading}
                     id="firstName"
                     label="First name"
@@ -74,6 +62,7 @@ function AuthForm({ mode }) {
                     inputError={inputError}
                   />
                   <FormInput
+                    success={success}
                     disabled={loading}
                     id="lastName"
                     label="Last name"
@@ -83,6 +72,7 @@ function AuthForm({ mode }) {
                     inputError={inputError}
                   />
                   <FormInput
+                    success={success}
                     disabled={loading}
                     id="email"
                     label="Email"
@@ -95,6 +85,7 @@ function AuthForm({ mode }) {
               )}
               <div className="w-100">
                 <FormInput
+                  success={success}
                   disabled={loading}
                   id="username"
                   label="Username"
@@ -105,6 +96,7 @@ function AuthForm({ mode }) {
                 />
 
                 <FormInput
+                  success={success}
                   disabled={loading}
                   id="password"
                   label="Password"
@@ -128,6 +120,7 @@ function AuthForm({ mode }) {
                       </Badge>
                     )}
                     <FormInput
+                      success={success}
                       disabled={loading}
                       id="repeatPassword"
                       label="Repeat password"
@@ -154,23 +147,40 @@ function AuthForm({ mode }) {
                   disabled={loading}
                   type="submit"
                   variant="warning"
-                  className={classes.button}
+                  className={`${classes.button} ${classes.fade}`}
                 >
                   {MODES[mode].action}
                 </Button>
               )}
             </div>
           </Form>
+          <Alert
+            type="danger"
+            message={inputError}
+            onClose={() => setInputError(null)}
+          />
+          <Alert
+            type="danger"
+            message={axiosError}
+            onClose={() => setAxiosError(null)}
+          />
+          <Alert
+            type="success"
+            message={success}
+            onClose={() => setSuccess(null)}
+          />
         </Card.Body>
         <Card.Footer className="text-muted">
-          Sampling, scratches and cuts
+          {`Sampling, Scratches and Cuts. © ${new Date().toLocaleDateString()}.`}
         </Card.Footer>
       </Card>
     </div>
   );
 
   async function onSubmit(params) {
+    const isComplete = Object.values(params).every((value) => value);
     if (
+      isComplete &&
       isSignUp &&
       (repeatedPassword || getValues("password")) &&
       getValues("password") !== repeatedPassword
@@ -185,7 +195,9 @@ function AuthForm({ mode }) {
       const response = await axios.post(MODES[mode].apiUrl, params);
 
       if (response.status === 201) {
+        setPwCheck();
         setSuccess(MODES[mode].successMessage);
+        reset();
         setLoading(false);
       } else if (response.data?.err) {
         setInputError(response.data.err);

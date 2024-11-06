@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 
 /**
@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form";
  * @returns React form input component
  */
 function FormInput({
+  success,
   id,
   label,
   type,
@@ -18,9 +19,10 @@ function FormInput({
   style = {},
   ...props
 }) {
-  const [value, setValue] = useState();
-
+  const [value, setValue] = useState(null);
   const hasValue = value ? "" : "*";
+
+  useEffect(() => setValue(null), [success]);
 
   return (
     <Form.Group className={`w-100 ${className}`}>
