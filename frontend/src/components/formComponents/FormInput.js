@@ -16,6 +16,7 @@ function FormInput({
   inputError,
   callback = () => {},
   style = {},
+  ...props
 }) {
   const [value, setValue] = useState();
 
@@ -36,6 +37,7 @@ function FormInput({
               setValue(e.target.value);
             },
           })}
+          {...props}
         />
         <label
           style={getErrorColor("color")}
