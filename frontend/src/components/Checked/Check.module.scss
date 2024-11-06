@@ -1,0 +1,84 @@
+.outer-wrapper {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 60px;
+}
+
+.bg {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  background-color: #ffc108;
+  border-radius: 50px;
+}
+
+.wrapper {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50px;
+}
+
+.border {
+  width: 50px;
+  height: 50px;
+  border: 3px solid #000;
+  position: absolute;
+  border-radius: 50px;
+}
+
+.revealer {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  background-color: #ffc108;
+  right: 0px;
+  border-radius: 50px;
+  animation: revealer .4s linear .5s 1 forwards;
+}
+
+.border-revealer {
+  opacity: 0;
+  background-color: #ffc108;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  border-radius: 50px;
+  animation: sizer .5s linear 1 forwards;
+}
+
+@keyframes sizer {
+  0% {
+    opacity: 1;
+    width: 60px;
+    height: 60px;
+  }
+  99% {
+    opacity: 1;
+    width: 35px;
+    height: 35px;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes revealer {
+  0% {
+    right: 0px;
+  }
+  100% {
+    right: -50px;
+  }
+}
