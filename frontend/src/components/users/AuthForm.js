@@ -9,84 +9,33 @@ import classes from "./AuthForm.module.scss";
 import Alert from "../Alert.js";
 import { Badge } from "react-bootstrap";
 import { Check } from "react-bootstrap-icons";
-
-const MODES = {
-  login: {
-    apiUrl: "http://localhost:8080///",
-    successMessage: "Successfully logged in!",
-    action: "Login",
-    prompt: "Please login to explore",
-    welcome: "Welcome back!",
-    text: "Please login to explore",
-  },
-  signup: {
-    apiUrl: "http://localhost:8080/api/V1/users/add",
-    successMessage: "Successfully signed up!",
-    action: "Sign up",
-    prompt: "Please sign up to explore",
-    welcome: "Welcome!",
-    text: "Please sign up to explore",
-  },
-};
+import Checked from "../Checked/Check";
+import { MODES } from "./modes.js";
 
 function AuthForm({ mode }) {
   const isSignUp = mode === "signup";
-
   const { register, handleSubmit, getValues } = useForm();
+
+  // Alerts
   const [inputError, setInputError] = useState(null);
   const [axiosError, setAxiosError] = useState(null);
   const [success, setSuccess] = useState(null);
+
+  // Password check
   const [repeatedPassword, setRepeatedPassword] = useState();
   const [pwCheck, setPwCheck] = useState(false);
 
+  // Loader
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    if (getValues("password") === repeatedPassword) {
+    if (repeatedPassword && getValues("password") === repeatedPassword) {
       setPwCheck(true);
       setInputError(null);
     } else {
       setPwCheck(false);
     }
   }, [getValues, repeatedPassword]);
-
-  const onSubmit = async (params) => {
-    console.log(params);
-
-    if (isSignUp && getValues("password") !== repeatedPassword) {
-      return setInputError("Check Password field");
-    }
-
-    resetFeedbackStates();
-
-    try {
-      const response = await axios.post(MODES[mode].apiUrl, params);
-
-      if (response.status === 201) {
-        setSuccess(MODES[mode].successMessage);
-      } else if (response.data?.err) {
-        setInputError(response.data.err);
-      }
-    } catch (error) {
-      handleAxiosError(error);
-    }
-  };
-
-  const handleAxiosError = (error) => {
-    if (error.response) {
-      setAxiosError(error.response.data.err);
-      console.error("Response Error:", error.response);
-    } else if (error.request) {
-      console.error("No response received:", error.request);
-    } else {
-      console.error("Error setting up request:", error.message);
-    }
-    console.error("Error config:", error.config);
-  };
-
-  const resetFeedbackStates = () => {
-    setInputError(null);
-    setAxiosError(null);
-    setSuccess(null);
-  };
 
   return (
     <div className={classes.wrapper}>
@@ -116,6 +65,7 @@ function AuthForm({ mode }) {
               {isSignUp && (
                 <div className="w-100">
                   <FormInput
+                    disabled={loading}
                     id="firstName"
                     label="First name"
                     type="text"
@@ -124,6 +74,7 @@ function AuthForm({ mode }) {
                     inputError={inputError}
                   />
                   <FormInput
+                    disabled={loading}
                     id="lastName"
                     label="Last name"
                     type="text"
@@ -132,6 +83,7 @@ function AuthForm({ mode }) {
                     inputError={inputError}
                   />
                   <FormInput
+                    disabled={loading}
                     id="email"
                     label="Email"
                     type="email"
@@ -143,6 +95,7 @@ function AuthForm({ mode }) {
               )}
               <div className="w-100">
                 <FormInput
+                  disabled={loading}
                   id="username"
                   label="Username"
                   type="text"
@@ -152,6 +105,7 @@ function AuthForm({ mode }) {
                 />
 
                 <FormInput
+                  disabled={loading}
                   id="password"
                   label="Password"
                   type="password"
@@ -174,6 +128,7 @@ function AuthForm({ mode }) {
                       </Badge>
                     )}
                     <FormInput
+                      disabled={loading}
                       id="repeatPassword"
                       label="Repeat password"
                       type="password"
@@ -188,13 +143,23 @@ function AuthForm({ mode }) {
                 )}
               </div>
             </div>
-            <Button
-              type="submit"
-              variant="warning"
-              className={`${classes.button} my-4`}
+            <div
+              style={{ height: "100px" }}
+              className="d-flex justify-content-center align-items-center"
             >
-              {MODES[mode].action}
-            </Button>
+              {success ? (
+                <Checked />
+              ) : (
+                <Button
+                  disabled={loading}
+                  type="submit"
+                  variant="warning"
+                  className={classes.button}
+                >
+                  {MODES[mode].action}
+                </Button>
+              )}
+            </div>
           </Form>
         </Card.Body>
         <Card.Footer className="text-muted">
@@ -203,6 +168,52 @@ function AuthForm({ mode }) {
       </Card>
     </div>
   );
+
+  async function onSubmit(params) {
+    if (
+      isSignUp &&
+      (repeatedPassword || getValues("password")) &&
+      getValues("password") !== repeatedPassword
+    ) {
+      return setInputError("Check Password field");
+    }
+
+    resetFeedbackStates();
+
+    try {
+      setLoading(true);
+      const response = await axios.post(MODES[mode].apiUrl, params);
+
+      if (response.status === 201) {
+        setSuccess(MODES[mode].successMessage);
+        setLoading(false);
+      } else if (response.data?.err) {
+        setInputError(response.data.err);
+        setLoading(false);
+      }
+    } catch (error) {
+      handleAxiosError(error);
+      setLoading(false);
+    }
+  }
+
+  function handleAxiosError(error) {
+    if (error.response) {
+      setAxiosError(error.response.data.err);
+      console.error("Response Error:", error.response);
+    } else if (error.request) {
+      console.error("No response received:", error.request);
+    } else {
+      console.error("Error setting up request:", error.message);
+    }
+    console.error("Error config:", error.config);
+  }
+
+  function resetFeedbackStates() {
+    setInputError(null);
+    setAxiosError(null);
+    setSuccess(null);
+  }
 }
 
 function WelcomeMessage({ mode }) {
