@@ -13,9 +13,19 @@ import Checked from "../Checked/Check";
 import { MODES } from "./modes.js";
 import Spinner from "../Spinner/Spinner.js";
 
+const defaultValues = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  username: "",
+  password: "",
+};
+
 function AuthForm({ mode }) {
   const isSignUp = mode === "signup";
-  const { register, handleSubmit, getValues, reset } = useForm();
+  const { register, handleSubmit, getValues, reset } = useForm({
+    defaultValues,
+  });
 
   // Alerts
   const [inputError, setInputError] = useState(null);

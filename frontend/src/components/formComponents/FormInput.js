@@ -36,7 +36,7 @@ function FormInput({
           {...register(id, {
             required,
             onChange: (e) => {
-              setValue(e.target.value);
+              setValue(e.target.value.trim());
             },
           })}
           {...props}

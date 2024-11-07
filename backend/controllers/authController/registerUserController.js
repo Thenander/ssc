@@ -1,8 +1,9 @@
-import { registerUserInDB, getUserByIdFromDB } from "../../models/Users.js";
 import bcrypt from "bcrypt";
-import { formatUsers } from "../helperFunctions.js";
+import { registerUserInDB } from "../../models/Auth.js";
+import { getUserByIdFromDB } from "../../models/Users.js";
+import { formatUsers, handleDatabaseError } from "../helperFunctions.js";
 
-export async function registerNewUserController(req, res, next) {
+export async function registerUserController(req, res, next) {
   const userData = await extractUserData(req);
 
   if (!userData) {
@@ -13,14 +14,11 @@ export async function registerNewUserController(req, res, next) {
     const user = await createUserAndFetch(userData);
     res.status(201).json(user);
   } catch (error) {
-    if (error) {
-      throw new Error(error);
-    }
-    /*     if (error.code) {
+    if (error.code) {
       handleDatabaseError(error, res);
     } else {
       next(error);
-    } */
+    }
   }
 }
 
@@ -34,6 +32,12 @@ async function createUserAndFetch(userData) {
 
 async function extractUserData(req) {
   const { username, firstName, lastName, email, password } = req.body;
+
+  if (
+    [username, firstName, lastName, email, password].some((el) => !el.trim())
+  ) {
+    return undefined;
+  }
 
   const saltRounds = 10;
   const hash = await bcrypt.hash(password, saltRounds);

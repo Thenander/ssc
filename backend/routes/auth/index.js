@@ -1,9 +1,9 @@
 import express from "express";
-import profile from "./profile.js";
 import loginUser from "./loginUser.js";
+import registerUser from "./registerUser.js";
 
 const router = express.Router();
-router.use("/profile", profile);
-router.use("/", loginUser);
+router.use("/login", loginUser);
+router.use("/register", registerUser);
 
 export default router;

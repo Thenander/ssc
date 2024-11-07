@@ -4,7 +4,6 @@ import classes from "./Alert.module.scss";
 
 function Alert({ type, message, onClose }) {
   const [leave, setLeave] = useState(false);
-  console.log("leave", leave);
 
   useEffect(() => {
     const styleTimer = setTimeout(() => setLeave(true), 4000);

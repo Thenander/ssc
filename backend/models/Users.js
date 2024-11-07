@@ -1,44 +1,6 @@
 import pool from "../db.js";
 
 /**
- * Add new user
- * @param {Object} params {firstName, lastName, email}
- * @returns json: new user object
- */
-export async function addUserToDB({
-  firstName,
-  lastName,
-  username,
-  password,
-  email,
-}) {
-  const sql =
-    "INSERT INTO users (first_name, last_name, username, password, email, role) VALUES (?, ?, ?, ?, ?, ?);";
-
-  try {
-    const [result] = await pool.query(sql, [
-      firstName,
-      lastName,
-      username,
-      password,
-      email,
-      "user",
-    ]);
-    const json = JSON.parse(JSON.stringify(result));
-
-    if (json.affectedRows) {
-      return json;
-    } else {
-      return {};
-    }
-  } catch (error) {
-    console.log(error);
-
-    throw error;
-  }
-}
-
-/**
  * Get all users
  * @returns json: Users array
  */
@@ -124,36 +86,6 @@ export async function deleteUserFromDB(id) {
       return { info: "User deleted" };
     } else {
       return { info: "Found no user" };
-    }
-  } catch (error) {
-    throw error;
-  }
-}
-
-export async function registerUserInDB({
-  username,
-  firstName,
-  lastName,
-  email,
-  password,
-}) {
-  const sql =
-    "INSERT INTO users (username, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?);";
-
-  try {
-    const [result] = await pool.query(sql, [
-      username,
-      firstName,
-      lastName,
-      email,
-      password,
-    ]);
-    const json = JSON.parse(JSON.stringify(result));
-
-    if (json.affectedRows) {
-      return json;
-    } else {
-      return {};
     }
   } catch (error) {
     throw error;

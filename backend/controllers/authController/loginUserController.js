@@ -1,7 +1,8 @@
-import { getUserByUsernameDB } from "../../models/Login.js";
-import { formatUsers } from "../helperFunctions.js";
+import { getUserByUsernameDB } from "../../models/Auth.js";
+import bcrypt from "bcrypt";
+import { createToken } from "../../JWT.js";
 
-export async function profileController(req, res, next) {
+export async function loginUserController(req, res, next) {
   const { username, password } = req.body;
 
   if (!username || !password) {
@@ -21,9 +22,12 @@ export async function profileController(req, res, next) {
       return res.status(400).json({ error: "Username or password is wrong" });
     }
 
-    const formattedUser = formatUsers([user]);
+    const accessToken = createToken(user);
+    res.cookie("access-token", accessToken, {
+      maxAge: 60 * 60 * 24 * 30 * 1000,
+    });
 
-    return res.status(200).json(formattedUser);
+    return res.json({ message: "Logged in!", "access-token": accessToken });
   } catch (error) {
     next(error);
   }

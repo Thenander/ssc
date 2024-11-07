@@ -8,7 +8,7 @@ export const MODES = {
     text: "Please login to explore",
   },
   signup: {
-    apiUrl: "http://localhost:8080/api/V1/users/add",
+    apiUrl: "http://localhost:8080/api/V1/auth/register",
     successMessage: "Successfully signed up!",
     action: "Sign up",
     prompt: "Please sign up to explore",
