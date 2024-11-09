@@ -1,6 +1,6 @@
 export const MODES = {
   login: {
-    apiUrl: "http://localhost:8080///",
+    apiUrl: "http://localhost:8080/api/V1/auth/login",
     successMessage: "Successfully logged in!",
     action: "Login",
     prompt: "Please login to explore",

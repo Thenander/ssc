@@ -1,6 +1,7 @@
 import { getUserByUsernameDB } from "../../models/Auth.js";
 import bcrypt from "bcrypt";
 import { createToken } from "../../JWT.js";
+import { formatUsers } from "../helperFunctions.js";
 
 export async function loginUserController(req, res, next) {
   const { username, password } = req.body;
@@ -23,11 +24,13 @@ export async function loginUserController(req, res, next) {
     }
 
     const accessToken = createToken(user);
-    res.cookie("access-token", accessToken, {
+    const formattedUser = formatUsers([user])[0];
+
+    res.cookie("token", accessToken, {
       maxAge: 60 * 60 * 24 * 30 * 1000,
     });
 
-    return res.json({ message: "Logged in!", "access-token": accessToken });
+    return res.json({ ...formattedUser, token: accessToken });
   } catch (error) {
     next(error);
   }
