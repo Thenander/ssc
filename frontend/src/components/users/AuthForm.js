@@ -12,6 +12,7 @@ import { Check } from "react-bootstrap-icons";
 import Checked from "../Checked/Check";
 import { MODES } from "./modes.js";
 import Spinner from "../Spinner/Spinner.js";
+import { useAuth } from "../../contexts/AuthProvider.js";
 
 const defaultValues = {
   firstName: "",
@@ -22,6 +23,8 @@ const defaultValues = {
 };
 
 function AuthForm({ mode }) {
+  const { setAuth } = useAuth();
+
   const isSignUp = mode === "signup";
   const { register, handleSubmit, getValues, reset } = useForm({
     defaultValues,
@@ -204,14 +207,27 @@ function AuthForm({ mode }) {
       setLoading(true);
       const response = await axios.post(MODES[mode].apiUrl, params);
 
-      if (response.status === 201) {
-        setPwCheck();
-        setSuccess(MODES[mode].successMessage);
-        reset();
-        setLoading(false);
-      } else if (response.data?.err) {
-        setInputError(response.data.err);
-        setLoading(false);
+      if (isSignUp) {
+        if (response.status === 201) {
+          setPwCheck();
+          setSuccess(MODES[mode].successMessage);
+          reset();
+          setLoading(false);
+        } else if (response.data?.err) {
+          setInputError(response.data.err);
+          setLoading(false);
+        }
+      } else {
+        if (response.status === 200) {
+          setSuccess(MODES[mode].successMessage);
+          localStorage.setItem("token", response.data.token);
+          setAuth(response.data);
+          reset();
+          setLoading(false);
+        } else if (response.data?.err) {
+          setInputError(response.data.err);
+          setLoading(false);
+        }
       }
     } catch (error) {
       handleAxiosError(error);
