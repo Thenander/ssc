@@ -1,10 +1,8 @@
 CREATE TABLE
-  sources (
+  format_types (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    producer VARCHAR(255),
-    source_type VARCHAR(20),
-    year YEAR,
+    format_type VARCHAR(10),
+    text VARCHAR(255),
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     changed TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
   );

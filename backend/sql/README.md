@@ -4,13 +4,15 @@
 
 Här är en översikt av tabellerna och deras relationer:
 
-- **Albums**: Sparar information om album.
-- **Tracks**: Sparar information om låtar.
-- **Sources**: Sparar information om källor.
-- **Samples**: Sparar information om samples.
-- **Album_Tracks**: En mellanliggande tabell för relationen mellan "album" och "track" (en till många).
-- **Track_Samples**: En mellanliggande tabell för relationen mellan "track" och "sample" (många till många).
-- **Source_Samples**: En mellanliggande tabell för relationen mellan "source" och "sample" (en till många).
+- **releases**: Sparar information om album.
+- **tracks**: Sparar information om låtar.
+- **sources**: Sparar information om källor.
+- **samples**: Sparar information om samples.
+- **track_samples_ref**: En mellanliggande tabell för relationen mellan "track" och "sample" (många till många).
+- **source_samples_ref**: En mellanliggande tabell för relationen mellan "source" och "sample" (en till många).
+- **format_types**: Sparar information om release-typer (Ex. Album, EP etc).
+- **sample_types**: Sparar information om sample-typer (Ex. Drum loop. Movie Quote etc).
+- **source_types**: Sparar information om source-typer (Ex. Movie, Song, TV etc).
 
 ## Förklaring av relationer
 
