@@ -208,9 +208,12 @@ function AuthForm({ mode }) {
       const response = await axios.post(MODES[mode].apiUrl, params);
 
       if (isSignUp) {
+        // Signup
         if (response.status === 201) {
           setPwCheck();
           setSuccess(MODES[mode].successMessage);
+          const { token } = response.data;
+          localStorage.setItem("token", token);
           reset();
           setLoading(false);
         } else if (response.data?.err) {
@@ -218,9 +221,11 @@ function AuthForm({ mode }) {
           setLoading(false);
         }
       } else {
+        // Login
         if (response.status === 200) {
           setSuccess(MODES[mode].successMessage);
-          localStorage.setItem("token", response.data.token);
+          const { token } = response.data;
+          localStorage.setItem("token", token);
           setAuth(response.data);
           reset();
           setLoading(false);

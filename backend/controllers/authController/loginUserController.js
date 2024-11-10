@@ -23,14 +23,10 @@ export async function loginUserController(req, res, next) {
       return res.status(400).json({ error: "Username or password is wrong" });
     }
 
-    const accessToken = createToken(user);
+    const token = createToken(user);
     const formattedUser = formatUsers([user])[0];
 
-    res.cookie("token", accessToken, {
-      maxAge: 60 * 60 * 24 * 30 * 1000,
-    });
-
-    return res.json({ ...formattedUser, token: accessToken });
+    return res.json({ ...formattedUser, token });
   } catch (error) {
     next(error);
   }

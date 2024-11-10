@@ -8,8 +8,8 @@ import updateUser from "./updateUser.js";
 const router = express.Router();
 
 router.use("/user", getUser);
-router.use("/all", getUsers);
 router.use("/delete", deleteUser);
 router.use("/update", updateUser);
+router.use("/", getUsers);
 
 export default router;

@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { registerUserInDB } from "../../models/Auth.js";
 import { getUserByIdFromDB } from "../../models/Users.js";
 import { formatUsers, handleDatabaseError } from "../helperFunctions.js";
+import { createToken } from "../../JWT.js";
 
 export async function registerUserController(req, res, next) {
   const userData = await extractUserData(req);
@@ -25,9 +26,11 @@ export async function registerUserController(req, res, next) {
 async function createUserAndFetch(userData) {
   const response = await registerUserInDB(userData);
   const user = await getUserByIdFromDB(response.insertId);
-  const formattedUser = formatUsers([user]);
 
-  return formattedUser[0];
+  const token = createToken(user);
+  const formattedUser = formatUsers([user])[0];
+
+  return { ...formattedUser, token };
 }
 
 async function extractUserData(req) {
