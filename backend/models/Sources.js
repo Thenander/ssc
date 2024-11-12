@@ -24,7 +24,7 @@ export async function getSourcesFromDB() {
   const sql =
     "SELECT id, title, producer, source_type as type, year FROM sources ORDER BY year ASC;";
   try {
-    const [result] = await poole.query(sql);
+    const [result] = await pool.query(sql);
     return result;
   } catch (error) {
     console.log(error);
