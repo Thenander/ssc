@@ -23,7 +23,7 @@ const defaultValues = {
 };
 
 function AuthForm({ mode }) {
-  const { setAuth } = useAuth();
+  const { setAuth, auth } = useAuth();
 
   const isSignUp = mode === "signup";
   const { register, handleSubmit, getValues, reset } = useForm({
@@ -191,6 +191,8 @@ function AuthForm({ mode }) {
   );
 
   async function onSubmit(params) {
+    console.log(auth);
+
     const isComplete = Object.values(params).every((value) => value);
     if (
       isComplete &&
