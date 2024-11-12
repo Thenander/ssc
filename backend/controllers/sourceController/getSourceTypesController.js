@@ -1,9 +1,9 @@
-import { getReleaseTypesFromDB } from "../../models/Releases.js";
+import { getSourceTypesFromDB } from "../../models/Sources.js";
 import { formatTypes } from "../helperFunctions.js";
 
-export async function getReleaseTypesController(req, res, next) {
+export async function getSourceTypesController(req, res, next) {
   try {
-    const types = await getReleaseTypesFromDB();
+    const types = await getSourceTypesFromDB();
     if (types) {
       const formattedTypes = formatTypes(types);
       res.json(formattedTypes);

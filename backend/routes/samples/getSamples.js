@@ -1,10 +1,8 @@
 import express from "express";
-import { getReleaseTypesController } from "../../controllers/releaseController/index.js";
+import { getSamplesController } from "../../controllers/sampleController/index.js";
 
 const router = express.Router();
 
-router.get("/", getReleaseTypesController);
+router.get("/", getSamplesController);
 
 export default router;
-
-// TODO Rename!

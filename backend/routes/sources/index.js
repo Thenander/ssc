@@ -1,7 +1,7 @@
 import express from "express";
-import getSampleTypes from "./getSampleTypes.js";
+import getSourceTypes from "./getSourceTypes.js";
 
 const router = express.Router();
-router.use("/types", getSampleTypes);
+router.use("/types", getSourceTypes);
 
 export default router;
