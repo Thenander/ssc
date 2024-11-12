@@ -29,7 +29,7 @@ export async function getReleasesFromDB() {
   const sql =
     "SELECT id, title, artist, format_type as format, year FROM releases ORDER BY year ASC;";
   try {
-    const [result] = await poole.query(sql);
+    const [result] = await pool.query(sql);
     return result;
   } catch (error) {
     console.log(error);
