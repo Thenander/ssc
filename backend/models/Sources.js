@@ -21,8 +21,16 @@ export async function addSourceInDB({ title, producer, sourceType, year }) {
 }
 
 export async function getSourcesFromDB() {
-  const sql =
-    "SELECT id, title, producer, source_type as type, year FROM sources ORDER BY year ASC;";
+  const sql = `SELECT  s.id
+                      ,s.title
+                      ,t.text AS type
+                      ,s.producer
+                      ,s.year
+                FROM sources AS s
+                JOIN types AS t
+                ON s.source_type = t.sub_type
+                WHERE t.main_type = "SOURCE"
+                ORDER BY type, s.year ASC;`;
   try {
     const [result] = await pool.query(sql);
     return result;

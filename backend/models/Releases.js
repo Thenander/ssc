@@ -26,8 +26,16 @@ export async function addReleaseInDB({ title, artist, year, format }) {
 }
 
 export async function getReleasesFromDB() {
-  const sql =
-    "SELECT id, title, artist, format_type as format, year FROM releases ORDER BY year ASC;";
+  const sql = `SELECT  r.id
+                      ,r.title
+                      ,r.artist
+                      ,t.text AS type
+                      ,r.year
+                FROM releases AS r
+                JOIN types AS t
+                ON r.format_type = t.sub_type
+                WHERE t.main_type = "RELEASE"
+                ORDER BY r.year ASC;`;
   try {
     const [result] = await pool.query(sql);
     return result;

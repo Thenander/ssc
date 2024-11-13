@@ -1,8 +1,15 @@
 import pool from "../db.js";
 
 export async function getSamplesFromDB() {
-  const sql =
-    "SELECT id, sample, sample_type as type, source_id as sourceId FROM samples ORDER BY sample ASC;";
+  const sql = `SELECT  s.id
+                      ,s.sample
+                      ,t.text
+                FROM samples AS s
+                JOIN types AS t
+                ON s.sample_type = t.sub_type
+                WHERE t.main_type = "SAMPLE"
+                ORDER BY s.sample ASC;`;
+
   try {
     const [result] = await pool.query(sql);
     return result;
