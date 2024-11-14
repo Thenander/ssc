@@ -68,7 +68,16 @@ function CreateRelease() {
     </div>
   );
 
-  function onSubmit(params) {
+  async function onSubmit(params) {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/V1/releases/add",
+        params
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
     console.log(params);
   }
 
