@@ -5,12 +5,7 @@ export async function addReleaseInDB({ title, artist, year, format }) {
     "INSERT INTO releases (title, artist, year, format_type) VALUES (?, ?, ?, ?);";
 
   try {
-    const [result] = await pool.query(sql, [
-      "title",
-      "artist",
-      "year",
-      "format",
-    ]);
+    const [result] = await pool.query(sql, [title, artist, year, format]);
     const json = JSON.parse(JSON.stringify(result));
 
     if (json.affectedRows) {
@@ -40,8 +35,6 @@ export async function getReleasesFromDB() {
     const [result] = await pool.query(sql);
     return result;
   } catch (error) {
-    console.log(error);
-
     throw error;
   }
 }

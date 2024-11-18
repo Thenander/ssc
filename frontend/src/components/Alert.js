@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Alert as AlertBootstrap } from "react-bootstrap";
 import classes from "./Alert.module.scss";
 
-function Alert({ type, message, onClose }) {
+function Alert({ type = "primary", message = "", onClose = () => {} }) {
   const [leave, setLeave] = useState(false);
 
   useEffect(() => {
