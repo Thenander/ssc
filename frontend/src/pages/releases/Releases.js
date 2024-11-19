@@ -1,12 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Table } from "react-bootstrap";
 import Alert from "../../components/Alert.js";
-import useGet from "../../useHooks/useGet.js";
 import Spinner from "../../components/Spinner/Spinner.js";
-import { Link } from "react-router-dom";
+import axios from "axios";
+
+let count = 0;
 
 function Releases() {
-  const { response, error, loading } = useGet("/releases");
+  console.log("rendering:", count++);
+
+  const [response, setResponse] = useState();
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchData("/releases");
+  }, []);
 
   if (error) {
     return <Alert type="danger" message={error} />;
@@ -37,7 +47,7 @@ function Releases() {
             return (
               <tr key={id}>
                 <td>
-                  <Link to={`${id}`}>{title}</Link>
+                  <Link to={`?id=${id}`}>{title}</Link>
                 </td>
                 <td>{artist}</td>
                 <td>{type}</td>
@@ -48,6 +58,18 @@ function Releases() {
       </tbody>
     </Table>
   );
+
+  async function fetchData(url) {
+    setLoading(true);
+    try {
+      const res = await axios.get(url);
+      setResponse(res.data);
+    } catch (err) {
+      setError("Cannot fetch data");
+    } finally {
+      setLoading(false);
+    }
+  }
 }
 
 export default Releases;

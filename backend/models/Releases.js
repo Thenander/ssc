@@ -51,3 +51,22 @@ export async function getReleaseTypesFromDB() {
     throw error;
   }
 }
+
+export async function getReleaseById(id) {
+  const sql = `SELECT  r.id
+                    ,r.title
+                    ,r.artist
+                    ,r.year
+                    ,t.text AS format
+              FROM releases r
+              JOIN types t
+              ON r.format_type = t.sub_type
+              WHERE t.main_type = "RELEASE"
+              AND r.id = ?;`;
+  try {
+    const [result] = await pool.query(sql, [id]);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}

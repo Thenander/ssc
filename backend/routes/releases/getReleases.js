@@ -1,8 +1,9 @@
 import express from "express";
-import { getReleases } from "../../controllers/releaseController/index.js";
+import { getReleasesController } from "../../controllers/releaseController/index.js";
 
 const router = express.Router();
 
-router.get("/", getReleases);
+router.get("/:id", getReleasesController);
+router.get("/", getReleasesController);
 
 export default router;

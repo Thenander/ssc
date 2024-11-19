@@ -243,8 +243,9 @@ function AuthForm({ mode }) {
   }
 
   function handleAxiosError(error) {
+    console.log("error", error);
     if (error.response) {
-      setAxiosError(error.response.data.err);
+      setAxiosError(error.message);
       console.error("Response Error:", error.response);
     } else if (error.request) {
       console.error("No response received:", error.request);

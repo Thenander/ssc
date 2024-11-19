@@ -5,7 +5,7 @@ import { AuthProvider } from "./contexts/AuthProvider";
 import AuthForm from "./components/users/AuthForm";
 import Users from "./components/users/Users";
 import NavBar from "./pages/NavBar/NavBar";
-import Releases from "./pages/releases/Releases";
+import ReleaseSwitcher from "./pages/releases/ReleaseSwitcher";
 
 function App() {
   return (
@@ -13,9 +13,9 @@ function App() {
       <NavBar />
       <Router>
         <Routes>
-          <Route exact path="/users" element={<Users />} />
-          <Route exact path="/login" element={<AuthForm mode="login" />} />
-          <Route exact path="/releases" element={<Releases />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/login" element={<AuthForm mode="login" />} />
+          <Route path="/releases" element={<ReleaseSwitcher />} />
         </Routes>
       </Router>
     </AuthProvider>

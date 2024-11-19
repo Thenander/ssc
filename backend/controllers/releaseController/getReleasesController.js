@@ -1,6 +1,10 @@
 import { getReleasesFromDB } from "../../models/Releases.js";
 
-export async function getReleases(req, res, next) {
+export async function getReleasesController(req, res, next) {
+  const id = req.params.id;
+
+  console.log("id", id);
+
   try {
     const releases = await getReleasesFromDB();
     if (releases) {
