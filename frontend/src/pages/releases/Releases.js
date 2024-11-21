@@ -8,15 +8,13 @@ import axios from "axios";
 let count = 0;
 
 function Releases() {
-  console.log("rendering:", count++);
+  console.log("rendering:", ++count);
 
   const [response, setResponse] = useState();
   const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchData("/releases");
-  }, []);
+  useEffect(fetchData, []);
 
   if (error) {
     return <Alert type="danger" message={error} />;
@@ -59,16 +57,17 @@ function Releases() {
     </Table>
   );
 
-  async function fetchData(url) {
-    setLoading(true);
-    try {
-      const res = await axios.get(url);
-      setResponse(res.data);
-    } catch (err) {
-      setError("Cannot fetch data");
-    } finally {
-      setLoading(false);
-    }
+  function fetchData() {
+    (async () => {
+      try {
+        const res = await axios.get("/releases");
+        setResponse(res.data);
+      } catch (err) {
+        setError("Cannot fetch data");
+      } finally {
+        setLoading(false);
+      }
+    })();
   }
 }
 

@@ -4,8 +4,6 @@ import Releases from "./Releases";
 import { useLocation } from "react-router-dom";
 
 function ReleaseSwitcher() {
-  console.log("hej");
-
   const { search } = useLocation();
 
   if (search) {
