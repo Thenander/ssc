@@ -63,9 +63,13 @@ export default function Users() {
 
   async function fetchData() {
     try {
-      const response = await axios.get("http://localhost:8080/api/V1/users", {
+      const response = await axios.get(
+        "http://localhost:8080/api/V1/users" /* , {
         headers: { Authorization: `Bearer ${getAuthToken()}` },
-      });
+      } */
+      );
+      console.log(response);
+
       const result = await response.data;
       setUsers(result);
     } catch (error) {

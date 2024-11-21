@@ -1,15 +1,8 @@
 import express from "express";
-
-import deleteUser from "./deleteUser.js";
-import getUser from "./getUser.js";
-import getUsers from "./getUsers.js";
-import updateUser from "./updateUser.js";
+import userRoutes from "./userRoutes.js";
 
 const router = express.Router();
 
-router.use("/user", getUser);
-router.use("/delete", deleteUser);
-router.use("/update", updateUser);
-router.use("/", getUsers);
+router.use("/", userRoutes);
 
 export default router;
