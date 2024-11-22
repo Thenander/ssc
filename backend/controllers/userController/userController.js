@@ -3,7 +3,18 @@ import { UserModel } from "../../models/Users.js";
 export const UserController = {
   getAllUsers: async (req, res) => {
     try {
-      const users = await UserModel.getAllUsers();
+      const response = await UserModel.getAllUsers();
+      const users = response.map((user) => {
+        return {
+          id: user.id,
+          username: user.username,
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user.email,
+          role: user.role,
+        };
+      });
+
       res.json(users);
     } catch (err) {
       res.status(500).json({ error: err.message });
