@@ -183,7 +183,7 @@ function AuthForm({ mode }) {
             onClose={() => setSuccess(null)}
           />
         </Card.Body>
-        <Card.Footer className="text-muted">
+        <Card.Footer className="text-muted word-wrap">
           {`Sampling, Scratches and Cuts. © ${new Date().toLocaleDateString()}.`}
         </Card.Footer>
       </Card>

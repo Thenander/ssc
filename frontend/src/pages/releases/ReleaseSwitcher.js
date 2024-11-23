@@ -3,14 +3,14 @@ import Release from "./Release";
 import Releases from "./Releases";
 import { useLocation } from "react-router-dom";
 
-function ReleaseSwitcher() {
+function ReleaseSwitcher(props) {
   const { search } = useLocation();
 
   if (search) {
-    return <Release />;
+    return <Release {...props} />;
   }
 
-  return <Releases />;
+  return <Releases {...props} />;
 }
 
 export default ReleaseSwitcher;

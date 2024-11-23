@@ -17,6 +17,8 @@ function FormInput({
   inputError,
   callback = () => {},
   style = {},
+  min,
+  max,
   ...props
 }) {
   const [value, setValue] = useState(null);
@@ -34,6 +36,8 @@ function FormInput({
           type={type}
           placeholder={placeholder}
           {...register(id, {
+            min,
+            max,
             required,
             onChange: (e) => {
               setValue(e.target.value.trim());
