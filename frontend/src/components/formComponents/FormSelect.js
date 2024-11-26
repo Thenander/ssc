@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { FloatingLabel, Form } from "react-bootstrap";
 import styles from "./FormSelect.module.scss";
 
 function FormSelect({ register, id, options }) {
-  const [choose, setChoose] = useState(true);
-  console.log(choose);
-
   return (
     <FloatingLabel
       controlId="floatingSelectGrid"
@@ -13,7 +10,6 @@ function FormSelect({ register, id, options }) {
       className={styles.label}
     >
       <Form.Select
-        onChange={(e) => setChoose(e.target.value)}
         className={`${styles.select} text-secondary border-secondary`}
         {...register(id, { onselect: (val) => console.log("val", val) })}
       >
