@@ -3,17 +3,15 @@ import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { Button, FloatingLabel, Form } from "react-bootstrap";
 import Spinner from "../../components/Spinner/Spinner";
 import FormInput from "../../components/formComponents/FormInput";
-import Alert from "../../components/Alert.js";
 import { useForm } from "react-hook-form";
 import styles from "./Release.module.scss";
-import { createPortal } from "react-dom";
 
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
-let count = 0;
+// let count = 0;
 
-function Release({ success, setSuccess }) {
+function Release({ setSuccess, reFetch }) {
   const { register, handleSubmit, reset, formState } = useForm();
   const { isDirty } = formState;
 
@@ -24,7 +22,7 @@ function Release({ success, setSuccess }) {
   const [release, setRelease] = useState();
   const [formats, setFormats] = useState([]);
 
-  console.log("RENDER:  (frontend > src > pages > Release.js)", ++count);
+  // console.log("RENDER:  (frontend > src > pages > Release.js)", ++count);
 
   const fetchData = useCallback(
     async (url, params) => {
@@ -65,6 +63,7 @@ function Release({ success, setSuccess }) {
         if (response.data.affectedRows) {
           setSuccess("Added!");
           navigate(pathname);
+          reFetch();
         }
       } catch (error) {
         console.log(error);
@@ -77,6 +76,8 @@ function Release({ success, setSuccess }) {
 
         if (response.data.changedRows) {
           setSuccess("Updated!");
+          navigate(pathname);
+          reFetch();
         }
         console.log("axios.put('/releases?id={id}', params)", response);
 
@@ -104,14 +105,6 @@ function Release({ success, setSuccess }) {
 
   return (
     <div className="container mt-5">
-      {createPortal(
-        <Alert
-          type="success"
-          message={success}
-          onClose={() => setSuccess(null)}
-        />,
-        document.body
-      )}
       <Form
         onSubmit={handleSubmit(onSubmit, onError)}
         onKeyDown={handleKeyDown}
@@ -126,6 +119,7 @@ function Release({ success, setSuccess }) {
                 type="text"
                 placeholder="Artist"
                 register={register}
+                required
               />
               <FormInput
                 disabled={loading}
@@ -134,6 +128,7 @@ function Release({ success, setSuccess }) {
                 type="text"
                 placeholder="Title"
                 register={register}
+                required
               />
               <FormInput
                 disabled={loading}
@@ -144,6 +139,7 @@ function Release({ success, setSuccess }) {
                 max={2050}
                 placeholder="Year"
                 register={register}
+                required
               />
               <FloatingLabel controlId="floatingSelectGrid" label="Format">
                 <Form.Select className="mb-3" {...register("format")}>
@@ -156,7 +152,12 @@ function Release({ success, setSuccess }) {
                 </Form.Select>
               </FloatingLabel>
             </div>
-            <Button type="submit" disabled={!isDirty}>
+            <Button
+              type="submit"
+              disabled={!isDirty}
+              variant="primary"
+              className="text-light"
+            >
               Submit
             </Button>
           </>

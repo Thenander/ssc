@@ -6,11 +6,11 @@ import { useLocation } from "react-router-dom";
 function ReleaseSwitcher(props) {
   const { search } = useLocation();
 
-  if (search) {
-    return <Release {...props} />;
-  }
+  // if (search) {
+  //   return <Release {...props} />;
+  // }
 
-  return <Releases {...props} />;
+  return <Releases search={search} {...props} />;
 }
 
 export default ReleaseSwitcher;

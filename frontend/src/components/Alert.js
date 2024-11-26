@@ -6,15 +6,17 @@ function Alert({ type = "primary", message = "", onClose = () => {} }) {
   const [leave, setLeave] = useState(false);
 
   useEffect(() => {
+    if (!message) return; // Exit early if no message
+
     const styleTimer = setTimeout(() => setLeave(true), 4000);
     const closeTimer = setTimeout(onClose, 5000);
 
     return () => {
-      setLeave(false);
       clearTimeout(styleTimer);
       clearTimeout(closeTimer);
+      setLeave(false);
     };
-  }, [onClose]);
+  }, [message, onClose]);
 
   if (!message) return null;
 

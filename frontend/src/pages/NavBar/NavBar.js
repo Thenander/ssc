@@ -4,7 +4,12 @@ import Navbar from "react-bootstrap/Navbar";
 
 function NavBar() {
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar
+      variant="dark"
+      data-bs-theme="dark"
+      expand="lg"
+      className="bg-body-tertiary"
+    >
       <Container>
         <Navbar.Brand href="#home">Sampling, Scratches and Cuts</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
