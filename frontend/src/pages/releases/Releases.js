@@ -7,11 +7,9 @@ import axios from "axios";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Release from "./Release.js";
 
-// let count = 0;
-
 function Releases({ setSuccess }) {
   const { search } = useLocation();
-  // console.log("rendering:", ++count);
+  console.log("search", search);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,7 +70,7 @@ function Releases({ setSuccess }) {
           cancelLabel="No, keep release"
           confirmLabel="Yes, Delete release"
         />
-        <Table /* bordered */ hover striped variant="dark">
+        <Table bordered hover striped variant="dark">
           <thead>
             <tr>
               <th>Title</th>
@@ -118,7 +116,6 @@ function Releases({ setSuccess }) {
           onClick={handleAdd}
           variant="outline-primary"
           className="text-light"
-          disabled={search}
         >
           Add new release
         </Button>
