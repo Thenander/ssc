@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
-import { Button, FloatingLabel, Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import Spinner from "../../components/Spinner/Spinner";
 import FormInput from "../../components/formComponents/FormInput";
 import { useForm } from "react-hook-form";
@@ -9,8 +9,6 @@ import styles from "./Release.module.scss";
 import axios from "axios";
 import FormSelect from "../../components/formComponents/FormSelect";
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
-
-// let count = 0;
 
 function Release({ setSuccess, reFetch }) {
   const { register, handleSubmit, reset, formState } = useForm();
@@ -22,8 +20,6 @@ function Release({ setSuccess, reFetch }) {
   const [loading, setLoading] = useState(false);
   const [release, setRelease] = useState();
   const [formats, setFormats] = useState([]);
-
-  // console.log("RENDER:  (frontend > src > pages > Release.js)", ++count);
 
   const fetchData = useCallback(
     async (url, params) => {
