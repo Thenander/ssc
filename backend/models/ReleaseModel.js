@@ -7,11 +7,11 @@ const ReleaseModel = {
                       ,r.artist
                       ,t.text AS type
                       ,r.year
-                  FROM releases AS r
-                  JOIN types AS t
-                  ON r.format_type = t.sub_type
-                  WHERE t.main_type = "RELEASE"
-                  ORDER BY r.year ASC;`;
+                FROM releases AS r
+                JOIN types AS t
+                ON r.format_type = t.sub_type
+                WHERE t.main_type = "RELEASE"
+                ORDER BY r.year, t.text ASC;`;
 
     try {
       const [results] = await pool.query(sql);
