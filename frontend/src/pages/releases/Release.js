@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import styles from "./Release.module.scss";
 
 import axios from "axios";
+import FormSelect from "../../components/formComponents/FormSelect";
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
 // let count = 0;
@@ -141,16 +142,9 @@ function Release({ setSuccess, reFetch }) {
                 register={register}
                 required
               />
-              <FloatingLabel controlId="floatingSelectGrid" label="Format">
-                <Form.Select className="mb-3" {...register("format")}>
-                  <option value="">Choose...</option>
-                  {formats.map((format) => (
-                    <option key={format.code} value={format.code}>
-                      {format.text}
-                    </option>
-                  ))}
-                </Form.Select>
-              </FloatingLabel>
+              {formats && (
+                <FormSelect register={register} id="format" options={formats} />
+              )}
             </div>
             <Button
               type="submit"

@@ -1,0 +1,20 @@
+.label {
+  background-color: #00000000;
+
+  &::after {
+    background-color: #00000000 !important;
+  }
+}
+
+:root .input {
+  background-color: #00000000;
+  color: #fff9;
+
+  &:focus {
+    outline:none;
+    background-color: #00000000;
+    box-shadow: 0 0 0 0;
+    border-color: #fff !important;
+    color: #fff;
+  }
+}

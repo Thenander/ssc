@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
+import styles from "./FormInput.module.scss";
 
 /**
  * @param {Object} param0 { id, label, type, placeholder }
@@ -30,6 +31,7 @@ function FormInput({
     <Form.Group className={`w-100 ${className}`}>
       <Form.Floating className="mb-3">
         <Form.Control
+          className={`${styles.input} border-secondary`}
           onChange={(e) => callback(e)}
           style={{ ...style, ...getErrorColor("borderColor") }}
           id={id}
@@ -46,6 +48,7 @@ function FormInput({
           {...props}
         />
         <label
+          className={`${styles.label} text-secondary`}
           style={getErrorColor("color")}
           htmlFor={id}
         >{`${label}${hasValue}`}</label>

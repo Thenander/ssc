@@ -9,7 +9,6 @@ import Releases from "./pages/releases/Releases.js";
 import Alert from "./components/Alert.js";
 import { createPortal } from "react-dom";
 import "./index.scss";
-import {} from "./App.module.scss";
 
 function App() {
   const [success, setSuccess] = useState();

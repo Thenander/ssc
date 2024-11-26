@@ -118,6 +118,7 @@ function Releases({ setSuccess }) {
           onClick={handleAdd}
           variant="outline-primary"
           className="text-light"
+          disabled={search}
         >
           Add new release
         </Button>
