@@ -30,7 +30,7 @@
 
 @media (min-width: 576px) {
   .alert {
-    position: fixed !important;
+    position: absolute !important;
     right: 1rem;
     top: -20rem;
     @include anim;
@@ -53,9 +53,9 @@
 
 @keyframes leaving {
   0% {
-    right: 0;
+    top: 1rem;
   }
   100% {
-    right: -50rem;
+    top: -20rem;
   }
 }

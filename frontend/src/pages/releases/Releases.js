@@ -124,7 +124,7 @@ function Releases({ setAlert }) {
       setLoading(true);
       const response = await axios.delete(`${pathname}?id=${id}`);
       if (response.data.affectedRows) {
-        setAlert({ danger: "Deleted successfully" });
+        setAlert({ success: "Deleted successfully" });
         fetchData();
       }
     } catch (err) {
