@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { createPortal } from "react-dom";
+
 import { AuthProvider } from "./contexts/AuthProvider";
+
 import AuthForm from "./components/users/AuthForm";
 import Users from "./components/users/Users";
+import Alert from "./components/Alert.js";
+
 import NavBar from "./pages/NavBar/NavBar";
 import Releases from "./pages/releases/Releases.js";
-import Alert from "./components/Alert.js";
-import { createPortal } from "react-dom";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.scss";
 
 function App() {

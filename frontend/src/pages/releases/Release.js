@@ -1,25 +1,53 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
-import { Button, Form } from "react-bootstrap";
-import Spinner from "../../components/Spinner/Spinner";
-import FormInput from "../../components/formComponents/FormInput";
 import { useForm } from "react-hook-form";
-import styles from "./Release.module.scss";
-
 import axios from "axios";
+
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+
+import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
+import Spinner from "../../components/Spinner/Spinner";
+
+import classes from "./Release.module.scss";
+
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
-function Release({ setSuccess, reFetch }) {
-  const { register, handleSubmit, reset, formState } = useForm();
-  const { isDirty } = formState;
+const formValues = {
+  title: "",
+  artist: "",
+  year: "",
+  format: "",
+};
 
+function Release({ setSuccess, reFetch }) {
+  //////////////
+  // useHooks //
+  //////////////
+
+  const { register, formState, handleSubmit, reset, watch } = useForm();
+  const { isDirty } = formState;
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const id = searchParams.get("id");
 
-  const [loading, setLoading] = useState(false);
+  const watchTitle = watch("title");
+
+  const buttonLabel = id === "new" ? "Add new release" : "Update release";
+
+  ///////////////
+  // useStates //
+  ///////////////
+
+  const [loading, setLoading] = useState(true);
   const [release, setRelease] = useState();
   const [formats, setFormats] = useState([]);
+
+  ///////////
+  // Fetch //
+  ///////////
 
   const fetchData = useCallback(
     async (url, params) => {
@@ -33,32 +61,104 @@ function Release({ setSuccess, reFetch }) {
     [reset]
   );
 
-  let [searchParams] = useSearchParams();
-  const id = searchParams.get("id");
+  ////////////////
+  // useEffects //
+  ////////////////
+
+  useEffect(() => {
+    if (id === "new") {
+      console.log("nurå?");
+
+      reset(formValues);
+      setLoading(false);
+    }
+  }, [id, reset]);
 
   useEffect(() => {
     fetchData("/releases", { id });
+    setLoading(false);
   }, [fetchData, id]);
 
-  if (loading) {
-    return (
-      <div className="position-relative py-5">
-        <Spinner />
+  /////////////
+  // Returns //
+  /////////////
+
+  return (
+    <>
+      <Spinner loading={loading} />
+      <div className="container mt-5">
+        <h3 style={{ color: "#ffffffde" }}>{watchTitle}</h3>
+        <Form
+          onSubmit={handleSubmit(onSubmit, onError)}
+          onKeyDown={handleKeyDown}
+        >
+          {release && (
+            <>
+              <div className={classes.grid}>
+                <FormInput
+                  disabled={loading}
+                  id="artist"
+                  label="Artist"
+                  type="text"
+                  placeholder="Artist"
+                  register={register}
+                  required
+                />
+                <FormInput
+                  disabled={loading}
+                  id="title"
+                  label="Title"
+                  type="text"
+                  placeholder="Title"
+                  register={register}
+                  required
+                />
+                <FormInput
+                  disabled={loading}
+                  id="year"
+                  label="Year"
+                  type="number"
+                  min={1950}
+                  max={2050}
+                  placeholder="Year"
+                  register={register}
+                  required
+                />
+                {formats && (
+                  <FormSelect
+                    register={register}
+                    id="format"
+                    options={formats}
+                  />
+                )}
+              </div>
+              <Button
+                type="submit"
+                disabled={!isDirty}
+                variant="primary"
+                className="text-light"
+              >
+                {buttonLabel}
+              </Button>
+            </>
+          )}
+        </Form>
       </div>
-    );
-  }
+    </>
+  );
 
-  const onSubmit = async (params) => {
-    setLoading(true);
+  //////////////
+  // Handlers //
+  //////////////
 
+  async function onSubmit(params) {
     if (id === "new") {
-      console.log(id);
-
       try {
+        setLoading(true);
         const response = await axios.post("/releases", params);
-        console.log("axios.post('/releases', params)", response);
+
         if (response.data.affectedRows) {
-          setSuccess("Added!");
+          setSuccess("New release added!");
           navigate(pathname);
           reFetch();
         }
@@ -69,92 +169,35 @@ function Release({ setSuccess, reFetch }) {
       }
     } else {
       try {
+        setLoading(true);
         const response = await axios.put(`/releases?id=${id}`, params);
 
         if (response.data.changedRows) {
-          setSuccess("Updated!");
+          setSuccess("Release updated!");
           navigate(pathname);
           reFetch();
         }
-        console.log("axios.put('/releases?id={id}', params)", response);
-
-        fetchData("/releases", { id });
       } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
     }
-  };
+  }
 
-  const handleKeyDown = (event) => {
+  function onError(error) {
+    console.log("error", error);
+    setLoading(false);
+  }
+
+  function handleKeyDown(event) {
     const isSubmitButtonFocused =
       document.activeElement && document.activeElement.type === "submit";
 
     if (event.key === "Enter" && !isSubmitButtonFocused) {
       event.preventDefault();
     }
-  };
-
-  const onError = (error) => {
-    console.log("error", error);
-  };
-
-  return (
-    <div className="container mt-5">
-      <Form
-        onSubmit={handleSubmit(onSubmit, onError)}
-        onKeyDown={handleKeyDown}
-      >
-        {release && (
-          <>
-            <div className={styles.grid}>
-              <FormInput
-                disabled={loading}
-                id="artist"
-                label="Artist"
-                type="text"
-                placeholder="Artist"
-                register={register}
-                required
-              />
-              <FormInput
-                disabled={loading}
-                id="title"
-                label="Title"
-                type="text"
-                placeholder="Title"
-                register={register}
-                required
-              />
-              <FormInput
-                disabled={loading}
-                id="year"
-                label="Year"
-                type="number"
-                min={1950}
-                max={2050}
-                placeholder="Year"
-                register={register}
-                required
-              />
-              {formats && (
-                <FormSelect register={register} id="format" options={formats} />
-              )}
-            </div>
-            <Button
-              type="submit"
-              disabled={!isDirty}
-              variant="primary"
-              className="text-light"
-            >
-              Submit
-            </Button>
-          </>
-        )}
-      </Form>
-    </div>
-  );
+  }
 }
 
 export default Release;

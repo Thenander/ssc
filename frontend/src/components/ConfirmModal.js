@@ -21,9 +21,12 @@ function ConfirmModal({
       <Modal.Header closeButton className="bg-dark text-light">
         <Modal.Title className="bg-dark text-light">
           <div
-            style={{ color: "#dc3445", display: "flex", alignItems: "center" }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+            }}
           >
-            <ExclamationCircleFill className="me-2" />
+            <ExclamationCircleFill color="#dc3445" className="me-2" />
             {title}
           </div>
         </Modal.Title>

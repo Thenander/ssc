@@ -1,63 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Button, Table } from "react-bootstrap";
-import Alert from "../../components/Alert.js";
-import Spinner from "../../components/Spinner/Spinner.js";
 import axios from "axios";
-import ConfirmModal from "../../components/ConfirmModal.js";
+
+import { Button, Table } from "react-bootstrap";
+
 import Release from "./Release.js";
+import Alert from "../../components/Alert.js";
+import ConfirmModal from "../../components/ConfirmModal.js";
+import Spinner from "../../components/Spinner/Spinner.js";
 
 function Releases({ setSuccess }) {
-  const { search } = useLocation();
-  console.log("search", search);
+  //////////////
+  // useHooks //
+  //////////////
 
+  const { pathname, search } = useLocation();
   const navigate = useNavigate();
-  const location = useLocation();
-  const { pathname } = location;
 
-  const [response, setResponse] = useState();
-  const [error, setError] = useState();
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [response, setResponse] = useState();
+  const [error, setError] = useState();
   const [id, setId] = useState();
 
-  const handleCloseModal = () => setShowModal(false);
-  const handleShowModal = () => setShowModal(true);
+  ////////////////
+  // useEffects //
+  ////////////////
 
   useEffect(fetchData, []);
 
-  const handleAdd = () => {
-    navigate(`${pathname}?id=new`);
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const response = await axios.delete(`${pathname}?id=${id}`);
-      if (response.data.affectedRows) {
-        setSuccess("Deleted successfully");
-        fetchData();
-      }
-    } catch (err) {
-      setError("Cannot delete");
-    } finally {
-      setLoading(false);
-    }
-  };
+  /////////////
+  // Returns //
+  /////////////
 
   if (error) {
     return <Alert type="danger" message={error} />;
   }
 
-  if (loading) {
-    return (
-      <div className="position-relative py-5">
-        <Spinner />
-      </div>
-    );
-  }
-
   return (
     <>
+      <Spinner loading={loading} />
       {search && <Release setSuccess={setSuccess} reFetch={fetchData} />}
       <div className="container mt-5">
         <ConfirmModal
@@ -117,15 +99,51 @@ function Releases({ setSuccess }) {
           variant="outline-primary"
           className="text-light"
         >
-          Add new release
+          Create new release
         </Button>
       </div>
     </>
   );
 
+  //////////////
+  // Handlers //
+  //////////////
+
+  function handleAdd() {
+    navigate(`${pathname}?id=new`);
+  }
+
+  async function handleDelete(id) {
+    try {
+      setLoading(true);
+      const response = await axios.delete(`${pathname}?id=${id}`);
+      if (response.data.affectedRows) {
+        setSuccess("Deleted successfully");
+        fetchData();
+      }
+    } catch (err) {
+      setError("Cannot delete");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleCloseModal() {
+    return setShowModal(false);
+  }
+
+  function handleShowModal() {
+    return setShowModal(true);
+  }
+
+  ///////////
+  // Fetch //
+  ///////////
+
   function fetchData() {
     (async () => {
       try {
+        setLoading(true);
         const res = await axios.get("/releases");
         setResponse(res.data);
       } catch (err) {
