@@ -9,7 +9,7 @@ import Alert from "../../components/Alert.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 
-function Tracks({ setSuccess }) {
+function Tracks({ setAlert }) {
   //////////////
   // useHooks //
   //////////////
@@ -40,8 +40,11 @@ function Tracks({ setSuccess }) {
   return (
     <>
       <Spinner loading={loading} />
-      {search && <Track setSuccess={setSuccess} reFetch={fetchData} />}
-      <div className="container mt-5">
+      <div className="container my-5">
+        <h2 className="text-light m-0">TRACKS</h2>
+      </div>
+      {search && <Track setAlert={setAlert} reFetch={fetchData} />}
+      <div className="container">
         <ConfirmModal
           id={id}
           showModal={showModal}
@@ -52,42 +55,44 @@ function Tracks({ setSuccess }) {
           cancelLabel="No, keep track"
           confirmLabel="Yes, Delete track"
         />
-        <Table bordered hover striped variant="dark">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(response) &&
-              response.map((track) => {
-                const { id, title } = track;
-                return (
-                  <tr key={id}>
-                    <td className="position-relative">
-                      <Link to={`?id=${id}`} className="stretched-link">
-                        {title}
-                      </Link>
-                    </td>
-                    <td style={{ width: "0" }}>
-                      <Button
-                        size="sm"
-                        variant="outline-danger"
-                        className="text-nowrap text-light"
-                        onClick={() => {
-                          setId(id);
-                          handleShowModal(true);
-                        }}
-                      >
-                        Delete track
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </Table>
+        {response && response.length && (
+          <Table bordered hover striped variant="dark">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.isArray(response) &&
+                response.map((track) => {
+                  const { id, title } = track;
+                  return (
+                    <tr key={id}>
+                      <td className="position-relative">
+                        <Link to={`?id=${id}`} className="stretched-link">
+                          {title}
+                        </Link>
+                      </td>
+                      <td style={{ width: "0" }}>
+                        <Button
+                          size="sm"
+                          variant="outline-danger"
+                          className="text-nowrap text-light"
+                          onClick={() => {
+                            setId(id);
+                            handleShowModal(true);
+                          }}
+                        >
+                          Delete track
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </Table>
+        )}
         <Button
           onClick={handleAdd}
           variant="outline-primary"
@@ -112,7 +117,8 @@ function Tracks({ setSuccess }) {
       setLoading(true);
       const response = await axios.delete(`${pathname}?id=${id}`);
       if (response.data.affectedRows) {
-        setSuccess("Deleted successfully");
+        setAlert({ success: "Deleted successfully" });
+        navigate(pathname);
         fetchData();
       }
     } catch (err) {

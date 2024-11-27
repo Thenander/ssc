@@ -1,4 +1,5 @@
 import ReleaseModel from "../models/ReleaseModel.js";
+import TrackModel from "../models/TrackModel.js";
 
 const ReleaseController = {
   //////////
@@ -8,16 +9,15 @@ const ReleaseController = {
 
     let releaseData;
     let types;
+    let tracks;
 
     try {
       if (releaseId) {
-        let releaseTypes;
         // GET format options
-        releaseTypes = await ReleaseModel.getReleaseTypes();
-        types = releaseTypes.map((type) => ({
-          code: type.sub_type,
-          text: type.text,
-        }));
+        types = await ReleaseModel.getReleaseTypes();
+
+        // GET tracks
+        tracks = await TrackModel.getAllTracksFromReleaseById(releaseId);
 
         if (isNaN(Number(releaseId))) {
           // New release
@@ -32,8 +32,9 @@ const ReleaseController = {
       }
 
       const singleRelease = {
-        formatOptions: types ?? [],
         release: releaseData,
+        formatOptions: types ?? [],
+        tracks: tracks ?? [],
       };
 
       if (!releaseData) {

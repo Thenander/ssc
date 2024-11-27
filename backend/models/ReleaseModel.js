@@ -93,9 +93,11 @@ const ReleaseModel = {
   },
 
   getReleaseTypes: async () => {
-    const sql =
-      "SELECT * FROM types WHERE main_type = 'RELEASE' ORDER BY list_order;";
-
+    const sql = `SELECT  sub_type AS 'key'
+                        ,text     AS 'value'
+                  FROM types
+                  WHERE main_type = 'RELEASE'
+                  ORDER BY text;`;
     try {
       const [result] = await pool.query(sql);
       return result;

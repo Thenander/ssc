@@ -14,27 +14,21 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.scss";
 
 function App() {
-  const [success, setSuccess] = useState();
+  const [alert, setAlert] = useState({});
+
   return (
     <AuthProvider className="bg-dark">
       <NavBar />
-      {createPortal(
-        <Alert
-          type="success"
-          message={success}
-          onClose={() => setSuccess(null)}
-        />,
-        document.body
-      )}
+      {createPortal(<Alert alert={alert} setAlert={setAlert} />, document.body)}
       <Router>
         <Routes>
           <Route
             path="/releases"
-            element={<Releases success={success} setSuccess={setSuccess} />}
+            element={<Releases alert={alert} setAlert={setAlert} />}
           />
           <Route
             path="/tracks"
-            element={<Tracks success={success} setSuccess={setSuccess} />}
+            element={<Tracks alert={alert} setAlert={setAlert} />}
           />
         </Routes>
       </Router>

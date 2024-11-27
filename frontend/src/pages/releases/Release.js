@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
+import {
+  useSearchParams,
+  useNavigate,
+  useLocation,
+  Link,
+} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
@@ -11,6 +16,7 @@ import FormSelect from "../../components/formComponents/FormSelect";
 import Spinner from "../../components/Spinner/Spinner";
 
 import classes from "./Release.module.scss";
+import { Table } from "react-bootstrap";
 
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
@@ -21,7 +27,7 @@ const formValues = {
   format: "",
 };
 
-function Release({ setSuccess, reFetch }) {
+function Release({ setAlert, reFetch }) {
   //////////////
   // useHooks //
   //////////////
@@ -44,6 +50,7 @@ function Release({ setSuccess, reFetch }) {
   const [loading, setLoading] = useState(true);
   const [release, setRelease] = useState();
   const [formats, setFormats] = useState([]);
+  const [tracks, setTracks] = useState([]);
 
   ///////////
   // Fetch //
@@ -53,14 +60,9 @@ function Release({ setSuccess, reFetch }) {
     async (url, params) => {
       const res = await axios.get(url, { params });
 
-      setFormats(
-        res.data?.formatOptions?.map(({ code, text }) => {
-          const value = text;
-          const key = code;
-          return { key, value };
-        })
-      );
       setRelease(res.data?.release);
+      setFormats(res.data?.formatOptions);
+      setTracks(res.data?.tracks);
 
       reset(res.data.release);
     },
@@ -92,7 +94,7 @@ function Release({ setSuccess, reFetch }) {
   return (
     <>
       <Spinner loading={loading} />
-      <div className="container mt-5">
+      <div className="container">
         <h3 style={{ color: "#ffffffde" }}>{watchTitle}</h3>
         <Form
           onSubmit={handleSubmit(onSubmit, onError)}
@@ -132,17 +134,42 @@ function Release({ setSuccess, reFetch }) {
                 />
                 {formats && (
                   <FormSelect
+                    label="Format"
                     register={register}
                     id="format"
                     options={formats}
+                    required
                   />
                 )}
               </div>
+              {tracks && tracks.length > 0 && (
+                <Table size="sm" bordered hover variant="dark">
+                  <thead>
+                    <tr>
+                      <th className="px-2">Tracklist</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tracks.map(({ id, title }) => (
+                      <tr key={id}>
+                        <td className="px-2 position-relative">
+                          <Link
+                            to={`/tracks?id=${id}`}
+                            className="stretched-link"
+                          >
+                            {title}
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              )}
               <Button
                 type="submit"
                 disabled={!isDirty}
                 variant="primary"
-                className="text-light"
+                className="text-light mb-5"
               >
                 {buttonLabel}
               </Button>
@@ -164,7 +191,7 @@ function Release({ setSuccess, reFetch }) {
         const response = await axios.post("/releases", params);
 
         if (response.data.affectedRows) {
-          setSuccess("New release added!");
+          setAlert({ success: "New release added!" });
           navigate(pathname);
           reFetch();
         }
@@ -179,7 +206,7 @@ function Release({ setSuccess, reFetch }) {
         const response = await axios.put(`/releases?id=${id}`, params);
 
         if (response.data.changedRows) {
-          setSuccess("Release updated!");
+          setAlert({ success: "Release updated!" });
           navigate(pathname);
           reFetch();
         }

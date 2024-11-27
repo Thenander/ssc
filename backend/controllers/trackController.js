@@ -49,41 +49,49 @@ const TrackController = {
   //////////
   // PUT
   updateTrack: async (req, res) => {
-    // const releaseId = req.query.id;
-    // const { body } = req;
-    // try {
-    //   const result = await ReleaseModel.updateRelease(releaseId, body);
-    //   res.json(result);
-    // } catch (error) {
-    //   console.log(error);
-    //   res.status(500).send({ error });
-    // }
+    const trackId = req.query.id;
+    const { body } = req;
+
+    const params = {
+      id: parseInt(body.id, 10),
+      title: body.title,
+      trackNumber: parseInt(body.trackNumber, 10),
+      release: parseInt(body.release, 10),
+    };
+
+    try {
+      const result = await TrackModel.updateTrack(trackId, params);
+      res.json(result);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({ error });
+    }
   },
 
   //////////
   // POST
   createTrack: async (req, res) => {
-    // const { body } = req;
-    // try {
-    //   const result = await ReleaseModel.createRelease(body);
-    //   res.json(result);
-    // } catch (error) {
-    //   console.error(error);
-    //   res.status(500).json({ error });
-    // }
+    const { body } = req;
+    try {
+      const result = await TrackModel.createTrack(body);
+      res.json(result);
+    } catch (error) {
+      console.error("*** trackController ***", error);
+      res.status(500).json({ error });
+    }
   },
 
   //////////
   // DELETE
   deleteTrack: async (req, res) => {
-    // const releaseId = req.query.id;
-    // try {
-    //   const result = await ReleaseModel.deleteRelease(releaseId);
-    //   res.json(result);
-    // } catch (error) {
-    //   console.error(error);
-    //   res.status(500).json({ error });
-    // }
+    const trackId = req.query.id;
+    try {
+      const result = await TrackModel.deleteTrack(trackId);
+      res.json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error });
+    }
   },
 };
 

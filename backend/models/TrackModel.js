@@ -18,7 +18,8 @@ const TrackModel = {
   getTrackById: async (id) => {
     const sql = `SELECT id
                       ,title
-                      ,track_number AS trackNumber
+                      ,track_number AS 'trackNumber'
+                      ,release_id AS 'release'
                 FROM tracks
                 WHERE id = ?`;
     try {
@@ -29,79 +30,65 @@ const TrackModel = {
     }
   },
 
-  createTrack: async (
-    {
-      /* title, artist, year, format */
+  createTrack: async ({ title, trackNumber, release }) => {
+    const sql = `INSERT INTO tracks (title, track_number, release_id) VALUES (?, ?, ?);`;
+    try {
+      const [result] = await pool.query(sql, [title, trackNumber, release]);
+      const json = JSON.parse(JSON.stringify(result));
+      return json;
+    } catch (err) {
+      throw err;
     }
-  ) => {
-    // const yearInt = parseInt(year, 10);
-    // if (isNaN(yearInt) || yearInt < 1000 || yearInt > 9999) {
-    //   throw new Error("Invalid year format. Year must be a 4-digit number.");
-    // }
-    // const sql =
-    //   "INSERT INTO releases (title, artist, year, format_type) VALUES (?, ?, ?, ?);";
-    // try {
-    //   const [result] = await pool.query(sql, [title, artist, yearInt, format]);
-    //   const json = JSON.parse(JSON.stringify(result));
-    //   return json;
-    // } catch (err) {
-    //   throw err;
-    // }
   },
 
-  updateTrack: async (
-    id,
-    {
-      /* title, artist, year, format */
+  updateTrack: async (id, { title, trackNumber, release }) => {
+    const sql = `UPDATE tracks
+                  SET title = ?, track_number = ?, release_id = ?
+                  WHERE id = ?;`;
+    try {
+      const [result] = await pool.query(sql, [title, trackNumber, release, id]);
+      return result;
+    } catch (err) {
+      throw err;
     }
-  ) => {
-    // const yearInt = parseInt(year, 10);
-    // if (isNaN(yearInt) || yearInt < 1000 || yearInt > 9999) {
-    //   throw new Error("Invalid year format. Year must be a 4-digit number.");
-    // }
-    // const sql = `UPDATE releases
-    //     SET title = ?, artist = ?, year = ?, format_type = ?
-    //     WHERE id = ?;`;
-    // try {
-    //   const [result] = await pool.query(sql, [
-    //     title,
-    //     artist,
-    //     yearInt,
-    //     format,
-    //     id,
-    //   ]);
-    //   return result;
-    // } catch (err) {
-    //   throw err;
-    // }
   },
 
   deleteTrack: async (id) => {
-    // const sql = "DELETE FROM releases WHERE id = ?";
-    // try {
-    //   const [result] = await pool.query(sql, [id]);
-    //   return result;
-    // } catch (err) {
-    //   throw err;
-    // }
+    const sql = "DELETE FROM tracks WHERE id = ?";
+    try {
+      const [result] = await pool.query(sql, [id]);
+      return result;
+    } catch (err) {
+      throw err;
+    }
   },
 
-  getAllReleases: async (id) => {
-    const sql = `SELECT r.id
-                      ,r.artist
-                      ,r.title
-                      ,t.text
-                FROM releases AS r
-                JOIN types AS t
-                ON r.format_type = t.sub_type
-                WHERE t.main_type = "RELEASE"
-                ORDER BY r.title;`;
+  getAllReleases: async () => {
+    const sql = `SELECT  r.id                                        AS 'key'
+                        ,CONCAT(r.title,' - ',r.artist,' - ',t.text) AS 'value'
+                  FROM releases AS r
+                  JOIN types AS t
+                  ON r.format_type = t.sub_type
+                  WHERE t.main_type = "RELEASE"
+                  ORDER BY r.title;`;
     try {
       const [result] = await pool.query(sql);
       return result;
     } catch (error) {
       throw error;
     }
+  },
+
+  getAllTracksFromReleaseById: async (releaseId) => {
+    const sql = `SELECT  id, title
+                  FROM tracks
+                  WHERE release_id = ?
+                  ORDER BY track_number;`;
+    try {
+      const [result] = await pool.query(sql, [releaseId]);
+      return result;
+    } catch (error) {}
+    throw error;
   },
 };
 

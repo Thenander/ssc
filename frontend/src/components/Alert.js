@@ -2,30 +2,42 @@ import React, { useEffect, useState } from "react";
 import { Alert as AlertBootstrap } from "react-bootstrap";
 import classes from "./Alert.module.scss";
 
-function Alert({ type = "primary", message = "", onClose = () => {} }) {
+function Alert({ alert, setAlert }) {
+  const [[key, value] = []] = Object.entries(alert);
+  const isError = key === "danger";
   const [leave, setLeave] = useState(false);
 
   useEffect(() => {
-    if (!message) return; // Exit early if no message
+    if (!value) return; // Exit early if no message
 
-    const styleTimer = setTimeout(() => setLeave(true), 4000);
-    const closeTimer = setTimeout(onClose, 5000);
+    const styleTimer = setTimeout(() => {
+      if (!isError) {
+        setLeave(true);
+      }
+    }, 4000);
+    const closeTimer = setTimeout(() => {
+      if (!isError) {
+        setAlert({});
+      }
+    }, 5000);
 
     return () => {
       clearTimeout(styleTimer);
       clearTimeout(closeTimer);
       setLeave(false);
     };
-  }, [message, onClose]);
+  }, [isError, setAlert, value]);
 
-  if (!message) return null;
+  if (!value) return null;
 
   return (
     <AlertBootstrap
-      variant={type}
+      variant={key}
       className={`${classes.alert} ${leave ? classes.leave : ""}`}
+      dismissible={key === "danger"}
+      onClose={() => setAlert({})}
     >
-      {message}
+      {value}
     </AlertBootstrap>
   );
 }

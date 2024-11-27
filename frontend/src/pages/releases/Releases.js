@@ -9,7 +9,7 @@ import Alert from "../../components/Alert.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 
-function Releases({ setSuccess }) {
+function Releases({ setAlert }) {
   //////////////
   // useHooks //
   //////////////
@@ -20,6 +20,7 @@ function Releases({ setSuccess }) {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [response, setResponse] = useState();
+
   const [error, setError] = useState();
   const [id, setId] = useState();
 
@@ -40,60 +41,65 @@ function Releases({ setSuccess }) {
   return (
     <>
       <Spinner loading={loading} />
-      {search && <Release setSuccess={setSuccess} reFetch={fetchData} />}
-      <div className="container mt-5">
+      <div className="container">
+        <h2 className="text-light my-5">RELEASES</h2>
+      </div>
+      {search && <Release setAlert={setAlert} reFetch={fetchData} />}
+      <div className="container">
         <ConfirmModal
           id={id}
           showModal={showModal}
           handleCloseModal={handleCloseModal}
           onConfirmDelete={(id) => handleDelete(id)}
           title="Delete release?"
-          body="Deleting this release will permanently erase it. This action cannot be undone. Are you sure you want to continue?"
+          body="Deleting this release will permanently erase it and its related tracks. This action cannot be undone. Are you sure you want to continue?"
           cancelLabel="No, keep release"
           confirmLabel="Yes, Delete release"
         />
-        <Table bordered hover striped variant="dark">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Artist</th>
-              <th>Format</th>
-              <th>Year</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(response) &&
-              response.map((release) => {
-                const { id, title, artist, type, year } = release;
-                return (
-                  <tr key={id}>
-                    <td className="position-relative">
-                      <Link to={`?id=${id}`} className="stretched-link">
-                        {title}
-                      </Link>
-                    </td>
-                    <td>{artist}</td>
-                    <td>{type}</td>
-                    <td>{year}</td>
-                    <td style={{ width: "0" }}>
-                      <Button
-                        size="sm"
-                        variant="outline-danger"
-                        className="text-nowrap text-light"
-                        onClick={() => {
-                          setId(id);
-                          handleShowModal(true);
-                        }}
-                      >
-                        Delete release
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </Table>
+        {response && response.length > 0 && (
+          <Table bordered hover striped variant="dark">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Format</th>
+                <th>Year</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.isArray(response) &&
+                response.map((release) => {
+                  const { id, title, artist, type, year } = release;
+                  return (
+                    <tr key={id}>
+                      <td className="position-relative">
+                        <Link to={`?id=${id}`} className="stretched-link">
+                          {title}
+                        </Link>
+                      </td>
+                      <td>{artist}</td>
+                      <td>{type}</td>
+                      <td>{year}</td>
+                      <td style={{ width: "0" }}>
+                        <Button
+                          size="sm"
+                          variant="outline-danger"
+                          className="text-nowrap text-light"
+                          onClick={() => {
+                            setId(id);
+                            handleShowModal(true);
+                          }}
+                        >
+                          Delete release
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </Table>
+        )}
         <Button
           onClick={handleAdd}
           variant="outline-primary"
@@ -118,7 +124,7 @@ function Releases({ setSuccess }) {
       setLoading(true);
       const response = await axios.delete(`${pathname}?id=${id}`);
       if (response.data.affectedRows) {
-        setSuccess("Deleted successfully");
+        setAlert({ danger: "Deleted successfully" });
         fetchData();
       }
     } catch (err) {

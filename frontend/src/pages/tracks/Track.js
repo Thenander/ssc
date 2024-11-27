@@ -16,7 +16,7 @@ axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
 const formValues = { title: "", trackNumber: "", release: "" };
 
-function Track({ setSuccess, reFetch }) {
+function Track({ setAlert, reFetch }) {
   //////////////
   // useHooks //
   //////////////
@@ -48,13 +48,7 @@ function Track({ setSuccess, reFetch }) {
     async (url, params) => {
       const res = await axios.get(url, { params });
 
-      setReleases(
-        res.data?.releases?.map(({ artist, title, text, id }) => {
-          const value = `${title} - ${artist} (${text})`;
-          const key = id;
-          return { key, value };
-        })
-      );
+      setReleases(res.data?.releases);
       setTrack(res.data?.track);
 
       reset(res.data.track);
@@ -85,7 +79,7 @@ function Track({ setSuccess, reFetch }) {
   return (
     <>
       <Spinner loading={loading} />
-      <div className="container mt-5">
+      <div className="container">
         <h3 style={{ color: "#ffffffde" }}>{watchTitle}</h3>
         <Form
           onSubmit={handleSubmit(onSubmit, onError)}
@@ -101,7 +95,7 @@ function Track({ setSuccess, reFetch }) {
                   type="text"
                   placeholder="Title"
                   register={register}
-                  required
+                  required="Title is required"
                 />
                 <FormInput
                   disabled={loading}
@@ -110,13 +104,15 @@ function Track({ setSuccess, reFetch }) {
                   type="text"
                   placeholder="Track ID"
                   register={register}
-                  required
+                  required="Track ID is required"
                 />
                 {releases && (
                   <FormSelect
+                    label="Release"
                     register={register}
                     id="release"
                     options={releases}
+                    required="Release is required"
                   />
                 )}
               </div>
@@ -124,7 +120,7 @@ function Track({ setSuccess, reFetch }) {
                 type="submit"
                 disabled={!isDirty}
                 variant="primary"
-                className="text-light"
+                className="text-light mb-5"
               >
                 {buttonLabel}
               </Button>
@@ -146,7 +142,7 @@ function Track({ setSuccess, reFetch }) {
         const response = await axios.post("/tracks", params);
 
         if (response.data.affectedRows) {
-          setSuccess("New track added!");
+          setAlert({ success: "New track added!" });
           navigate(pathname);
           reFetch();
         }
@@ -161,7 +157,7 @@ function Track({ setSuccess, reFetch }) {
         const response = await axios.put(`/tracks?id=${id}`, params);
 
         if (response.data.changedRows) {
-          setSuccess("Track updated!");
+          setAlert({ success: "Track updated!" });
           navigate(pathname);
           reFetch();
         }
@@ -173,8 +169,11 @@ function Track({ setSuccess, reFetch }) {
     }
   }
 
+  // Form hook errors
   function onError(error) {
-    console.log("error", error);
+    console.error(error);
+
+    setAlert({ danger: "Required fields are missing" });
     setLoading(false);
   }
 
