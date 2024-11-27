@@ -4,7 +4,6 @@ const ReleaseModel = {
   getAllReleases: async () => {
     const sql = `SELECT  r.id
                       ,r.title
-                      ,r.artist
                       ,t.text AS type
                       ,r.year
                 FROM releases AS r
@@ -24,7 +23,6 @@ const ReleaseModel = {
   getReleaseById: async (id) => {
     const sql = `SELECT  id
                       ,title
-                      ,artist
                       ,year
                       ,format_type AS format
                 FROM releases
@@ -38,17 +36,17 @@ const ReleaseModel = {
     }
   },
 
-  createRelease: async ({ title, artist, year, format }) => {
+  createRelease: async ({ title, year, format }) => {
     const yearInt = parseInt(year, 10);
 
     if (isNaN(yearInt) || yearInt < 1000 || yearInt > 9999) {
       throw new Error("Invalid year format. Year must be a 4-digit number.");
     }
     const sql =
-      "INSERT INTO releases (title, artist, year, format_type) VALUES (?, ?, ?, ?);";
+      "INSERT INTO releases (title, year, format_type) VALUES (?, ?, ?);";
 
     try {
-      const [result] = await pool.query(sql, [title, artist, yearInt, format]);
+      const [result] = await pool.query(sql, [title, yearInt, format]);
       const json = JSON.parse(JSON.stringify(result));
 
       return json;
@@ -57,7 +55,7 @@ const ReleaseModel = {
     }
   },
 
-  updateRelease: async (id, { title, artist, year, format }) => {
+  updateRelease: async (id, { title, year, format }) => {
     const yearInt = parseInt(year, 10);
 
     if (isNaN(yearInt) || yearInt < 1000 || yearInt > 9999) {
@@ -65,17 +63,11 @@ const ReleaseModel = {
     }
 
     const sql = `UPDATE releases
-        SET title = ?, artist = ?, year = ?, format_type = ?
+        SET title = ?, year = ?, format_type = ?
         WHERE id = ?;`;
 
     try {
-      const [result] = await pool.query(sql, [
-        title,
-        artist,
-        yearInt,
-        format,
-        id,
-      ]);
+      const [result] = await pool.query(sql, [title, yearInt, format, id]);
       return result;
     } catch (err) {
       throw err;

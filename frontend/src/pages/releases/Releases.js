@@ -61,7 +61,6 @@ function Releases({ setAlert }) {
             <thead>
               <tr>
                 <th>Title</th>
-                <th>Artist</th>
                 <th>Format</th>
                 <th>Year</th>
                 <th></th>
@@ -70,7 +69,7 @@ function Releases({ setAlert }) {
             <tbody>
               {Array.isArray(response) &&
                 response.map((release) => {
-                  const { id, title, artist, type, year } = release;
+                  const { id, title, type, year } = release;
                   return (
                     <tr key={id}>
                       <td className="position-relative">
@@ -78,7 +77,6 @@ function Releases({ setAlert }) {
                           {title}
                         </Link>
                       </td>
-                      <td>{artist}</td>
                       <td>{type}</td>
                       <td>{year}</td>
                       <td style={{ width: "0" }}>

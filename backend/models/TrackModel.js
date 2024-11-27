@@ -65,7 +65,7 @@ const TrackModel = {
 
   getAllReleases: async () => {
     const sql = `SELECT  r.id                                        AS 'key'
-                        ,CONCAT(r.title,' - ',r.artist,' - ',t.text) AS 'value'
+                        ,CONCAT(r.title,' - ',t.text) AS 'value'
                   FROM releases AS r
                   JOIN types AS t
                   ON r.format_type = t.sub_type

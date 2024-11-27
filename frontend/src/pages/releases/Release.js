@@ -22,7 +22,6 @@ axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
 const formValues = {
   title: "",
-  artist: "",
   year: "",
   format: "",
 };
@@ -105,30 +104,10 @@ function Release({ setAlert, reFetch }) {
               <div className={classes.grid}>
                 <FormInput
                   disabled={loading}
-                  id="artist"
-                  label="Artist"
-                  type="text"
-                  placeholder="Artist"
-                  register={register}
-                  required
-                />
-                <FormInput
-                  disabled={loading}
                   id="title"
                   label="Title"
                   type="text"
                   placeholder="Title"
-                  register={register}
-                  required
-                />
-                <FormInput
-                  disabled={loading}
-                  id="year"
-                  label="Year"
-                  type="number"
-                  min={1950}
-                  max={2050}
-                  placeholder="Year"
                   register={register}
                   required
                 />
@@ -141,6 +120,17 @@ function Release({ setAlert, reFetch }) {
                     required
                   />
                 )}
+                <FormInput
+                  disabled={loading}
+                  id="year"
+                  label="Year"
+                  type="number"
+                  min={1950}
+                  max={2050}
+                  placeholder="Year"
+                  register={register}
+                  required
+                />
               </div>
               {tracks && tracks.length > 0 && (
                 <Table size="sm" bordered hover variant="dark">
