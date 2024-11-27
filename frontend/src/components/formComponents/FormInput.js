@@ -28,7 +28,7 @@ function FormInput({
   useEffect(() => setValue(null), [success]);
 
   return (
-    <Form.Group className={`w-100 ${className} ${styles.wrapper}`}>
+    <Form.Group className={`w-100 ${className}`}>
       <Form.Floating className="mb-3">
         <Form.Control
           className={`${styles.input} border-secondary`}

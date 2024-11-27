@@ -10,18 +10,13 @@ import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import Spinner from "../../components/Spinner/Spinner";
 
-import classes from "./Release.module.scss";
+import classes from "./Track.module.scss";
 
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
-const formValues = {
-  title: "",
-  artist: "",
-  year: "",
-  format: "",
-};
+const formValues = { title: "", trackNumber: "", release: "" };
 
-function Release({ setSuccess, reFetch }) {
+function Track({ setSuccess, reFetch }) {
   //////////////
   // useHooks //
   //////////////
@@ -35,15 +30,15 @@ function Release({ setSuccess, reFetch }) {
 
   const watchTitle = watch("title");
 
-  const buttonLabel = id === "new" ? "Add new release" : "Update release";
+  const buttonLabel = id === "new" ? "Add new track" : "Update track";
 
   ///////////////
   // useStates //
   ///////////////
 
   const [loading, setLoading] = useState(true);
-  const [release, setRelease] = useState();
-  const [formats, setFormats] = useState([]);
+  const [track, setTrack] = useState();
+  const [releases, setReleases] = useState([]);
 
   ///////////
   // Fetch //
@@ -53,16 +48,16 @@ function Release({ setSuccess, reFetch }) {
     async (url, params) => {
       const res = await axios.get(url, { params });
 
-      setFormats(
-        res.data?.formatOptions?.map(({ code, text }) => {
-          const value = text;
-          const key = code;
+      setReleases(
+        res.data?.releases?.map(({ artist, title, text, id }) => {
+          const value = `${title} - ${artist} (${text})`;
+          const key = id;
           return { key, value };
         })
       );
-      setRelease(res.data?.release);
+      setTrack(res.data?.track);
 
-      reset(res.data.release);
+      reset(res.data.track);
     },
     [reset]
   );
@@ -73,15 +68,13 @@ function Release({ setSuccess, reFetch }) {
 
   useEffect(() => {
     if (id === "new") {
-      console.log("nurå?");
-
       reset(formValues);
       setLoading(false);
     }
   }, [id, reset]);
 
   useEffect(() => {
-    fetchData("/releases", { id });
+    fetchData("/tracks", { id });
     setLoading(false);
   }, [fetchData, id]);
 
@@ -98,18 +91,9 @@ function Release({ setSuccess, reFetch }) {
           onSubmit={handleSubmit(onSubmit, onError)}
           onKeyDown={handleKeyDown}
         >
-          {release && (
+          {track && (
             <>
               <div className={classes.grid}>
-                <FormInput
-                  disabled={loading}
-                  id="artist"
-                  label="Artist"
-                  type="text"
-                  placeholder="Artist"
-                  register={register}
-                  required
-                />
                 <FormInput
                   disabled={loading}
                   id="title"
@@ -121,20 +105,18 @@ function Release({ setSuccess, reFetch }) {
                 />
                 <FormInput
                   disabled={loading}
-                  id="year"
-                  label="Year"
-                  type="number"
-                  min={1950}
-                  max={2050}
-                  placeholder="Year"
+                  id="trackNumber"
+                  label="Track ID"
+                  type="text"
+                  placeholder="Track ID"
                   register={register}
                   required
                 />
-                {formats && (
+                {releases && (
                   <FormSelect
                     register={register}
-                    id="format"
-                    options={formats}
+                    id="release"
+                    options={releases}
                   />
                 )}
               </div>
@@ -161,10 +143,10 @@ function Release({ setSuccess, reFetch }) {
     if (id === "new") {
       try {
         setLoading(true);
-        const response = await axios.post("/releases", params);
+        const response = await axios.post("/tracks", params);
 
         if (response.data.affectedRows) {
-          setSuccess("New release added!");
+          setSuccess("New track added!");
           navigate(pathname);
           reFetch();
         }
@@ -176,10 +158,10 @@ function Release({ setSuccess, reFetch }) {
     } else {
       try {
         setLoading(true);
-        const response = await axios.put(`/releases?id=${id}`, params);
+        const response = await axios.put(`/tracks?id=${id}`, params);
 
         if (response.data.changedRows) {
-          setSuccess("Release updated!");
+          setSuccess("Track updated!");
           navigate(pathname);
           reFetch();
         }
@@ -206,4 +188,4 @@ function Release({ setSuccess, reFetch }) {
   }
 }
 
-export default Release;
+export default Track;

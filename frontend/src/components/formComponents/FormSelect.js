@@ -7,7 +7,7 @@ function FormSelect({ register, id, options }) {
     <FloatingLabel
       controlId="floatingSelectGrid"
       label="Format"
-      className={styles.label}
+      className={`${styles.label} mb-3`}
     >
       <Form.Select
         className={`${styles.select} text-secondary border-secondary`}
@@ -16,13 +16,9 @@ function FormSelect({ register, id, options }) {
         <option value="" className="text-secondary">
           Choose...
         </option>
-        {options.map((select) => (
-          <option
-            key={select.code}
-            value={select.code}
-            className="text-secondary"
-          >
-            {select.text}
+        {options.map(({ key, value }) => (
+          <option key={key} value={key} className="text-secondary">
+            {value}
           </option>
         ))}
       </Form.Select>

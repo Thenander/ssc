@@ -1,9 +1,8 @@
 import express from "express";
-
-import getTracks from "./getTracks.js";
+import tracks from "./trackRoutes.js";
 
 const router = express.Router();
 
-router.use("/", getTracks);
+router.use("/", tracks);
 
 export default router;

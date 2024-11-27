@@ -4,12 +4,11 @@ import { createPortal } from "react-dom";
 
 import { AuthProvider } from "./contexts/AuthProvider";
 
-import AuthForm from "./components/users/AuthForm";
-import Users from "./components/users/Users";
 import Alert from "./components/Alert.js";
 
 import NavBar from "./pages/NavBar/NavBar";
 import Releases from "./pages/releases/Releases.js";
+import Tracks from "./pages/tracks/Tracks.js";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.scss";
@@ -29,11 +28,13 @@ function App() {
       )}
       <Router>
         <Routes>
-          <Route path="/users" element={<Users />} />
-          <Route path="/login" element={<AuthForm mode="login" />} />
           <Route
             path="/releases"
             element={<Releases success={success} setSuccess={setSuccess} />}
+          />
+          <Route
+            path="/tracks"
+            element={<Tracks success={success} setSuccess={setSuccess} />}
           />
         </Routes>
       </Router>
