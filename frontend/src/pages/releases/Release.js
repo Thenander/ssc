@@ -94,7 +94,7 @@ function Release({ setAlert, reFetch }) {
     <>
       <Spinner loading={loading} />
       <div className="container">
-        <h3 style={{ color: "#ffffffde" }}>{watchTitle}</h3>
+        <h3>{watchTitle}</h3>
         <Form
           onSubmit={handleSubmit(onSubmit, onError)}
           onKeyDown={handleKeyDown}

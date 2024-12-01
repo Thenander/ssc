@@ -1,0 +1,11 @@
+$logo-width: 140px;
+
+.logo-wrapper {
+  width: $logo-width;
+}
+
+.logo {
+  width: $logo-width;
+  position: absolute;
+  top: .5rem;
+}

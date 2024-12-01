@@ -1,6 +1,8 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import logo from "../../ssc_logo.png";
+import classes from "./NavBar.module.scss";
 
 function NavBar() {
   return (
@@ -11,7 +13,9 @@ function NavBar() {
       className="bg-body-tertiary"
     >
       <Container>
-        <Navbar.Brand href="#home">Sampling, Scratches and Cuts</Navbar.Brand>
+        <Navbar.Brand href="#home" className={classes["logo-wrapper"]}>
+          <img src={logo} alt="logo" className={classes.logo} />
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav>
@@ -19,6 +23,9 @@ function NavBar() {
           </Nav>
           <Nav>
             <Nav.Link href="/tracks">Tracks</Nav.Link>
+          </Nav>
+          <Nav>
+            <Nav.Link href="/test">Test</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

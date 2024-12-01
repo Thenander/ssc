@@ -42,7 +42,7 @@ function Releases({ setAlert }) {
     <>
       <Spinner loading={loading} />
       <div className="container">
-        <h2 className="text-light my-5">RELEASES</h2>
+        <h1 className="my-5">Releases</h1>
       </div>
       {search && <Release setAlert={setAlert} reFetch={fetchData} />}
       <div className="container">

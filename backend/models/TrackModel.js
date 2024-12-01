@@ -2,13 +2,19 @@ import pool from "../db.js";
 
 const TrackModel = {
   getAllTracks: async () => {
-    const sql = `SELECT id
-                      ,track_number AS trackNumber
-                      ,title
-                FROM tracks
-                ORDER BY title ASC;`;
+    const sql = `SELECT  t.id
+                        ,t.title      AS 'title'
+                        ,t.release_id AS 'releaseId'
+                        ,r.title      AS 'release'
+                        ,r.year
+                  FROM tracks AS t
+                  JOIN releases AS r
+                  ON t.release_id = r.id
+                  ORDER BY r.year, r.title, t.track_number;`;
     try {
       const [results] = await pool.query(sql);
+      console.log("results", results);
+
       return results;
     } catch (err) {
       throw err;

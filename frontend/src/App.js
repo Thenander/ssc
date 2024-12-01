@@ -12,6 +12,7 @@ import Tracks from "./pages/tracks/Tracks.js";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.scss";
+import Samples from "./pages/jockes/Jockes.js";
 
 function App() {
   const [alert, setAlert] = useState({});
@@ -29,6 +30,10 @@ function App() {
           <Route
             path="/tracks"
             element={<Tracks alert={alert} setAlert={setAlert} />}
+          />
+          <Route
+            path="/test"
+            element={<Samples alert={alert} setAlert={setAlert} />}
           />
         </Routes>
       </Router>

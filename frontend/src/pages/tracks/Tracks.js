@@ -20,6 +20,7 @@ function Tracks({ setAlert }) {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [response, setResponse] = useState();
+  console.log("response", response);
   const [error, setError] = useState();
   const [id, setId] = useState();
 
@@ -41,7 +42,7 @@ function Tracks({ setAlert }) {
     <>
       <Spinner loading={loading} />
       <div className="container my-5">
-        <h2 className="text-light m-0">TRACKS</h2>
+        <h1 className="m-0">Tracks</h1>
       </div>
       {search && <Track setAlert={setAlert} reFetch={fetchData} />}
       <div className="container">
@@ -60,13 +61,15 @@ function Tracks({ setAlert }) {
             <thead>
               <tr>
                 <th>Title</th>
+                <th>Release</th>
+                <th>Year</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {Array.isArray(response) &&
                 response.map((track) => {
-                  const { id, title } = track;
+                  const { id, title, release, releaseId, year } = track;
                   return (
                     <tr key={id}>
                       <td className="position-relative">
@@ -74,6 +77,10 @@ function Tracks({ setAlert }) {
                           {title}
                         </Link>
                       </td>
+                      <td>
+                        <Link to={`/releases?id=${releaseId}`}>{release}</Link>
+                      </td>
+                      <td>{year}</td>
                       <td style={{ width: "0" }}>
                         <Button
                           size="sm"
