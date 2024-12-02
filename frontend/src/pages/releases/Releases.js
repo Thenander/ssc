@@ -94,11 +94,7 @@ function Releases({ setAlert }) {
             </tbody>
           </Table>
         )}
-        <Button
-          onClick={handleAdd}
-          variant="outline-primary"
-          className="text-light"
-        >
+        <Button onClick={handleAdd} variant="outline-primary">
           Create new release
         </Button>
       </div>

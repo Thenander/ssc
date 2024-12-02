@@ -163,7 +163,7 @@ function Release({ setAlert, reFetch }) {
                     type="submit"
                     disabled={!isDirty}
                     variant="primary"
-                    className="text-light mb-5"
+                    className="mb-5"
                   >
                     {buttonLabel}
                   </Button>
