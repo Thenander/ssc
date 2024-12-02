@@ -1,4 +1,5 @@
 import pool from "../db.js";
+import throwDbError from "../util/throwDbError.js";
 
 const TrackModel = {
   getAllTracks: async () => {
@@ -13,10 +14,9 @@ const TrackModel = {
                   ORDER BY r.year, r.title, t.track_number;`;
     try {
       const [results] = await pool.query(sql);
-
       return results;
     } catch (error) {
-      getError(error);
+      throwDbError(error);
     }
   },
 
@@ -31,7 +31,7 @@ const TrackModel = {
       const [results] = await pool.query(sql, [id]);
       return results[0];
     } catch (error) {
-      getError(error);
+      throwDbError(error);
     }
   },
 
@@ -42,7 +42,7 @@ const TrackModel = {
       const json = JSON.parse(JSON.stringify(result));
       return json;
     } catch (error) {
-      getError(error);
+      throwDbError(error);
     }
   },
 
@@ -54,7 +54,7 @@ const TrackModel = {
       const [result] = await pool.query(sql, [title, trackNumber, release, id]);
       return result;
     } catch (error) {
-      getError(error);
+      throwDbError(error);
     }
   },
 
@@ -64,12 +64,12 @@ const TrackModel = {
       const [result] = await pool.query(sql, [id]);
       return result;
     } catch (error) {
-      getError(error);
+      throwDbError(error);
     }
   },
 
   getAllReleases: async () => {
-    const sql = `SELECT  r.id                                        AS 'key'
+    const sql = `SELECT  r.id                         AS 'key'
                         ,CONCAT(r.title,' - ',t.text) AS 'value'
                   FROM releases AS r
                   JOIN types AS t
@@ -80,12 +80,13 @@ const TrackModel = {
       const [result] = await pool.query(sql);
       return result;
     } catch (error) {
-      getError(error);
+      throwDbError(error);
     }
   },
 
   getAllTracksFromReleaseById: async (releaseId) => {
-    const sql = `SELECT  id, title
+    const sql = `SELECT  id
+                        ,title
                   FROM tracks
                   WHERE release_id = ?
                   ORDER BY track_number;`;
@@ -93,21 +94,9 @@ const TrackModel = {
       const [result] = await pool.query(sql, [releaseId]);
       return result;
     } catch (error) {
-      getError(error);
+      throwDbError(error);
     }
   },
 };
 
 export default TrackModel;
-
-function getError(error) {
-  if (error.code === "ECONNREFUSED") {
-    console.error("Database connection was refused:", error);
-    throw new Error(
-      "Could not connect to the database. Please try again later."
-    );
-  } else {
-    console.error("Database query failed:", error);
-    throw new Error("An unexpected database error occurred.");
-  }
-}
