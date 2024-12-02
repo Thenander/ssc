@@ -13,7 +13,7 @@ function NavBar() {
       className="bg-body-tertiary"
     >
       <Container>
-        <Navbar.Brand href="#home" className={classes["logo-wrapper"]}>
+        <Navbar.Brand className={classes["logo-wrapper"]}>
           <img src={logo} alt="logo" className={classes.logo} />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -23,9 +23,6 @@ function NavBar() {
           </Nav>
           <Nav>
             <Nav.Link href="/tracks">Tracks</Nav.Link>
-          </Nav>
-          <Nav>
-            <Nav.Link href="/test">Test</Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
