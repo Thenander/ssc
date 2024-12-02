@@ -25,7 +25,7 @@ function Tracks({ setAlert }) {
   // useEffects //
   ////////////////
 
-  useEffect(fetchData, [response, setAlert]);
+  useEffect(fetchData, [setAlert]);
 
   /////////////
   // Returns //
