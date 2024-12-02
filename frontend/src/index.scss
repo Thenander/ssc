@@ -3,7 +3,6 @@ $primary: #38d7d3;
 
 $theme-colors: (
   "primary": $primary,
-  // "primary": #0d6efd,
   "secondary": #6c757d,
   "success": #198754,
   "info": #0dcaf0,
@@ -13,7 +12,7 @@ $theme-colors: (
   "dark": #212529,
 );
 
-@import 'bootstrap/scss/bootstrap';
+@import '~bootstrap/scss/bootstrap';
 
 body {
   font-family: "Voltaire", Arial, Helvetica, sans-serif;
@@ -25,6 +24,30 @@ h1 {
   font-size: 4rem;
   text-transform: uppercase;
   color: #7c7c7c;
+}
+
+.alert-success {
+  color: #ffffff;
+  background-color: #166a67;
+  border-color: #39d7d3;
+}
+
+.btn-primary {
+  color: #262a2c;
+  
+  &:hover {
+    color: #fff;
+    background-color: transparent;
+  }
+}
+
+.btn-outline-primary {
+  color: #fff;
+  background-color: transparent;
+  
+  &:hover {
+    color: #262a2c;
+  }
 }
 
 button {
