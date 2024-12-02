@@ -27,10 +27,11 @@ function Track({ setAlert, reFetch }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
+  const isNew = id === "new";
 
   const watchTitle = watch("title");
 
-  const buttonLabel = id === "new" ? "Add new track" : "Update track";
+  const buttonLabel = isNew ? "Add new track" : "Update track";
 
   ///////////////
   // useStates //
@@ -65,11 +66,11 @@ function Track({ setAlert, reFetch }) {
   ////////////////
 
   useEffect(() => {
-    if (id === "new") {
+    if (isNew) {
       reset(formValues);
       setLoading(false);
     }
-  }, [id, reset]);
+  }, [isNew, reset]);
 
   useEffect(() => {
     fetchData("/tracks", { id });
@@ -120,14 +121,16 @@ function Track({ setAlert, reFetch }) {
                   />
                 )}
               </div>
-              <Button
-                type="submit"
-                disabled={!isDirty}
-                variant="primary"
-                className="text-light mb-5"
-              >
-                {buttonLabel}
-              </Button>
+              {isDirty && (
+                <Button
+                  type="submit"
+                  disabled={!isDirty}
+                  variant="primary"
+                  className="text-light mb-5"
+                >
+                  {buttonLabel}
+                </Button>
+              )}
             </>
           )}
         </Form>
@@ -140,7 +143,7 @@ function Track({ setAlert, reFetch }) {
   //////////////
 
   async function onSubmit(params) {
-    if (id === "new") {
+    if (isNew) {
       try {
         setLoading(true);
         const response = await axios.post("/tracks", params);
