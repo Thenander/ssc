@@ -8,6 +8,8 @@ import Release from "./Release.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 
+import mainClasses from "../pages.module.scss";
+
 function Releases({ setAlert }) {
   //////////////
   // useHooks //
@@ -33,7 +35,7 @@ function Releases({ setAlert }) {
   /////////////
 
   return (
-    <>
+    <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <div className="container">
         <h1 className="my-5">Releases</h1>
@@ -100,7 +102,7 @@ function Releases({ setAlert }) {
           Create new release
         </Button>
       </div>
-    </>
+    </div>
   );
 
   //////////////

@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 
 import Button from "react-bootstrap/Button";
+import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 
 import FormInput from "../../components/formComponents/FormInput";
@@ -16,7 +17,8 @@ import FormSelect from "../../components/formComponents/FormSelect";
 import Spinner from "../../components/Spinner/Spinner";
 
 import classes from "./Release.module.scss";
-import { Table } from "react-bootstrap";
+import mainClasses from "../pages.module.scss";
+import Collapse from "react-bootstrap/Collapse";
 
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
@@ -91,7 +93,7 @@ function Release({ setAlert, reFetch }) {
   /////////////
 
   return (
-    <>
+    <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <div className="container">
         <h3>{watchTitle}</h3>
@@ -155,19 +157,23 @@ function Release({ setAlert, reFetch }) {
                   </tbody>
                 </Table>
               )}
-              <Button
-                type="submit"
-                disabled={!isDirty}
-                variant="primary"
-                className="text-light mb-5"
-              >
-                {buttonLabel}
-              </Button>
+              <Collapse in={isDirty}>
+                <div>
+                  <Button
+                    type="submit"
+                    disabled={!isDirty}
+                    variant="primary"
+                    className="text-light mb-5"
+                  >
+                    {buttonLabel}
+                  </Button>
+                </div>
+              </Collapse>
             </>
           )}
         </Form>
       </div>
-    </>
+    </div>
   );
 
   //////////////

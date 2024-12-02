@@ -8,6 +8,8 @@ import Track from "./Track.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 
+import mainClasses from "../pages.module.scss";
+
 function Tracks({ setAlert }) {
   //////////////
   // useHooks //
@@ -32,7 +34,7 @@ function Tracks({ setAlert }) {
   /////////////
 
   return (
-    <>
+    <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <div className="container my-5">
         <h1 className="m-0">Tracks</h1>
@@ -103,7 +105,7 @@ function Tracks({ setAlert }) {
           </Button>
         )}
       </div>
-    </>
+    </div>
   );
 
   //////////////
