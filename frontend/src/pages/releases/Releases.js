@@ -5,7 +5,6 @@ import axios from "axios";
 import { Button, Table } from "react-bootstrap";
 
 import Release from "./Release.js";
-import Alert from "../../components/Alert.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 
@@ -21,22 +20,17 @@ function Releases({ setAlert }) {
   const [showModal, setShowModal] = useState(false);
   const [response, setResponse] = useState();
 
-  const [error, setError] = useState();
   const [id, setId] = useState();
 
   ////////////////
   // useEffects //
   ////////////////
 
-  useEffect(fetchData, []);
+  useEffect(fetchData, [setAlert]);
 
   /////////////
   // Returns //
   /////////////
-
-  if (error) {
-    return <Alert type="danger" message={error} />;
-  }
 
   return (
     <>
@@ -125,8 +119,8 @@ function Releases({ setAlert }) {
         setAlert({ success: "Deleted successfully" });
         fetchData();
       }
-    } catch (err) {
-      setError("Cannot delete");
+    } catch (error) {
+      setAlert({ danger: error.message });
     } finally {
       setLoading(false);
     }
@@ -150,8 +144,8 @@ function Releases({ setAlert }) {
         setLoading(true);
         const res = await axios.get("/releases");
         setResponse(res.data);
-      } catch (err) {
-        setError("Cannot fetch data");
+      } catch (error) {
+        setAlert({ danger: error.message });
       } finally {
         setLoading(false);
       }

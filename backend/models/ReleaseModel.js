@@ -15,8 +15,8 @@ const ReleaseModel = {
     try {
       const [results] = await pool.query(sql);
       return results;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
@@ -31,8 +31,8 @@ const ReleaseModel = {
     try {
       const [results] = await pool.query(sql, [id]);
       return results[0];
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
@@ -50,8 +50,8 @@ const ReleaseModel = {
       const json = JSON.parse(JSON.stringify(result));
 
       return json;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
@@ -69,8 +69,8 @@ const ReleaseModel = {
     try {
       const [result] = await pool.query(sql, [title, yearInt, format, id]);
       return result;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
@@ -79,8 +79,8 @@ const ReleaseModel = {
     try {
       const [result] = await pool.query(sql, [id]);
       return result;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
@@ -93,10 +93,22 @@ const ReleaseModel = {
     try {
       const [result] = await pool.query(sql);
       return result;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 };
 
 export default ReleaseModel;
+
+function getError(error) {
+  if (error.code === "ECONNREFUSED") {
+    console.error("Database connection was refused:", error);
+    throw new Error(
+      "Could not connect to the database. Please try again later."
+    );
+  } else {
+    console.error("Database query failed:", error);
+    throw new Error("An unexpected database error occurred.");
+  }
+}

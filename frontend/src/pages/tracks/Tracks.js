@@ -5,7 +5,6 @@ import axios from "axios";
 import { Button, Table } from "react-bootstrap";
 
 import Track from "./Track.js";
-import Alert from "../../components/Alert.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 
@@ -20,23 +19,17 @@ function Tracks({ setAlert }) {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [response, setResponse] = useState();
-  console.log("response", response);
-  const [error, setError] = useState();
   const [id, setId] = useState();
 
   ////////////////
   // useEffects //
   ////////////////
 
-  useEffect(fetchData, []);
+  useEffect(fetchData, [response, setAlert]);
 
   /////////////
   // Returns //
   /////////////
-
-  if (error) {
-    return <Alert type="danger" message={error} />;
-  }
 
   return (
     <>
@@ -100,13 +93,15 @@ function Tracks({ setAlert }) {
             </tbody>
           </Table>
         )}
-        <Button
-          onClick={handleAdd}
-          variant="outline-primary"
-          className="text-light"
-        >
-          Create new track
-        </Button>
+        {response && (
+          <Button
+            onClick={handleAdd}
+            variant="outline-primary"
+            className="text-light"
+          >
+            Create new track
+          </Button>
+        )}
       </div>
     </>
   );
@@ -128,8 +123,8 @@ function Tracks({ setAlert }) {
         navigate(pathname);
         fetchData();
       }
-    } catch (err) {
-      setError("Cannot delete");
+    } catch (error) {
+      setAlert({ danger: error });
     } finally {
       setLoading(false);
     }
@@ -153,8 +148,8 @@ function Tracks({ setAlert }) {
         setLoading(true);
         const res = await axios.get("/tracks");
         setResponse(res.data);
-      } catch (err) {
-        setError("Cannot fetch data");
+      } catch (error) {
+        setAlert({ danger: error.message });
       } finally {
         setLoading(false);
       }

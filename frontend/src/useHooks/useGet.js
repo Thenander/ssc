@@ -14,8 +14,8 @@ function useGet(path) {
       .then((res) => {
         setResponse(res.data);
       })
-      .catch((err) => {
-        setError(err);
+      .catch((error) => {
+        setError(error);
       })
       .finally(() => {
         setloading(false);

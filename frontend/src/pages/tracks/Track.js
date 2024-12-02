@@ -46,14 +46,18 @@ function Track({ setAlert, reFetch }) {
 
   const fetchData = useCallback(
     async (url, params) => {
-      const res = await axios.get(url, { params });
+      try {
+        const res = await axios.get(url, { params });
 
-      setReleases(res.data?.releases);
-      setTrack(res.data?.track);
+        setReleases(res.data?.releases);
+        setTrack(res.data?.track);
 
-      reset(res.data.track);
+        reset(res.data.track);
+      } catch (error) {
+        setAlert({ danger: error.message });
+      }
     },
-    [reset]
+    [reset, setAlert]
   );
 
   ////////////////

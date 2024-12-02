@@ -37,11 +37,15 @@ const TrackController = {
 
       res.json(trackId ? singleTrack : trackData);
     } catch (error) {
-      if (error.errno) {
-        res.status(500).json({ error: error.sqlMessage });
+      if (error.code === "ECONNREFUSED") {
+        return res.status(503).json({
+          error: "Database connection refused. Please try again later.",
+        });
       }
 
-      res.status(500).json({ error: err.message });
+      res.status(500).json({
+        error: "An unexpected error occurred. Please try again later.",
+      });
     }
   },
 

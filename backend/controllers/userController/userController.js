@@ -16,8 +16,8 @@ export const UserController = {
       });
 
       res.json(users);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   },
 
@@ -29,8 +29,8 @@ export const UserController = {
         return res.status(404).json({ error: "User not found" });
       }
       res.json(user);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   },
 
@@ -39,8 +39,8 @@ export const UserController = {
   //   try {
   //     const userId = await UserModel.createUser(newUser);
   //     res.json({ id: userId });
-  //   } catch (err) {
-  //     res.status(500).json({ error: err.message });
+  //   } catch (error) {
+  //     res.status(500).json({ error: error.message });
   //   }
   // },
 
@@ -50,8 +50,8 @@ export const UserController = {
   //   try {
   //     const result = await UserModel.updateUser(userId, updatedUser);
   //     res.json(result);
-  //   } catch (err) {
-  //     res.status(500).json({ error: err.message });
+  //   } catch (error) {
+  //     res.status(500).json({ error: error.message });
   //   }
   // },
 
@@ -60,8 +60,8 @@ export const UserController = {
   //   try {
   //     const result = await UserModel.deleteUser(userId);
   //     res.json(result);
-  //   } catch (err) {
-  //     res.status(500).json({ error: err.message });
+  //   } catch (error) {
+  //     res.status(500).json({ error: error.message });
   //   }
   // },
 };

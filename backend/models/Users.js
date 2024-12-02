@@ -5,8 +5,8 @@ export const UserModel = {
     try {
       const [results] = await pool.query("SELECT * FROM users");
       return results;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   },
 
@@ -16,8 +16,8 @@ export const UserModel = {
         id,
       ]);
       return results[0];
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error;
     }
   },
 
@@ -30,8 +30,8 @@ export const UserModel = {
   //       userData.password,
   //     ]);
   //     return result.insertId;
-  //   } catch (err) {
-  //     throw err;
+  //   } catch (error) {
+  //     throw error;
   //   }
   // },
 
@@ -45,8 +45,8 @@ export const UserModel = {
   //       id,
   //     ]);
   //     return result;
-  //   } catch (err) {
-  //     throw err;
+  //   } catch (error) {
+  //     throw error;
   //   }
   // },
 
@@ -55,8 +55,8 @@ export const UserModel = {
   //   try {
   //     const [result] = await pool.query(sql, [id]);
   //     return result;
-  //   } catch (err) {
-  //     throw err;
+  //   } catch (error) {
+  //     throw error;
   //   }
   // },
 };

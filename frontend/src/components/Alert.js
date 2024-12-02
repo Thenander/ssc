@@ -3,7 +3,7 @@ import { Alert as AlertBootstrap } from "react-bootstrap";
 import classes from "./Alert.module.scss";
 
 function Alert({ alert, setAlert }) {
-  const [[key, value] = []] = Object.entries(alert);
+  const [[key, value] = []] = Object.entries(alert || {});
   const isError = key === "danger";
   const [leave, setLeave] = useState(false);
 

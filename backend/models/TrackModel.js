@@ -13,26 +13,25 @@ const TrackModel = {
                   ORDER BY r.year, r.title, t.track_number;`;
     try {
       const [results] = await pool.query(sql);
-      console.log("results", results);
 
       return results;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
   getTrackById: async (id) => {
-    const sql = `SELECT id
-                      ,title
-                      ,track_number AS 'trackNumber'
-                      ,release_id AS 'release'
-                FROM tracks
-                WHERE id = ?`;
+    const sql = `SELECT  id
+                        ,title
+                        ,track_number AS 'trackNumber'
+                        ,release_id   AS 'release'
+                  FROM tracks
+                  WHERE id = ?`;
     try {
       const [results] = await pool.query(sql, [id]);
       return results[0];
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
@@ -42,8 +41,8 @@ const TrackModel = {
       const [result] = await pool.query(sql, [title, trackNumber, release]);
       const json = JSON.parse(JSON.stringify(result));
       return json;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
@@ -54,8 +53,8 @@ const TrackModel = {
     try {
       const [result] = await pool.query(sql, [title, trackNumber, release, id]);
       return result;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
@@ -64,8 +63,8 @@ const TrackModel = {
     try {
       const [result] = await pool.query(sql, [id]);
       return result;
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      getError(error);
     }
   },
 
@@ -81,7 +80,7 @@ const TrackModel = {
       const [result] = await pool.query(sql);
       return result;
     } catch (error) {
-      throw error;
+      getError(error);
     }
   },
 
@@ -93,9 +92,22 @@ const TrackModel = {
     try {
       const [result] = await pool.query(sql, [releaseId]);
       return result;
-    } catch (error) {}
-    throw error;
+    } catch (error) {
+      getError(error);
+    }
   },
 };
 
 export default TrackModel;
+
+function getError(error) {
+  if (error.code === "ECONNREFUSED") {
+    console.error("Database connection was refused:", error);
+    throw new Error(
+      "Could not connect to the database. Please try again later."
+    );
+  } else {
+    console.error("Database query failed:", error);
+    throw new Error("An unexpected database error occurred.");
+  }
+}
