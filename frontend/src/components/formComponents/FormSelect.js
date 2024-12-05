@@ -2,7 +2,15 @@ import React from "react";
 import { FloatingLabel, Form } from "react-bootstrap";
 import styles from "./FormSelect.module.scss";
 
-function FormSelect({ label, register, id, options, required = false }) {
+function FormSelect({
+  disabled,
+  label,
+  register,
+  id,
+  options,
+  required = false,
+  setValue,
+}) {
   return (
     <FloatingLabel
       controlId="floatingSelectGrid"
@@ -10,7 +18,11 @@ function FormSelect({ label, register, id, options, required = false }) {
       className={`${styles.label} mb-3`}
     >
       <Form.Select
+        disabled={disabled}
         className={`${styles.select} text-secondary border-secondary`}
+        onChange={(e) => {
+          setValue(parseInt(e.target.value, 10));
+        }}
         {...register(id, { required })}
       >
         <option value="" className="text-secondary">

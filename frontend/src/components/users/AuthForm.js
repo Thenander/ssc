@@ -31,7 +31,6 @@ function AuthForm({ mode }) {
   });
 
   // Alerts
-  const [inputError, setInputError] = useState(null);
   const [axiosError, setAxiosError] = useState(null);
   const [success, setSuccess] = useState(null);
 
@@ -45,7 +44,6 @@ function AuthForm({ mode }) {
   useEffect(() => {
     if (repeatedPassword && getValues("password") === repeatedPassword) {
       setPwCheck(true);
-      setInputError(null);
     } else {
       setPwCheck(false);
     }
@@ -72,7 +70,6 @@ function AuthForm({ mode }) {
                     type="text"
                     placeholder="John"
                     register={register}
-                    inputError={inputError}
                   />
                   <FormInput
                     success={success}
@@ -82,7 +79,6 @@ function AuthForm({ mode }) {
                     type="text"
                     placeholder="Doe"
                     register={register}
-                    inputError={inputError}
                   />
                   <FormInput
                     success={success}
@@ -92,7 +88,6 @@ function AuthForm({ mode }) {
                     type="email"
                     placeholder="email@example.com"
                     register={register}
-                    inputError={inputError}
                   />
                 </div>
               )}
@@ -105,7 +100,6 @@ function AuthForm({ mode }) {
                   type="text"
                   placeholder="Spiderman"
                   register={register}
-                  inputError={inputError}
                 />
 
                 <FormInput
@@ -116,7 +110,6 @@ function AuthForm({ mode }) {
                   type="password"
                   placeholder="Password"
                   register={register}
-                  inputError={inputError}
                   callback={(val) => {
                     console.log(val);
                   }}
@@ -140,7 +133,6 @@ function AuthForm({ mode }) {
                       type="password"
                       placeholder="password"
                       register={() => {}}
-                      inputError={inputError}
                       callback={(e) => {
                         setRepeatedPassword(e.target.value);
                       }}
@@ -169,11 +161,6 @@ function AuthForm({ mode }) {
           </Form>
           <Alert
             type="danger"
-            message={inputError}
-            onClose={() => setInputError(null)}
-          />
-          <Alert
-            type="danger"
             message={axiosError}
             onClose={() => setAxiosError(null)}
           />
@@ -200,7 +187,7 @@ function AuthForm({ mode }) {
       (repeatedPassword || getValues("password")) &&
       getValues("password") !== repeatedPassword
     ) {
-      return setInputError("Check Password field");
+      return console.log("Check Password field");
     }
 
     resetFeedbackStates();
@@ -219,7 +206,6 @@ function AuthForm({ mode }) {
           reset();
           setLoading(false);
         } else if (response.data?.err) {
-          setInputError(response.data.err);
           setLoading(false);
         }
       } else {
@@ -232,7 +218,6 @@ function AuthForm({ mode }) {
           reset();
           setLoading(false);
         } else if (response.data?.err) {
-          setInputError(response.data.err);
           setLoading(false);
         }
       }
@@ -256,7 +241,6 @@ function AuthForm({ mode }) {
   }
 
   function resetFeedbackStates() {
-    setInputError(null);
     setAxiosError(null);
     setSuccess(null);
   }

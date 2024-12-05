@@ -3,16 +3,15 @@ import throwDbError from "../util/throwDbError.js";
 
 const ReleaseModel = {
   getAllReleases: async () => {
-    const sql = `SELECT  r.id
+    const sql = `SELECT  CONVERT(r.id,CHARACTER)   AS 'id'
                         ,r.title
-                        ,t.text AS type
-                        ,r.year
+                        ,t.text                    AS 'type'
+                        ,CONVERT(r.year,CHARACTER) AS 'year'
                   FROM releases AS r
                   JOIN types AS t
                   ON r.format_type = t.sub_type
                   WHERE t.main_type = "RELEASE"
                   ORDER BY r.year, t.text ASC;`;
-
     try {
       const [results] = await pool.query(sql);
       return results;
@@ -22,13 +21,12 @@ const ReleaseModel = {
   },
 
   getReleaseById: async (id) => {
-    const sql = `SELECT  id
+    const sql = `SELECT  CONVERT(id,CHARACTER)   AS 'id'
                         ,title
-                        ,year
-                        ,format_type AS format
+                        ,CONVERT(year,CHARACTER) AS 'year'
+                        ,format_type             AS 'format'
                   FROM releases
-                  WHERE id = ?`;
-
+                  WHERE id = ?;`;
     try {
       const [results] = await pool.query(sql, [id]);
       return results[0];
@@ -64,9 +62,8 @@ const ReleaseModel = {
     }
 
     const sql = `UPDATE releases
-        SET title = ?, year = ?, format_type = ?
-        WHERE id = ?;`;
-
+                  SET title = ?, year = ?, format_type = ?
+                  WHERE id = ?;`;
     try {
       const [result] = await pool.query(sql, [title, yearInt, format, id]);
       return result;

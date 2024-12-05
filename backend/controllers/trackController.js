@@ -7,7 +7,8 @@ const TrackController = {
     const trackId = req.query.id;
 
     let trackData;
-    let releases;
+    let releases = [];
+    let releaseTracks = [];
 
     try {
       if (trackId) {
@@ -20,6 +21,11 @@ const TrackController = {
         } else if (trackId) {
           // Single track
           trackData = await TrackModel.getTrackById(trackId);
+          if (trackData) {
+            releaseTracks = await TrackModel.getTracksByRelease(
+              trackData.release
+            );
+          }
         }
       } else {
         // All tracks
@@ -27,9 +33,12 @@ const TrackController = {
       }
 
       const singleTrack = {
-        releases: releases ?? [],
+        releases,
         track: trackData,
+        releaseTracks,
       };
+
+      console.log(singleTrack);
 
       if (!trackData) {
         return res.status(404).json({ error: "Not found" });

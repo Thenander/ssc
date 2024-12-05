@@ -18,7 +18,7 @@ function ConfirmModal({
       onHide={handleCloseModal}
       contentClassName="bg-dark"
     >
-      <Modal.Header closeButton className="bg-dark text-light">
+      <Modal.Header closeButton={false}>
         <Modal.Title className="bg-dark text-light">
           <div
             style={{
@@ -33,12 +33,12 @@ function ConfirmModal({
       </Modal.Header>
       <Modal.Body className="bg-dark text-light">{body}</Modal.Body>
       <Modal.Footer className="bg-dark text-light">
-        <Button variant="outline-secondary" onClick={handleCloseModal}>
+        <Button variant="secondary" onClick={handleCloseModal}>
           {cancelLabel}
         </Button>
         <Button
           className="text-light"
-          variant="outline-danger"
+          variant="danger"
           onClick={() => {
             onConfirmDelete(id);
             handleCloseModal();

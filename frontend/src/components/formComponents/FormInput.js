@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Form from "react-bootstrap/Form";
-import styles from "./FormInput.module.scss";
 
 /**
  * @param {Object} param0 { id, label, type, placeholder }
@@ -8,57 +7,45 @@ import styles from "./FormInput.module.scss";
  */
 function FormInput({
   success,
+  disabled,
   id,
   label,
   type,
   placeholder,
-  className = "",
   register,
-  required = false,
-  inputError,
   callback = () => {},
+  required = false,
+  className = "",
   style = {},
   min,
   max,
   ...props
 }) {
-  const [value, setValue] = useState(null);
-  const hasValue = value ? "" : "*";
-
-  useEffect(() => setValue(null), [success]);
-
   return (
     <Form.Group className={`w-100 ${className}`}>
       <Form.Floating className="mb-3">
         <Form.Control
-          className={`${styles.input} border-secondary`}
+          className="border-secondary"
           onChange={(e) => callback(e)}
-          style={{ ...style, ...getErrorColor("borderColor") }}
+          style={{ ...style }}
           id={id}
           type={type}
           placeholder={placeholder}
+          disabled={disabled}
           {...register(id, {
             min,
             max,
             required,
-            onChange: (e) => {
-              setValue(e.target.value.trim());
-            },
+            setValueAs: (v) => v.toString(),
           })}
           {...props}
         />
-        <label
-          className={`${styles.label} text-secondary`}
-          style={getErrorColor("color")}
-          htmlFor={id}
-        >{`${label}${hasValue}`}</label>
+        <label className="text-secondary" htmlFor={id}>
+          {label}
+        </label>
       </Form.Floating>
     </Form.Group>
   );
-
-  function getErrorColor(color) {
-    return inputError && !value ? { [color]: "rgb(200 0 0)" } : {};
-  }
 }
 
 export default FormInput;

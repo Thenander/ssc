@@ -3,11 +3,12 @@ import throwDbError from "../util/throwDbError.js";
 
 const TrackModel = {
   getAllTracks: async () => {
-    const sql = `SELECT  t.id
-                        ,t.title      AS 'title'
-                        ,t.release_id AS 'releaseId'
-                        ,r.title      AS 'release'
-                        ,r.year
+    const sql = `SELECT  CONVERT(t.id,CHARACTER)           AS 'id'
+                        ,t.title                           AS 'title'
+                        ,CONVERT(t.release_id,CHARACTER)   AS 'releaseId'
+                        ,r.title                           AS 'release'
+                        ,CONVERT(r.year,CHARACTER)         AS 'year'
+                        ,CONVERT(t.track_number,CHARACTER) AS 'trackId'
                   FROM tracks AS t
                   JOIN releases AS r
                   ON t.release_id = r.id
@@ -21,15 +22,34 @@ const TrackModel = {
   },
 
   getTrackById: async (id) => {
-    const sql = `SELECT  id
+    const sql = `SELECT  CONVERT(id,CHARACTER)           AS 'id'
                         ,title
-                        ,track_number AS 'trackNumber'
-                        ,release_id   AS 'release'
+                        ,CONVERT(track_number,CHARACTER) AS 'trackNumber'
+                        ,CONVERT(release_id,CHARACTER)   AS 'release'
                   FROM tracks
-                  WHERE id = ?`;
+                  WHERE id = ?;`;
     try {
       const [results] = await pool.query(sql, [id]);
       return results[0];
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
+
+  getTracksByRelease: async (releaseId) => {
+    const sql = `SELECT  CONVERT(t.id,CHARACTER)           AS 'id'
+                        ,CONVERT(t.track_number,CHARACTER) AS 'trackNumber'
+                        ,t.title
+                        ,r.title                           AS 'releaseTitle'
+                        ,r.format_type                     AS 'format'
+                        ,CONVERT(r.year,CHARACTER)         AS 'year'
+                  FROM tracks AS t
+                  JOIN releases AS r
+                  ON t.release_id = r.id
+                  WHERE t.release_id = ?;`;
+    try {
+      const [results] = await pool.query(sql, [releaseId]);
+      return results;
     } catch (error) {
       throwDbError(error);
     }
@@ -69,7 +89,7 @@ const TrackModel = {
   },
 
   getAllReleases: async () => {
-    const sql = `SELECT  r.id                         AS 'key'
+    const sql = `SELECT  CONVERT(r.id,CHARACTER)      AS 'key'
                         ,CONCAT(r.title,' - ',t.text) AS 'value'
                   FROM releases AS r
                   JOIN types AS t
@@ -85,8 +105,9 @@ const TrackModel = {
   },
 
   getAllTracksFromReleaseById: async (releaseId) => {
-    const sql = `SELECT  id
+    const sql = `SELECT  CONVERT(id,CHARACTER)           AS 'id'
                         ,title
+                        ,CONVERT(track_number,CHARACTER) AS trackId
                   FROM tracks
                   WHERE release_id = ?
                   ORDER BY track_number;`;

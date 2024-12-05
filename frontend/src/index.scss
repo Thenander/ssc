@@ -1,52 +1,100 @@
 $border-radius: 2px;
-$primary: #38d7d3;
+$primary: #38d7d3; // link
+$secondary: #6c757d;
+$dark: #26292c;
+$light: #f8f9fa;
+$danger: #dc3545;
+$primary-hover: #384d4c;
+$secondary-hover: #3b3b3b;
+$danger-hover: #8c2b35;
+$danger-hover-border: #ff001a;
+$h1-color: #A3954B;
+$h2-color: #706A4A;
+
+$btn-hover: #37393c;
+
+$primay-complement: #D6BB38; // hover
 
 $theme-colors: (
   "primary": $primary,
-  "secondary": #6c757d,
+  "secondary": $secondary,
   "success": #198754,
   "info": #0dcaf0,
   "warning": #ffc107,
-  "danger": #dc3545,
+  "danger": $danger,
   "light": #f8f9fa,
-  "dark": #212529,
+  "dark": $dark,
 );
 
 @import '~bootstrap/scss/bootstrap';
 
 body {
   font-family: "Voltaire", Arial, Helvetica, sans-serif;
-  background-color: #26292c;
+  background-color: $dark;
 }
 
 h1 {
   font-family: "Bebas Neue", Arial, Helvetica, sans-serif;
   font-size: 4rem;
   text-transform: uppercase;
-  color: #7c7c7c;
+  color: $h1-color;
 }
 
 .alert-success {
-  color: #ffffff;
+  color: $light;
   background-color: #166a67;
   border-color: #39d7d3;
 }
 
-.btn-primary {
-  color: #262a2c;
+.nav-link:hover {
+  color: $primay-complement;
+  background-color: $btn-hover;
+}
+
+.nav-link:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn {
+  color: $light !important;
+  background-color: transparent;
+}
+
+.btn-primary, .btn-outline-primary {
+  &:not(:hover) {
+    background-color: initial;
+  }
   
   &:hover {
-    color: #fff;
-    background-color: transparent;
+    transition: none;
+    color: $primay-complement !important;
+    background-color: $btn-hover;
+    box-shadow: none;
+    border-color: $primay-complement;
   }
 }
 
-.btn-outline-primary {
-  color: #fff;
-  background-color: transparent;
+.btn-danger, .btn-outline-danger {
+  &:not(:hover) {
+    background-color: initial;
+  }
   
   &:hover {
-    color: #262a2c;
+    border-color: $danger-hover-border;
+    background-color: $danger-hover;
+    box-shadow: none;
+  }
+}
+
+.btn-secondary, .btn-outline-secondary {
+  &:not(:hover) {
+    background-color: initial;
+  }
+  
+  &:hover, &:focus, &:focus-visible {
+    background-color: $secondary-hover;
+    box-shadow: none;
   }
 }
 
@@ -54,11 +102,53 @@ button {
  border-radius: $border-radius;
 }
 
+h1 {
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+
+h2, h3 {
+  color: $h2-color;
+}
+
 h3 {
-  color: $primary
+  margin-top: 2rem;
+}
+
+:root td {
+  vertical-align: middle;
+  padding: .25rem .5rem;
 }
 
 a {
   color: $primary;
   text-decoration: none;
+
+  &:hover {
+    outline: none ;
+    color: $primay-complement !important;
+    box-shadow: none;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 2px;
+      right: 2px;
+      top: 2px;
+      bottom: 2px;
+      border-bottom: 1px solid $primay-complement;
+    }
+  }
+}
+
+.form-control, .form-select, .form-control:disabled, .form-select:disabled {
+  color: #fff !important;
+  background-color: $dark;
+
+  &:focus {
+    outline: none;
+    background-color: $dark;
+    box-shadow: none;
+    border-color: $primary !important;
+  }
 }

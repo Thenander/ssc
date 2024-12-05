@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import { Button, Table } from "react-bootstrap";
+import { Button, Container, Table } from "react-bootstrap";
 
 import Release from "./Release.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 
 import mainClasses from "../pages.module.scss";
+import isAuthorized from "../../util/isAuthorized.js";
 
-function Releases({ setAlert }) {
+function Releases({ setAlert, canEdit }) {
   //////////////
   // useHooks //
   //////////////
@@ -37,11 +38,13 @@ function Releases({ setAlert }) {
   return (
     <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
-      <div className="container">
-        <h1 className="my-5">Releases</h1>
-      </div>
-      {search && <Release setAlert={setAlert} reFetch={fetchData} />}
-      <div className="container">
+      <Container>
+        <h1>Releases</h1>
+      </Container>
+      {search && (
+        <Release setAlert={setAlert} reFetch={fetchData} canEdit={canEdit} />
+      )}
+      <Container>
         <ConfirmModal
           id={id}
           showModal={showModal}
@@ -53,51 +56,64 @@ function Releases({ setAlert }) {
           confirmLabel="Yes, Delete release"
         />
         {response && response.length > 0 && (
-          <Table bordered hover striped variant="dark">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Format</th>
-                <th>Year</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.isArray(response) &&
-                response.map((release) => {
-                  const { id, title, type, year } = release;
-                  return (
-                    <tr key={id}>
-                      <td className="position-relative">
-                        <Link to={`?id=${id}`} className="stretched-link">
-                          {title}
-                        </Link>
-                      </td>
-                      <td>{type}</td>
-                      <td>{year}</td>
-                      <td style={{ width: "0" }}>
-                        <Button
-                          size="sm"
-                          variant="outline-danger"
-                          className="text-nowrap text-light"
-                          onClick={() => {
-                            setId(id);
-                            handleShowModal(true);
-                          }}
-                        >
-                          Delete release
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </Table>
+          <>
+            <TableHeader />
+            <Table bordered hover striped variant="dark">
+              <thead>
+                <tr>
+                  <th>Release</th>
+                  <th>Format</th>
+                  <th>Year</th>
+                  {canEdit && <th></th>}
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(response) &&
+                  response.map((release) => {
+                    const { id, title, type, year } = release;
+                    return (
+                      <tr key={id}>
+                        <td className="position-relative">
+                          <Link to={`?id=${id}`} className="stretched-link">
+                            {title}
+                          </Link>
+                        </td>
+                        <td>{type}</td>
+                        <td>{year}</td>
+                        {canEdit && (
+                          <td style={{ width: "0" }}>
+                            <Button
+                              disabled={!canEdit}
+                              size="sm"
+                              variant="danger"
+                              className="text-nowrap text-light"
+                              onClick={() => {
+                                setId(id);
+                                handleShowModal(true);
+                              }}
+                            >
+                              Delete release
+                            </Button>
+                          </td>
+                        )}
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </Table>
+          </>
         )}
-        <Button onClick={handleAdd} variant="outline-primary">
-          Create new release
-        </Button>
-      </div>
+        {response && canEdit && (
+          <Button
+            disabled={!canEdit}
+            onClick={handleAdd}
+            variant="primary"
+            className="mb-5"
+          >
+            Create new release
+          </Button>
+        )}
+      </Container>
     </div>
   );
 
@@ -106,10 +122,18 @@ function Releases({ setAlert }) {
   //////////////
 
   function handleAdd() {
-    navigate(`${pathname}?id=new`);
+    const isAuthorizedUser = isAuthorized(canEdit, setAlert);
+    if (!isAuthorizedUser) {
+      return;
+    }
+    isAuthorizedUser && navigate(`${pathname}?id=new`);
   }
 
   async function handleDelete(id) {
+    const isAuthorizedUser = isAuthorized(canEdit, setAlert);
+    if (!isAuthorizedUser) {
+      return;
+    }
     try {
       setLoading(true);
       const response = await axios.delete(`${pathname}?id=${id}`);
@@ -148,6 +172,17 @@ function Releases({ setAlert }) {
         setLoading(false);
       }
     })();
+  }
+
+  /////////////////
+  // TableHeader //
+  /////////////////
+
+  function TableHeader() {
+    if (!search) {
+      return null;
+    }
+    return <h3>All releases</h3>;
   }
 }
 

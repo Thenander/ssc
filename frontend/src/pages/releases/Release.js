@@ -19,16 +19,17 @@ import Spinner from "../../components/Spinner/Spinner";
 import classes from "./Release.module.scss";
 import mainClasses from "../pages.module.scss";
 import Collapse from "react-bootstrap/Collapse";
+import isAuthorized from "../../util/isAuthorized";
 
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
-const formValues = {
+const DEFAULT_VALUES = {
   title: "",
   year: "",
   format: "",
 };
 
-function Release({ setAlert, reFetch }) {
+function Release({ setAlert, reFetch, canEdit }) {
   //////////////
   // useHooks //
   //////////////
@@ -39,10 +40,11 @@ function Release({ setAlert, reFetch }) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const id = searchParams.get("id");
+  const isNew = id === "new";
 
   const watchTitle = watch("title");
 
-  const buttonLabel = id === "new" ? "Add new release" : "Update release";
+  const buttonLabel = isNew ? "Add new release" : "Update release";
 
   ///////////////
   // useStates //
@@ -52,6 +54,8 @@ function Release({ setAlert, reFetch }) {
   const [release, setRelease] = useState();
   const [formats, setFormats] = useState([]);
   const [tracks, setTracks] = useState([]);
+
+  console.log("tracks", tracks);
 
   ///////////
   // Fetch //
@@ -75,13 +79,11 @@ function Release({ setAlert, reFetch }) {
   ////////////////
 
   useEffect(() => {
-    if (id === "new") {
-      console.log("nurå?");
-
-      reset(formValues);
+    if (isNew) {
+      reset(DEFAULT_VALUES);
       setLoading(false);
     }
-  }, [id, reset]);
+  }, [isNew, reset]);
 
   useEffect(() => {
     fetchData("/releases", { id });
@@ -96,7 +98,7 @@ function Release({ setAlert, reFetch }) {
     <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <div className="container">
-        <h3>{watchTitle}</h3>
+        <h2>{watchTitle}</h2>
         <Form
           onSubmit={handleSubmit(onSubmit, onError)}
           onKeyDown={handleKeyDown}
@@ -105,7 +107,7 @@ function Release({ setAlert, reFetch }) {
             <>
               <div className={classes.grid}>
                 <FormInput
-                  disabled={loading}
+                  disabled={!canEdit || loading}
                   id="title"
                   label="Title"
                   type="text"
@@ -115,6 +117,7 @@ function Release({ setAlert, reFetch }) {
                 />
                 {formats && (
                   <FormSelect
+                    disabled={!canEdit || loading}
                     label="Format"
                     register={register}
                     id="format"
@@ -123,7 +126,7 @@ function Release({ setAlert, reFetch }) {
                   />
                 )}
                 <FormInput
-                  disabled={loading}
+                  disabled={!canEdit || loading}
                   id="year"
                   label="Year"
                   type="number"
@@ -134,41 +137,52 @@ function Release({ setAlert, reFetch }) {
                   required
                 />
               </div>
+              {canEdit && (
+                <Collapse in={isDirty}>
+                  <div>
+                    <Button
+                      type="submit"
+                      disabled={!isDirty || !canEdit}
+                      variant="primary"
+                    >
+                      {buttonLabel}
+                    </Button>
+                    <hr className="text-light" />
+                  </div>
+                </Collapse>
+              )}
               {tracks && tracks.length > 0 && (
                 <Table size="sm" bordered hover variant="dark">
                   <thead>
                     <tr>
+                      <th style={{ width: "0", whiteSpace: "nowrap" }}>
+                        Track No.
+                      </th>
                       <th className="px-2">Tracklist</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {tracks.map(({ id, title }) => (
-                      <tr key={id}>
-                        <td className="px-2 position-relative">
-                          <Link
-                            to={`/tracks?id=${id}`}
-                            className="stretched-link"
-                          >
-                            {title}
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
+                    {tracks.map((props) => {
+                      console.log(props);
+
+                      const { id, title, trackId } = props;
+                      return (
+                        <tr key={id}>
+                          <td>{trackId}</td>
+                          <td className="px-2 position-relative">
+                            <Link
+                              to={`/tracks?id=${id}`}
+                              className="stretched-link"
+                            >
+                              {title}
+                            </Link>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </Table>
               )}
-              <Collapse in={isDirty}>
-                <div>
-                  <Button
-                    type="submit"
-                    disabled={!isDirty}
-                    variant="primary"
-                    className="mb-5"
-                  >
-                    {buttonLabel}
-                  </Button>
-                </div>
-              </Collapse>
             </>
           )}
         </Form>
@@ -181,7 +195,12 @@ function Release({ setAlert, reFetch }) {
   //////////////
 
   async function onSubmit(params) {
-    if (id === "new") {
+    const isAuthorizedUser = isAuthorized(canEdit, setAlert);
+    if (!isAuthorizedUser) {
+      return;
+    }
+    console.log("isAuthorizedUser", isAuthorizedUser);
+    if (isNew) {
       try {
         setLoading(true);
         const response = await axios.post("/releases", params);

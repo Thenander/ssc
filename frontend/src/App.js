@@ -9,9 +9,12 @@ import Alert from "./components/Alert.js";
 import NavBar from "./pages/NavBar/NavBar";
 import Releases from "./pages/releases/Releases.js";
 import Tracks from "./pages/tracks/Tracks.js";
+import NotFound from "./pages/NotFound.js";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.scss";
+
+const CAN_EDIT = true;
 
 function App() {
   const [alert, setAlert] = useState({});
@@ -24,12 +27,13 @@ function App() {
         <Routes>
           <Route
             path="/releases"
-            element={<Releases alert={alert} setAlert={setAlert} />}
+            element={<Releases setAlert={setAlert} canEdit={CAN_EDIT} />}
           />
           <Route
             path="/tracks"
-            element={<Tracks alert={alert} setAlert={setAlert} />}
+            element={<Tracks setAlert={setAlert} canEdit={CAN_EDIT} />}
           />
+          <Route path="*" exact={true} element={<NotFound />} />
         </Routes>
       </Router>
     </AuthProvider>
