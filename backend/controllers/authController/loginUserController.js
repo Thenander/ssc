@@ -22,11 +22,18 @@ export async function loginUserController(req, res, next) {
     if (!match) {
       return res.status(400).json({ error: "Username or password is wrong" });
     }
-
-    const token = createToken(user);
+    const accessToken = createToken(user);
     const formattedUser = formatUsers([user])[0];
 
-    return res.json({ ...formattedUser, token });
+    return res.status(200).json({
+      ...formattedUser,
+      message: "User Logged In!",
+      data: {
+        accessToken,
+      },
+    });
+
+    // return res.json({ ...formattedUser, token });
   } catch (error) {
     next(error);
   }

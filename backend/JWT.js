@@ -13,6 +13,8 @@ export function createToken(user) {
 export function validateToken(req, res, next) {
   const token = req.get("Authorization").split(" ")[1];
 
+  console.log("token", token);
+
   if (!token) {
     return res.status(401).json({ error: "Access denied" });
   }

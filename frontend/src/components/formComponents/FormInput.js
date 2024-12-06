@@ -6,7 +6,6 @@ import Form from "react-bootstrap/Form";
  * @returns React form input component
  */
 function FormInput({
-  success,
   disabled,
   id,
   label,

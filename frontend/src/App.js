@@ -10,6 +10,7 @@ import NavBar from "./pages/NavBar/NavBar";
 import Releases from "./pages/releases/Releases.js";
 import Tracks from "./pages/tracks/Tracks.js";
 import NotFound from "./pages/NotFound.js";
+import AuthForm from "./components/users/AuthForm.js";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.scss";
@@ -33,6 +34,10 @@ function App() {
             <Route
               path="/tracks"
               element={<Tracks setAlert={setAlert} canEdit={CAN_EDIT} />}
+            />
+            <Route
+              path="/login"
+              element={<AuthForm mode={"login"} setAlert={setAlert} />}
             />
             <Route path="*" exact={true} element={<NotFound />} />
           </Routes>
