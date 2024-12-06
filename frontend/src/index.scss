@@ -10,8 +10,8 @@ $danger-hover: #8c2b35;
 $danger-hover-border: #ff001a;
 $h1-color: #A3954B;
 $h2-color: #706A4A;
-
-$btn-hover: #37393c;
+$thin-border: #525456;
+$link-hover: #37393c;
 
 $primay-complement: #D6BB38; // hover
 
@@ -33,6 +33,21 @@ body {
   background-color: $dark;
 }
 
+main {
+  position: relative;
+  top: 50px;
+  height: calc(100% - 50px);
+}
+
+nav {
+  position: fixed !important;
+  left: 0;
+  top: 0;
+  right: 0;
+  border-bottom: 1px solid $thin-border;
+  z-index: 1;
+}
+
 h1 {
   font-family: "Bebas Neue", Arial, Helvetica, sans-serif;
   font-size: 4rem;
@@ -48,7 +63,7 @@ h1 {
 
 .nav-link:hover {
   color: $primay-complement;
-  background-color: $btn-hover;
+  background-color: $link-hover;
 }
 
 .nav-link:focus-visible {
@@ -69,7 +84,7 @@ h1 {
   &:hover {
     transition: none;
     color: $primay-complement !important;
-    background-color: $btn-hover;
+    background-color: $link-hover;
     box-shadow: none;
     border-color: $primay-complement;
   }
@@ -128,6 +143,7 @@ a {
     outline: none ;
     color: $primay-complement !important;
     box-shadow: none;
+    background-color: $link-hover;
 
     &::after {
       content: "";

@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import axios from "axios";
 
 import { Button, Container, Table } from "react-bootstrap";
@@ -17,13 +22,14 @@ function Releases({ setAlert, canEdit }) {
   //////////////
 
   const { pathname, search } = useLocation();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [response, setResponse] = useState();
-
   const [id, setId] = useState();
+  const header = search ? "Release details" : "Releases";
 
   ////////////////
   // useEffects //
@@ -39,7 +45,7 @@ function Releases({ setAlert, canEdit }) {
     <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <Container>
-        <h1>Releases</h1>
+        <h1>{header}</h1>
       </Container>
       {search && (
         <Release setAlert={setAlert} reFetch={fetchData} canEdit={canEdit} />
@@ -137,6 +143,12 @@ function Releases({ setAlert, canEdit }) {
     try {
       setLoading(true);
       const response = await axios.delete(`${pathname}?id=${id}`);
+      console.log(searchParams.get("id"));
+
+      if (searchParams.get("id") === id) {
+        navigate(pathname);
+      }
+
       if (response.data.affectedRows) {
         setAlert({ success: "Deleted successfully" });
         fetchData();

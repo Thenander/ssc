@@ -24,17 +24,19 @@ function App() {
       <NavBar />
       {createPortal(<Alert alert={alert} setAlert={setAlert} />, document.body)}
       <Router>
-        <Routes>
-          <Route
-            path="/releases"
-            element={<Releases setAlert={setAlert} canEdit={CAN_EDIT} />}
-          />
-          <Route
-            path="/tracks"
-            element={<Tracks setAlert={setAlert} canEdit={CAN_EDIT} />}
-          />
-          <Route path="*" exact={true} element={<NotFound />} />
-        </Routes>
+        <main>
+          <Routes>
+            <Route
+              path="/releases"
+              element={<Releases setAlert={setAlert} canEdit={CAN_EDIT} />}
+            />
+            <Route
+              path="/tracks"
+              element={<Tracks setAlert={setAlert} canEdit={CAN_EDIT} />}
+            />
+            <Route path="*" exact={true} element={<NotFound />} />
+          </Routes>
+        </main>
       </Router>
     </AuthProvider>
   );

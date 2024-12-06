@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import axios from "axios";
 
 import Button from "react-bootstrap/Button";
@@ -19,12 +24,15 @@ function Tracks({ setAlert, canEdit = false }) {
   //////////////
 
   const { pathname, search } = useLocation();
+
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [response, setResponse] = useState();
   const [id, setId] = useState();
+  const header = search ? "Track details" : "Tracks";
 
   ////////////////
   // useEffects //
@@ -40,7 +48,7 @@ function Tracks({ setAlert, canEdit = false }) {
     <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <Container>
-        <h1>Tracks</h1>
+        <h1>{header}</h1>
       </Container>
       {search && (
         <Track setAlert={setAlert} reFetch={fetchData} canEdit={canEdit} />
@@ -56,16 +64,14 @@ function Tracks({ setAlert, canEdit = false }) {
           cancelLabel="No, keep track"
           confirmLabel="Yes, Delete track"
         />
-        {response && response.length && (
+        {response && response.length > 0 && (
           <>
             <TableHeader />
             <Table bordered hover striped variant="dark">
               <thead>
                 <tr>
                   <th>Title</th>
-                  <th style={{ width: "0", whiteSpace: "nowrap" }}>
-                    Track No.
-                  </th>
+                  <th style={{ width: "0", whiteSpace: "nowrap" }}>Track ID</th>
                   <th>Release</th>
                   <th>Year</th>
                   {canEdit && <th></th>}
@@ -74,7 +80,7 @@ function Tracks({ setAlert, canEdit = false }) {
               <tbody>
                 {Array.isArray(response) &&
                   response.map((track) => {
-                    const { trackId, id, title, release, releaseId, year } =
+                    const { trackNumber, id, title, release, releaseId, year } =
                       track;
                     return (
                       <tr key={id}>
@@ -83,7 +89,7 @@ function Tracks({ setAlert, canEdit = false }) {
                             {title}
                           </Link>
                         </td>
-                        <td>{trackId}</td>
+                        <td>{trackNumber}</td>
                         <td className="position-relative">
                           <Link
                             to={`/releases?id=${releaseId}`}
@@ -116,7 +122,7 @@ function Tracks({ setAlert, canEdit = false }) {
             </Table>
           </>
         )}
-        {response && canEdit && (
+        {canEdit && (
           <Button
             disabled={!canEdit}
             onClick={handleAdd}
@@ -146,13 +152,17 @@ function Tracks({ setAlert, canEdit = false }) {
     try {
       setLoading(true);
       const response = await axios.delete(`${pathname}?id=${id}`);
+
+      if (searchParams.get("id") === id) {
+        navigate(pathname);
+      }
+
       if (response.data.affectedRows) {
         setAlert({ success: "Deleted successfully" });
-        navigate(pathname);
         fetchData();
       }
     } catch (error) {
-      setAlert({ danger: error });
+      setAlert({ danger: error.message });
     } finally {
       setLoading(false);
     }
@@ -192,7 +202,11 @@ function Tracks({ setAlert, canEdit = false }) {
     if (!search) {
       return null;
     }
-    return <h3>All tracks</h3>;
+    return (
+      <div>
+        <h3>All tracks</h3>
+      </div>
+    );
   }
 }
 

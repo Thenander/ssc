@@ -5,7 +5,6 @@ import axios from "axios";
 
 import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 
 import FormInput from "../../components/formComponents/FormInput";
@@ -15,6 +14,7 @@ import Spinner from "../../components/Spinner/Spinner";
 import classes from "./Track.module.scss";
 import mainClasses from "../pages.module.scss";
 import isAuthorized from "../../util/isAuthorized";
+import TrackList from "./TrackList";
 
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
@@ -46,7 +46,7 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
   const [loading, setLoading] = useState(true);
   const [track, setTrack] = useState();
   const [releases, setReleases] = useState([]);
-  const [relaseTracks, setRelaseTracks] = useState([]);
+  const [releaseTracks, setReleaseTracks] = useState([]);
 
   ///////////
   // Fetch //
@@ -56,10 +56,15 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
     async (url, params) => {
       try {
         const res = await axios.get(url, { params });
+        if (!res.data?.releases || res.data?.releases.length === 0) {
+          setAlert({
+            danger: `Cannot create track with no release.\nMake sure to create release first.`,
+          });
+        }
 
         setReleases(res.data?.releases);
         setTrack(res.data?.track);
-        setRelaseTracks(res.data?.releaseTracks);
+        setReleaseTracks(res.data?.releaseTracks);
 
         reset(res.data.track);
       } catch (error) {
@@ -72,6 +77,10 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
   ////////////////
   // useEffects //
   ////////////////
+
+  useEffect(() => {
+    return () => {};
+  }, [releases, setAlert]);
 
   useEffect(() => {
     if (isNew) {
@@ -132,54 +141,26 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
                   />
                 )}
               </div>
-              <Table bordered hover striped variant="dark">
-                <thead>
-                  <tr>
-                    <th style={{ width: "0", whiteSpace: "nowrap" }}>
-                      Track No.
-                    </th>
-                    <th>Name</th>
-                    <th>Release</th>
-                    <th style={{ width: "0", whiteSpace: "nowrap" }}>Format</th>
-                    <th style={{ width: "0", whiteSpace: "nowrap" }}>Year</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {relaseTracks.map(
-                    ({
-                      id,
-                      trackNumber,
-                      title,
-                      releaseTitle,
-                      format,
-                      year,
-                    }) => {
-                      return (
-                        <tr key={id}>
-                          <td className="position-relative">{trackNumber}</td>
-                          <td className="position-relative">{title}</td>
-                          <td className="position-relative">{releaseTitle}</td>
-                          <td className="position-relative">{format}</td>
-                          <td className="position-relative">{year}</td>
-                        </tr>
-                      );
-                    }
-                  )}
-                </tbody>
-              </Table>
-              <Collapse in={isDirty}>
-                <div>
-                  <Button
-                    type="submit"
-                    disabled={!isDirty || !canEdit}
-                    variant="primary"
-                    className="text-light"
-                  >
-                    {buttonLabel}
-                  </Button>
-                  <hr className="text-light" />
-                </div>
-              </Collapse>
+              {releases && releases.length > 0 && (
+                <Collapse in={isDirty}>
+                  <div>
+                    <Button
+                      type="submit"
+                      disabled={!isDirty || !canEdit}
+                      variant="primary"
+                      className="text-light mb-3"
+                    >
+                      {buttonLabel}
+                    </Button>
+                  </div>
+                </Collapse>
+              )}
+              {releaseTracks && releaseTracks.length > 0 && (
+                <TrackList
+                  tracks={releaseTracks}
+                  title={releases.find((r) => r.key === track.release)}
+                />
+              )}
             </>
           )}
         </Form>

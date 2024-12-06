@@ -8,7 +8,7 @@ const TrackModel = {
                         ,CONVERT(t.release_id,CHARACTER)   AS 'releaseId'
                         ,r.title                           AS 'release'
                         ,CONVERT(r.year,CHARACTER)         AS 'year'
-                        ,CONVERT(t.track_number,CHARACTER) AS 'trackId'
+                        ,CONVERT(t.track_number,CHARACTER) AS 'trackNumber'
                   FROM tracks AS t
                   JOIN releases AS r
                   ON t.release_id = r.id
@@ -107,7 +107,7 @@ const TrackModel = {
   getAllTracksFromReleaseById: async (releaseId) => {
     const sql = `SELECT  CONVERT(id,CHARACTER)           AS 'id'
                         ,title
-                        ,CONVERT(track_number,CHARACTER) AS trackId
+                        ,CONVERT(track_number,CHARACTER) AS trackNumber
                   FROM tracks
                   WHERE release_id = ?
                   ORDER BY track_number;`;

@@ -28,6 +28,11 @@ function NavBar() {
               Tracks
             </Nav.Link>
           </Nav>
+          <Nav className="position-relative">
+            <Nav.Link href="/login" className="p-3">
+              Login
+            </Nav.Link>
+          </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>

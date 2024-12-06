@@ -4,23 +4,23 @@ const TrackController = {
   //////////
   // GET
   getTrack: async (req, res, err) => {
-    const trackId = req.query.id;
+    const trackNumber = req.query.id;
 
     let trackData;
     let releases = [];
     let releaseTracks = [];
 
     try {
-      if (trackId) {
+      if (trackNumber) {
         // GET format options
         releases = await TrackModel.getAllReleases();
 
-        if (isNaN(Number(trackId))) {
+        if (isNaN(Number(trackNumber))) {
           // New track
           trackData = {};
-        } else if (trackId) {
+        } else if (trackNumber) {
           // Single track
-          trackData = await TrackModel.getTrackById(trackId);
+          trackData = await TrackModel.getTrackById(trackNumber);
           if (trackData) {
             releaseTracks = await TrackModel.getTracksByRelease(
               trackData.release
@@ -44,7 +44,7 @@ const TrackController = {
         return res.status(404).json({ error: "Not found" });
       }
 
-      res.json(trackId ? singleTrack : trackData);
+      res.json(trackNumber ? singleTrack : trackData);
     } catch (error) {
       if (error.code === "ECONNREFUSED") {
         return res.status(503).json({
@@ -61,7 +61,7 @@ const TrackController = {
   //////////
   // PUT
   updateTrack: async (req, res) => {
-    const trackId = req.query.id;
+    const trackNumber = req.query.id;
     const { body } = req;
 
     const params = {
@@ -72,7 +72,7 @@ const TrackController = {
     };
 
     try {
-      const result = await TrackModel.updateTrack(trackId, params);
+      const result = await TrackModel.updateTrack(trackNumber, params);
       res.json(result);
     } catch (error) {
       console.log(error);
@@ -96,9 +96,9 @@ const TrackController = {
   //////////
   // DELETE
   deleteTrack: async (req, res) => {
-    const trackId = req.query.id;
+    const trackNumber = req.query.id;
     try {
-      const result = await TrackModel.deleteTrack(trackId);
+      const result = await TrackModel.deleteTrack(trackNumber);
       res.json(result);
     } catch (error) {
       console.error(error);

@@ -1,25 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  useSearchParams,
-  useNavigate,
-  useLocation,
-  Link,
-} from "react-router-dom";
+import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
+import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 
 import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import Spinner from "../../components/Spinner/Spinner";
+import isAuthorized from "../../util/isAuthorized";
+import TrackList from "../tracks/TrackList";
 
 import classes from "./Release.module.scss";
 import mainClasses from "../pages.module.scss";
-import Collapse from "react-bootstrap/Collapse";
-import isAuthorized from "../../util/isAuthorized";
 
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
@@ -55,23 +50,25 @@ function Release({ setAlert, reFetch, canEdit }) {
   const [formats, setFormats] = useState([]);
   const [tracks, setTracks] = useState([]);
 
-  console.log("tracks", tracks);
-
   ///////////
   // Fetch //
   ///////////
 
   const fetchData = useCallback(
     async (url, params) => {
-      const res = await axios.get(url, { params });
+      try {
+        const res = await axios.get(url, { params });
 
-      setRelease(res.data?.release);
-      setFormats(res.data?.formatOptions);
-      setTracks(res.data?.tracks);
+        setRelease(res.data?.release);
+        setFormats(res.data?.formatOptions);
+        setTracks(res.data?.tracks);
 
-      reset(res.data.release);
+        reset(res.data.release);
+      } catch (error) {
+        setAlert({ danger: error.message });
+      }
     },
-    [reset]
+    [reset, setAlert]
   );
 
   ////////////////
@@ -151,38 +148,7 @@ function Release({ setAlert, reFetch, canEdit }) {
                   </div>
                 </Collapse>
               )}
-              {tracks && tracks.length > 0 && (
-                <Table size="sm" bordered hover variant="dark">
-                  <thead>
-                    <tr>
-                      <th style={{ width: "0", whiteSpace: "nowrap" }}>
-                        Track No.
-                      </th>
-                      <th className="px-2">Tracklist</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tracks.map((props) => {
-                      console.log(props);
-
-                      const { id, title, trackId } = props;
-                      return (
-                        <tr key={id}>
-                          <td>{trackId}</td>
-                          <td className="px-2 position-relative">
-                            <Link
-                              to={`/tracks?id=${id}`}
-                              className="stretched-link"
-                            >
-                              {title}
-                            </Link>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-              )}
+              {tracks && tracks.length > 0 && <TrackList tracks={tracks} />}
             </>
           )}
         </Form>
