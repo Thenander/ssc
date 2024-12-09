@@ -16,24 +16,27 @@ function NavBar() {
         <Navbar.Brand className={classes["logo-wrapper"]}>
           <img src={logo} alt="logo" className={classes.logo} />
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="position-relative">
-            <Nav.Link href="/releases" className="p-3">
-              Releases
-            </Nav.Link>
-          </Nav>
-          <Nav className="position-relative">
-            <Nav.Link href="/tracks" className="p-3">
-              Tracks
-            </Nav.Link>
-          </Nav>
-          <Nav className="position-relative">
-            <Nav.Link href="/login" className="p-3">
-              Login
-            </Nav.Link>
-          </Nav>
-        </Navbar.Collapse>
+        <div className="d-flex justify-content-between w-100">
+          <div className="d-flex">
+            <Nav className="position-relative">
+              <Nav.Link href="/releases" className="p-3">
+                Releases
+              </Nav.Link>
+            </Nav>
+            <Nav className="position-relative">
+              <Nav.Link href="/tracks" className="p-3">
+                Tracks
+              </Nav.Link>
+            </Nav>
+          </div>
+          <div>
+            <Nav className="position-relative">
+              <Nav.Link href="/login" className="p-3">
+                Login
+              </Nav.Link>
+            </Nav>
+          </div>
+        </div>
       </Container>
     </Navbar>
   );

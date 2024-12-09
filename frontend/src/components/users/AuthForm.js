@@ -4,7 +4,6 @@ import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Badge from "react-bootstrap/Badge";
 import Form from "react-bootstrap/Form";
-import Card from "react-bootstrap/Card";
 import { Check } from "react-bootstrap-icons";
 
 import FormInput from "../formComponents/FormInput";
@@ -49,7 +48,7 @@ function AuthForm({ mode, setAlert }) {
   }, [getValues, repeatedPassword]);
 
   return (
-    <Container className="mt-5">
+    <Container>
       <h1>{MODES[mode].action}</h1>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <div>
@@ -172,7 +171,6 @@ function AuthForm({ mode, setAlert }) {
         // Login
         if (response.status === 200) {
           const { token } = response.data;
-          console.log("token", token);
           localStorage.setItem("token", token);
           setAuth(response.data);
           reset();
@@ -199,15 +197,6 @@ function AuthForm({ mode, setAlert }) {
     }
     console.error("Error config:", error.config);
   }
-}
-
-function WelcomeMessage({ mode }) {
-  return (
-    <div>
-      <Card.Title>{MODES[mode].welcome}</Card.Title>
-      <Card.Text className="mb-3">{MODES[mode].text}</Card.Text>
-    </div>
-  );
 }
 
 export default AuthForm;

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { createPortal } from "react-dom";
+import Container from "react-bootstrap/Container";
 
 import { AuthProvider } from "./contexts/AuthProvider";
 
@@ -21,11 +22,11 @@ function App() {
   const [alert, setAlert] = useState({});
 
   return (
-    <AuthProvider className="bg-dark">
+    <AuthProvider>
       <NavBar />
       {createPortal(<Alert alert={alert} setAlert={setAlert} />, document.body)}
       <Router>
-        <main>
+        <Container className="main">
           <Routes>
             <Route
               path="/releases"
@@ -41,7 +42,7 @@ function App() {
             />
             <Route path="*" exact={true} element={<NotFound />} />
           </Routes>
-        </main>
+        </Container>
       </Router>
     </AuthProvider>
   );
