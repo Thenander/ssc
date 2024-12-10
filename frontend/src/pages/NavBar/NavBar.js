@@ -7,7 +7,7 @@ import classes from "./NavBar.module.scss";
 
 function NavBar() {
   const auth = useAuth();
-  const { setUser, user } = auth;
+  const { user } = auth;
 
   return (
     <Navbar
@@ -22,13 +22,16 @@ function NavBar() {
         </Navbar.Brand>
         <div className="d-flex justify-content-between w-100">
           <div className="d-flex">
-            <Nav className="position-relative">
-              <Nav.Link href="/releases" className="p-3">
+            <Nav
+              className="position-relative"
+              onSelect={(selectedKey) => console.log(selectedKey)}
+            >
+              <Nav.Link eventKey="releases" href="/releases" className="p-3">
                 Releases
               </Nav.Link>
             </Nav>
             <Nav className="position-relative">
-              <Nav.Link href="/tracks" className="p-3">
+              <Nav.Link eventKey="tracks" href="/tracks" className="p-3">
                 Tracks
               </Nav.Link>
             </Nav>
@@ -39,7 +42,7 @@ function NavBar() {
             )}
             {user ? (
               <Nav className="position-relative">
-                <Nav.Link href="/login" className="p-3">
+                <Nav.Link eventKey="login" href="/login" className="p-3">
                   Logout
                 </Nav.Link>
               </Nav>

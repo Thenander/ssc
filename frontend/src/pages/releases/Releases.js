@@ -7,23 +7,27 @@ import {
 } from "react-router-dom";
 import axios from "axios";
 
-import { Button, Container, Table } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Table from "react-bootstrap/Table";
 
-import Release from "./Release.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 
 import mainClasses from "../pages.module.scss";
 import isAuthorized from "../../util/isAuthorized.js";
 
-function Releases({ setAlert, canEdit }) {
+import Release from "./Release.js";
+
+function Releases({ setAlert, canEdit = false }) {
   //////////////
   // useHooks //
   //////////////
 
   const { pathname, search } = useLocation();
-  const [searchParams] = useSearchParams();
+
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -143,7 +147,6 @@ function Releases({ setAlert, canEdit }) {
     try {
       setLoading(true);
       const response = await axios.delete(`${pathname}?id=${id}`);
-      console.log(searchParams.get("id"));
 
       if (searchParams.get("id") === id) {
         navigate(pathname);

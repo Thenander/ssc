@@ -11,12 +11,13 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Table from "react-bootstrap/Table";
 
-import Track from "./Track.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 
 import mainClasses from "../pages.module.scss";
 import isAuthorized from "../../util/isAuthorized.js";
+
+import Track from "./Track.js";
 
 function Tracks({ setAlert, canEdit = false }) {
   //////////////
@@ -141,7 +142,11 @@ function Tracks({ setAlert, canEdit = false }) {
   //////////////
 
   function handleAdd() {
-    navigate(`${pathname}?id=new`);
+    const isAuthorizedUser = isAuthorized(canEdit, setAlert);
+    if (!isAuthorizedUser) {
+      return;
+    }
+    isAuthorizedUser && navigate(`${pathname}?id=new`);
   }
 
   async function handleDelete(id) {
@@ -202,11 +207,7 @@ function Tracks({ setAlert, canEdit = false }) {
     if (!search) {
       return null;
     }
-    return (
-      <div>
-        <h3>All tracks</h3>
-      </div>
-    );
+    return <h3>All tracks</h3>;
   }
 }
 
