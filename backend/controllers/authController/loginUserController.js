@@ -6,8 +6,12 @@ import { formatUsers } from "../helperFunctions.js";
 export async function loginUserController(req, res, next) {
   const { username, password } = req.body;
 
-  if (!username || !password) {
-    return res.status(400).json("username or password missing!");
+  if (!username) {
+    return res.status(400).json("Username missing!");
+  }
+
+  if (!password) {
+    return res.status(400).json("Password missing!");
   }
 
   try {
@@ -27,7 +31,7 @@ export async function loginUserController(req, res, next) {
 
     return res.status(200).json({
       ...formattedUser,
-      message: "User Logged In!",
+      message: "Logged in!",
       data: {
         accessToken,
       },

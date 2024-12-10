@@ -200,6 +200,7 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
         if (response.data.changedRows) {
           setAlert({ success: "Track updated!" });
           reFetchTrack();
+          reFetchAllTracks();
         }
       } catch (error) {
         console.log(error);

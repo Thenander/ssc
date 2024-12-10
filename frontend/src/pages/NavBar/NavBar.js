@@ -2,9 +2,13 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import logo from "../../ssc_logo.png";
+import { useAuth } from "../../contexts/AuthProvider.js";
 import classes from "./NavBar.module.scss";
 
 function NavBar() {
+  const auth = useAuth();
+  const { setUser, user } = auth;
+
   return (
     <Navbar
       variant="dark"
@@ -29,12 +33,23 @@ function NavBar() {
               </Nav.Link>
             </Nav>
           </div>
-          <div>
-            <Nav className="position-relative">
-              <Nav.Link href="/login" className="p-3">
-                Login
-              </Nav.Link>
-            </Nav>
+          <div className="d-flex">
+            {user && (
+              <div className="d-flex align-items-center justify-content-center text-light px-3">{`${user.firstName} ${user.lastName}`}</div>
+            )}
+            {user ? (
+              <Nav className="position-relative">
+                <Nav.Link href="/login" className="p-3">
+                  Logout
+                </Nav.Link>
+              </Nav>
+            ) : (
+              <Nav className="position-relative">
+                <Nav.Link href="/login" className="p-3">
+                  Admin login
+                </Nav.Link>
+              </Nav>
+            )}
           </div>
         </div>
       </Container>

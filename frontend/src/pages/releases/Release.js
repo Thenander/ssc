@@ -192,7 +192,7 @@ function Release({ setAlert, reFetch, canEdit }) {
           reFetch();
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -200,7 +200,23 @@ function Release({ setAlert, reFetch, canEdit }) {
   }
 
   function onError(error) {
-    console.log("error", error);
+    const currentField = Object.keys(error)[0];
+    const field = currentField
+      .split("")
+      .map((char, index) => {
+        if (!index) {
+          return char.toUpperCase();
+        }
+        return char;
+      })
+      .join("");
+
+    console.log(field);
+
+    setAlert({
+      danger: `Input error\nCheck the field "${field}"`,
+    });
+    console.error("error", error);
     setLoading(false);
   }
 
