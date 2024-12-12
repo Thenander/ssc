@@ -5,29 +5,28 @@ import axios from "axios";
 
 import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
+
+import Badge from "react-bootstrap/Badge";
 import Form from "react-bootstrap/Form";
 
 import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import Spinner from "../../components/Spinner/Spinner";
-import isAuthorized from "../../util/isAuthorized";
+import Details from "../../components/Details/Details";
 import TrackList from "../tracks/TrackList";
 
+import isAuthorized from "../../util/isAuthorized";
 import classes from "./Release.module.scss";
 import mainClasses from "../pages.module.scss";
-import Details from "../../components/Details/Details";
 
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
 const DEFAULT_VALUES = { title: "", year: "", format: "" };
 
 function Release({ setAlert, reFetch, canEdit }) {
-  //////////////
-  // useHooks //
-  //////////////
-
   const { register, formState, handleSubmit, reset, watch } = useForm();
   const { isDirty } = formState;
+
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -38,27 +37,19 @@ function Release({ setAlert, reFetch, canEdit }) {
 
   const buttonLabel = isNew ? "Add new release" : "Update release";
 
-  ///////////////
-  // useStates //
-  ///////////////
-
   const [loading, setLoading] = useState(true);
-  const [release, setRelease] = useState();
+  const [singleItem, setSingleItem] = useState();
   const [formats, setFormats] = useState([]);
-  const [tracks, setTracks] = useState([]);
-
-  ///////////
-  // Fetch //
-  ///////////
+  const [items, setItems] = useState([]);
 
   const fetchData = useCallback(
     async (url, params) => {
       try {
         const res = await axios.get(url, { params });
 
-        setRelease(res.data?.release);
+        setSingleItem(res.data?.release);
         setFormats(res.data?.formatOptions);
-        setTracks(res.data?.tracks);
+        setItems(res.data?.tracks);
 
         reset(res.data.release);
       } catch (error) {
@@ -67,10 +58,6 @@ function Release({ setAlert, reFetch, canEdit }) {
     },
     [reset, setAlert]
   );
-
-  ////////////////
-  // useEffects //
-  ////////////////
 
   useEffect(() => {
     if (isNew) {
@@ -84,17 +71,20 @@ function Release({ setAlert, reFetch, canEdit }) {
     setLoading(false);
   }, [fetchData, id]);
 
-  /////////////
-  // Returns //
-  /////////////
-
   return (
     <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <div className="container">
         <Details>
-          <h2>{watchTitle}</h2>
-          {release && (
+          <div className="d-flex justify-content-between align-items-start">
+            <h2 style={{ display: "inline" }} className="me-3">
+              {watchTitle}
+            </h2>
+            <Badge pill={true} bg="info" text="dark">
+              RELEASE
+            </Badge>
+          </div>
+          {singleItem && (
             <Form
               onSubmit={handleSubmit(onSubmit, onError)}
               onKeyDown={handleKeyDown}
@@ -147,22 +137,17 @@ function Release({ setAlert, reFetch, canEdit }) {
               )}
             </Form>
           )}
-          {tracks && tracks.length > 0 && <TrackList tracks={tracks} />}
+          {items && items.length > 0 && <TrackList tracks={items} />}
         </Details>
       </div>
     </div>
   );
-
-  //////////////
-  // Handlers //
-  //////////////
 
   async function onSubmit(params) {
     const isAuthorizedUser = isAuthorized(canEdit, setAlert);
     if (!isAuthorizedUser) {
       return;
     }
-    console.log("isAuthorizedUser", isAuthorizedUser);
     if (isNew) {
       try {
         setLoading(true);
@@ -185,7 +170,8 @@ function Release({ setAlert, reFetch, canEdit }) {
 
         if (response.data.changedRows) {
           setAlert({ success: "Release updated!" });
-          navigate(pathname);
+          reFetchItem();
+          // navigate(pathname);
           reFetch();
         }
       } catch (error) {
@@ -197,23 +183,11 @@ function Release({ setAlert, reFetch, canEdit }) {
   }
 
   function onError(error) {
-    const currentField = Object.keys(error)[0];
-    const field = currentField
-      .split("")
-      .map((char, index) => {
-        if (!index) {
-          return char.toUpperCase();
-        }
-        return char;
-      })
-      .join("");
-
-    console.log(field);
+    console.error(error);
 
     setAlert({
-      danger: `Input error\nCheck the field "${field}"`,
+      danger: "Required fields are missing or not filled in correctly",
     });
-    console.error("error", error);
     setLoading(false);
   }
 
@@ -224,6 +198,10 @@ function Release({ setAlert, reFetch, canEdit }) {
     if (event.key === "Enter" && !isSubmitButtonFocused) {
       event.preventDefault();
     }
+  }
+
+  function reFetchItem() {
+    fetchData("/releases", { id });
   }
 }
 

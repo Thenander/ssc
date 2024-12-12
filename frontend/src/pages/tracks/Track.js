@@ -6,6 +6,7 @@ import axios from "axios";
 import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
+import Badge from "react-bootstrap/Badge";
 import Form from "react-bootstrap/Form";
 
 import FormInput from "../../components/formComponents/FormInput";
@@ -22,11 +23,7 @@ axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
 const DEFAULT_VALUES = { title: "", trackNumber: "", release: "" };
 
-function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
-  //////////////
-  // useHooks //
-  //////////////
-
+function Track({ setAlert, reFetch, canEdit }) {
   const { register, formState, handleSubmit, reset, watch, setValue } =
     useForm();
   const { isDirty } = formState;
@@ -41,32 +38,25 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
 
   const buttonLabel = isNew ? "Add new track" : "Update track";
 
-  ///////////////
-  // useStates //
-  ///////////////
-
   const [loading, setLoading] = useState(true);
-  const [track, setTrack] = useState();
-  const [releases, setReleases] = useState([]);
-  const [releaseTracks, setReleaseTracks] = useState([]);
-
-  ///////////
-  // Fetch //
-  ///////////
+  const [singleItem, setSingleItem] = useState();
+  const [formats, setFormats] = useState([]);
+  const [items, setItems] = useState([]);
 
   const fetchData = useCallback(
     async (url, params) => {
       try {
         const res = await axios.get(url, { params });
+
         if (!res.data?.releases || res.data?.releases.length === 0) {
           setAlert({
             danger: `Cannot create track with no release.\nMake sure to create release first.`,
           });
         }
 
-        setReleases(res.data?.releases);
-        setTrack(res.data?.track);
-        setReleaseTracks(res.data?.releaseTracks);
+        setSingleItem(res.data?.track);
+        setFormats(res.data?.releases);
+        setItems(res.data?.releaseTracks);
 
         reset(res.data.track);
       } catch (error) {
@@ -75,14 +65,6 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
     },
     [reset, setAlert]
   );
-
-  ////////////////
-  // useEffects //
-  ////////////////
-
-  useEffect(() => {
-    return () => {};
-  }, [releases, setAlert]);
 
   useEffect(() => {
     if (isNew) {
@@ -96,17 +78,20 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
     setLoading(false);
   }, [fetchData, id]);
 
-  /////////////
-  // Returns //
-  /////////////
-
   return (
     <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <div className="container">
         <Details>
-          <h2>{watchTitle}</h2>
-          {track && (
+          <div className="d-flex justify-content-between align-items-start">
+            <h2 style={{ display: "inline" }} className="me-3">
+              {watchTitle}
+            </h2>
+            <Badge pill={true} bg="info" text="dark">
+              TRACK
+            </Badge>
+          </div>
+          {singleItem && (
             <Form
               onSubmit={handleSubmit(onSubmit, onError)}
               onKeyDown={handleKeyDown}
@@ -119,7 +104,7 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
                   type="text"
                   placeholder="Title"
                   register={register}
-                  required="Title is required"
+                  required
                 />
                 <FormInput
                   disabled={loading || !canEdit}
@@ -128,17 +113,17 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
                   type="number"
                   placeholder="Track ID"
                   register={register}
-                  required="Track ID is required, no less than 1"
+                  required
                   min={1}
                 />
-                {releases && (
+                {formats && (
                   <FormSelect
                     disabled={loading || !canEdit}
                     label="Release"
                     register={register}
                     id="release"
-                    options={releases}
-                    required="Release is required"
+                    options={formats}
+                    required
                     setValue={setValue}
                   />
                 )}
@@ -162,7 +147,7 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
                   </tr>
                 </tbody>
               </Table>
-              {releases && releases.length > 0 && (
+              {formats && formats.length > 0 && (
                 <Collapse in={isDirty}>
                   <div>
                     <Button
@@ -178,20 +163,16 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
               )}
             </Form>
           )}
-          {releaseTracks && releaseTracks.length > 0 && (
+          {items && items.length > 0 && (
             <TrackList
-              tracks={releaseTracks}
-              title={releases.find((r) => r.key === track.release)}
+              tracks={items}
+              title={formats.find((r) => r.key === singleItem.release)}
             />
           )}
         </Details>
       </div>
     </div>
   );
-
-  //////////////
-  // Handlers //
-  //////////////
 
   async function onSubmit(params) {
     const isAuthorizedUser = isAuthorized(canEdit, setAlert);
@@ -206,7 +187,7 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
         if (response.data.affectedRows) {
           setAlert({ success: "New track added!" });
           navigate(pathname);
-          reFetchAllTracks();
+          reFetch();
         }
       } catch (error) {
         console.log(error);
@@ -220,8 +201,8 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
 
         if (response.data.changedRows) {
           setAlert({ success: "Track updated!" });
-          reFetchTrack();
-          reFetchAllTracks();
+          reFetchItem();
+          reFetch();
         }
       } catch (error) {
         console.log(error);
@@ -231,7 +212,6 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
     }
   }
 
-  // Form hook errors
   function onError(error) {
     console.error(error);
 
@@ -250,7 +230,7 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
     }
   }
 
-  function reFetchTrack() {
+  function reFetchItem() {
     fetchData("/tracks", { id });
   }
 }

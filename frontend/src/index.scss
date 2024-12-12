@@ -19,7 +19,7 @@ $theme-colors: (
   "primary": $primary,
   "secondary": $secondary,
   "success": #198754,
-  "info": #0dcaf0,
+  "info": $h1-color,
   "warning": #ffc107,
   "danger": $danger,
   "light": #f8f9fa,
@@ -68,7 +68,7 @@ h1 {
 
 .nav-link:hover {
   color: $primay-complement;
-  background-color: $link-hover;
+  background-color: #2b303599;
 }
 
 .nav-link:focus-visible {

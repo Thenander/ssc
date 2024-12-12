@@ -5,7 +5,7 @@ import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 
-import ReactTable from "../../components/table/ReactTable.js";
+import ReactTable from "../ReactTable/ReactTable.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
 import Spinner from "../../components/Spinner/Spinner.js";
 

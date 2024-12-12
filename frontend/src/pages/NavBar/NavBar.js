@@ -36,6 +36,7 @@ function NavBar() {
               </Nav.Link>
             </Nav>
           </div>
+          <div className={classes["cultivated-bimbo"]}>Cultivated Bimbo</div>
           <div className="d-flex">
             {user && (
               <div className="d-flex align-items-center justify-content-center text-light px-3">{`${user.firstName} ${user.lastName}`}</div>
@@ -48,7 +49,11 @@ function NavBar() {
               </Nav>
             ) : (
               <Nav className="position-relative">
-                <Nav.Link href="/login" className="p-3">
+                <Nav.Link
+                  href="/login"
+                  className="p-3"
+                  style={{ color: "#a7a9ab" }}
+                >
                   Admin login
                 </Nav.Link>
               </Nav>

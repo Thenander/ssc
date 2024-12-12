@@ -5,7 +5,7 @@ import Container from "react-bootstrap/Container";
 
 import { AuthProvider } from "./contexts/AuthProvider";
 
-import Alert from "./components/Alert.js";
+import Alert from "./components/Alert/Alert.js";
 
 import NavBar from "./pages/NavBar/NavBar";
 import Releases from "./pages/releases/Releases.js";
@@ -16,7 +16,7 @@ import AuthForm from "./components/users/AuthForm.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.scss";
 
-const CAN_EDIT = false;
+const CAN_EDIT = true;
 
 function App() {
   const [alert, setAlert] = useState({});
