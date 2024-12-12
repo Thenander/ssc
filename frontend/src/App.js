@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthProvider";
 import Alert from "./components/Alert/Alert.js";
 
 import NavBar from "./pages/NavBar/NavBar";
+import Start from "./pages/Start/Start.js";
 import Releases from "./pages/releases/Releases.js";
 import Tracks from "./pages/tracks/Tracks.js";
 import NotFound from "./pages/NotFound.js";
@@ -28,6 +29,7 @@ function App() {
       <Router>
         <Container className="main">
           <Routes>
+            <Route exact path="/" element={<Start />} />
             <Route
               path="/releases"
               element={<Releases setAlert={setAlert} canEdit={CAN_EDIT} />}

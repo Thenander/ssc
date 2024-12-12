@@ -42,7 +42,7 @@ function NavBar() {
               <div className="d-flex align-items-center justify-content-center text-light px-3">{`${user.firstName} ${user.lastName}`}</div>
             )}
             {user ? (
-              <Nav className="position-relative">
+              <Nav className="position-relative" style={{ zIndex: "1" }}>
                 <Nav.Link eventKey="login" href="/login" className="p-3">
                   Logout
                 </Nav.Link>

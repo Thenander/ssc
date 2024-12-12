@@ -6,22 +6,21 @@ import axios from "axios";
 import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
 
-import Badge from "react-bootstrap/Badge";
 import Form from "react-bootstrap/Form";
 
 import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import Spinner from "../../components/Spinner/Spinner";
 import Details from "../../components/Details/Details";
+import HeaderSection from "../../components/HeaderSection";
 import TrackList from "../tracks/TrackList";
 
+import { BASE_URL, DEFAULT_RELEASE_VALUES } from "../defaultValues";
 import isAuthorized from "../../util/isAuthorized";
 import classes from "./Release.module.scss";
 import mainClasses from "../pages.module.scss";
 
-axios.defaults.baseURL = "http://localhost:8080/api/V1";
-
-const DEFAULT_VALUES = { title: "", year: "", format: "" };
+axios.defaults.baseURL = BASE_URL;
 
 function Release({ setAlert, reFetch, canEdit }) {
   const { register, formState, handleSubmit, reset, watch } = useForm();
@@ -61,7 +60,7 @@ function Release({ setAlert, reFetch, canEdit }) {
 
   useEffect(() => {
     if (isNew) {
-      reset(DEFAULT_VALUES);
+      reset(DEFAULT_RELEASE_VALUES);
       setLoading(false);
     }
   }, [isNew, reset]);
@@ -76,14 +75,7 @@ function Release({ setAlert, reFetch, canEdit }) {
       <Spinner loading={loading} />
       <div className="container">
         <Details>
-          <div className="d-flex justify-content-between align-items-start">
-            <h2 style={{ display: "inline" }} className="me-3">
-              {watchTitle}
-            </h2>
-            <Badge pill={true} bg="info" text="dark">
-              RELEASE
-            </Badge>
-          </div>
+          <HeaderSection badgeText="RELEASE" title={watchTitle} />
           {singleItem && (
             <Form
               onSubmit={handleSubmit(onSubmit, onError)}
