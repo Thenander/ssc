@@ -15,14 +15,11 @@ import TrackList from "../tracks/TrackList";
 
 import classes from "./Release.module.scss";
 import mainClasses from "../pages.module.scss";
+import Details from "../../components/Details/Details";
 
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
-const DEFAULT_VALUES = {
-  title: "",
-  year: "",
-  format: "",
-};
+const DEFAULT_VALUES = { title: "", year: "", format: "" };
 
 function Release({ setAlert, reFetch, canEdit }) {
   //////////////
@@ -95,13 +92,13 @@ function Release({ setAlert, reFetch, canEdit }) {
     <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <div className="container">
-        <h2>{watchTitle}</h2>
-        <Form
-          onSubmit={handleSubmit(onSubmit, onError)}
-          onKeyDown={handleKeyDown}
-        >
+        <Details>
+          <h2>{watchTitle}</h2>
           {release && (
-            <>
+            <Form
+              onSubmit={handleSubmit(onSubmit, onError)}
+              onKeyDown={handleKeyDown}
+            >
               <div className={classes.grid}>
                 <FormInput
                   disabled={!canEdit || loading}
@@ -148,10 +145,10 @@ function Release({ setAlert, reFetch, canEdit }) {
                   </div>
                 </Collapse>
               )}
-              {tracks && tracks.length > 0 && <TrackList tracks={tracks} />}
-            </>
+            </Form>
           )}
-        </Form>
+          {tracks && tracks.length > 0 && <TrackList tracks={tracks} />}
+        </Details>
       </div>
     </div>
   );

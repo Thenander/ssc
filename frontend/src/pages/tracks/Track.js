@@ -5,16 +5,18 @@ import axios from "axios";
 
 import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
+import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 
 import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import Spinner from "../../components/Spinner/Spinner";
+import Details from "../../components/Details/Details";
+import TrackList from "./TrackList";
 
+import isAuthorized from "../../util/isAuthorized";
 import classes from "./Track.module.scss";
 import mainClasses from "../pages.module.scss";
-import isAuthorized from "../../util/isAuthorized";
-import TrackList from "./TrackList";
 
 axios.defaults.baseURL = "http://localhost:8080/api/V1";
 
@@ -102,13 +104,13 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
     <div className={mainClasses["fade-in"]}>
       <Spinner loading={loading} />
       <div className="container">
-        <h2>{watchTitle}</h2>
-        <Form
-          onSubmit={handleSubmit(onSubmit, onError)}
-          onKeyDown={handleKeyDown}
-        >
+        <Details>
+          <h2>{watchTitle}</h2>
           {track && (
-            <>
+            <Form
+              onSubmit={handleSubmit(onSubmit, onError)}
+              onKeyDown={handleKeyDown}
+            >
               <div className={classes.grid}>
                 <FormInput
                   disabled={loading || !canEdit}
@@ -141,6 +143,25 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
                   />
                 )}
               </div>
+              <h3 className="mt-0">Samples</h3>
+              <Table bordered hover variant="dark">
+                <thead>
+                  <tr>
+                    <td>Quote</td>
+                    <td>Source</td>
+                    <td>Type</td>
+                    <td>Year</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                  </tr>
+                </tbody>
+              </Table>
               {releases && releases.length > 0 && (
                 <Collapse in={isDirty}>
                   <div>
@@ -155,15 +176,15 @@ function Track({ setAlert, reFetch: reFetchAllTracks, canEdit }) {
                   </div>
                 </Collapse>
               )}
-              {releaseTracks && releaseTracks.length > 0 && (
-                <TrackList
-                  tracks={releaseTracks}
-                  title={releases.find((r) => r.key === track.release)}
-                />
-              )}
-            </>
+            </Form>
           )}
-        </Form>
+          {releaseTracks && releaseTracks.length > 0 && (
+            <TrackList
+              tracks={releaseTracks}
+              title={releases.find((r) => r.key === track.release)}
+            />
+          )}
+        </Details>
       </div>
     </div>
   );

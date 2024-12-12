@@ -16,7 +16,7 @@ import AuthForm from "./components/users/AuthForm.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.scss";
 
-const CAN_EDIT = true;
+const CAN_EDIT = false;
 
 function App() {
   const [alert, setAlert] = useState({});
