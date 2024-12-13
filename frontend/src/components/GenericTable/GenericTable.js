@@ -7,7 +7,6 @@ import Container from "react-bootstrap/Container";
 
 import ReactTable from "../ReactTable/ReactTable.js";
 import ConfirmModal from "../../components/ConfirmModal.js";
-import Spinner from "../../components/Spinner/Spinner.js";
 
 import isAuthorized from "../../util/isAuthorized.js";
 import mainClasses from "../../pages/pages.module.scss";
@@ -42,9 +41,12 @@ function GenericTable({
 
   useEffect(() => fetchDataCallback, [fetchDataCallback, setAlert]);
 
+  if (loading) {
+    return <p className="text-light">Loading...</p>;
+  }
+
   return (
     <div className={mainClasses["fade-in"]}>
-      <Spinner loading={loading} />
       <Container>
         <h1 className={search ? "visually-hidden" : ""}>{header}</h1>
       </Container>

@@ -10,7 +10,6 @@ import Form from "react-bootstrap/Form";
 
 import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
-import Spinner from "../../components/Spinner/Spinner";
 import Details from "../../components/Details/Details";
 import HeaderSection from "../../components/HeaderSection";
 import TrackList from "./TrackList";
@@ -77,9 +76,12 @@ function Track({ setAlert, reFetch, canEdit }) {
     setLoading(false);
   }, [fetchData, id]);
 
+  if (loading) {
+    return <p className="text-light">Loading...</p>;
+  }
+
   return (
     <div className={mainClasses["fade-in"]}>
-      <Spinner loading={loading} />
       <div className="container">
         <Details>
           <HeaderSection badgeText="TRACK" title={watchTitle} />
