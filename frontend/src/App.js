@@ -9,8 +9,9 @@ import Alert from "./components/Alert/Alert.js";
 
 import NavBar from "./pages/NavBar/NavBar";
 import Start from "./pages/Start/Start.js";
-import Releases from "./pages/releases/Releases.js";
-import Tracks from "./pages/tracks/Tracks.js";
+import Releases from "./pages/Releases/Releases.js";
+import Tracks from "./pages/Tracks/Tracks.js";
+import Sources from "./pages/Sources/Sources.js";
 import NotFound from "./pages/NotFound.js";
 import AuthForm from "./components/users/AuthForm.js";
 
@@ -37,6 +38,10 @@ function App() {
             <Route
               path="/tracks"
               element={<Tracks setAlert={setAlert} canEdit={CAN_EDIT} />}
+            />
+            <Route
+              path="/sources"
+              element={<Sources setAlert={setAlert} canEdit={CAN_EDIT} />}
             />
             <Route
               path="/login"

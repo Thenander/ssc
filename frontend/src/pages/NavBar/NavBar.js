@@ -35,6 +35,11 @@ function NavBar() {
                 Tracks
               </Nav.Link>
             </Nav>
+            <Nav className="position-relative">
+              <Nav.Link eventKey="sources" href="/sources" className="p-3">
+                Sources
+              </Nav.Link>
+            </Nav>
           </div>
           <div className={classes["cultivated-bimbo"]}>Cultivated Bimbo</div>
           <div className="d-flex">

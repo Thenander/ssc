@@ -11,7 +11,7 @@ const ReleaseModel = {
                   JOIN types AS t
                   ON r.format_type = t.sub_type
                   WHERE t.main_type = "RELEASE"
-                  ORDER BY r.year, t.text ASC;`;
+                  ORDER BY r.year, r.title ASC;`;
     try {
       const [results] = await pool.query(sql);
       return results;

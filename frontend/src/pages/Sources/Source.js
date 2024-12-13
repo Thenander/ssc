@@ -15,14 +15,14 @@ import Details from "../../components/Details/Details";
 import HeaderSection from "../../components/HeaderSection";
 import TrackList from "../Tracks/TrackList";
 
-import { BASE_URL, DEFAULT_RELEASE_VALUES } from "../defaultValues";
+import { BASE_URL, DEFAULT_SOURCE_VALUES } from "../defaultValues";
 import isAuthorized from "../../util/isAuthorized";
-import classes from "./Release.module.scss";
+import classes from "./Source.module.scss";
 import mainClasses from "../pages.module.scss";
 
 axios.defaults.baseURL = BASE_URL;
 
-function Release({ setAlert, reFetch, canEdit }) {
+function Source({ setAlert, reFetch, canEdit }) {
   const { register, formState, handleSubmit, reset, watch } = useForm();
   const { isDirty } = formState;
 
@@ -34,7 +34,7 @@ function Release({ setAlert, reFetch, canEdit }) {
 
   const watchTitle = watch("title");
 
-  const buttonLabel = isNew ? "Add new release" : "Update release";
+  const buttonLabel = isNew ? "Add new source" : "Update source";
 
   const [loading, setLoading] = useState(true);
   const [singleItem, setSingleItem] = useState();
@@ -60,13 +60,13 @@ function Release({ setAlert, reFetch, canEdit }) {
 
   useEffect(() => {
     if (isNew) {
-      reset(DEFAULT_RELEASE_VALUES);
+      reset(DEFAULT_SOURCE_VALUES);
       setLoading(false);
     }
   }, [isNew, reset]);
 
   useEffect(() => {
-    fetchData("/releases", { id });
+    fetchData("/sources", { id });
     setLoading(false);
   }, [fetchData, id]);
 
@@ -75,7 +75,7 @@ function Release({ setAlert, reFetch, canEdit }) {
       <Spinner loading={loading} />
       <div className="container">
         <Details>
-          <HeaderSection badgeText="RELEASE" title={watchTitle} />
+          <HeaderSection badgeText="SOURCE" title={watchTitle} />
           {singleItem && (
             <Form
               onSubmit={handleSubmit(onSubmit, onError)}
@@ -143,10 +143,10 @@ function Release({ setAlert, reFetch, canEdit }) {
     if (isNew) {
       try {
         setLoading(true);
-        const response = await axios.post("/releases", params);
+        const response = await axios.post("/sources", params);
 
         if (response.data.affectedRows) {
-          setAlert({ success: "New release added!" });
+          setAlert({ success: "New source added!" });
           navigate(pathname);
           reFetch();
         }
@@ -158,10 +158,10 @@ function Release({ setAlert, reFetch, canEdit }) {
     } else {
       try {
         setLoading(true);
-        const response = await axios.put(`/releases?id=${id}`, params);
+        const response = await axios.put(`/sources?id=${id}`, params);
 
         if (response.data.changedRows) {
-          setAlert({ success: "Release updated!" });
+          setAlert({ success: "Source updated!" });
           reFetchItem();
           // navigate(pathname);
           reFetch();
@@ -193,8 +193,8 @@ function Release({ setAlert, reFetch, canEdit }) {
   }
 
   function reFetchItem() {
-    fetchData("/releases", { id });
+    fetchData("/sources", { id });
   }
 }
 
-export default Release;
+export default Source;
