@@ -13,11 +13,15 @@ function Sources({ setAlert, canEdit = false }) {
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor("title", {
-      header: "Release",
+      header: "Source",
       cell: cellLink,
     }),
+    columnHelper.accessor("producer", {
+      header: "Producer / Director / Artist",
+      cell: (info) => info.getValue(),
+    }),
     columnHelper.accessor("type", {
-      header: "Format",
+      header: "Source type",
       cell: (info) => info.getValue(),
     }),
   ];

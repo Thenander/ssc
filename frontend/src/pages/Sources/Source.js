@@ -38,7 +38,7 @@ function Source({ setAlert, reFetch, canEdit }) {
 
   const [loading, setLoading] = useState(true);
   const [singleItem, setSingleItem] = useState();
-  const [formats, setFormats] = useState([]);
+  const [types, setTypes] = useState([]);
   const [items, setItems] = useState([]);
 
   const fetchData = useCallback(
@@ -46,11 +46,11 @@ function Source({ setAlert, reFetch, canEdit }) {
       try {
         const res = await axios.get(url, { params });
 
-        setSingleItem(res.data?.release);
-        setFormats(res.data?.formatOptions);
+        setSingleItem(res.data?.source);
+        setTypes(res.data?.typeOptions);
         setItems(res.data?.tracks);
 
-        reset(res.data.release);
+        reset(res.data.source);
       } catch (error) {
         setAlert({ danger: error.message });
       }
@@ -91,13 +91,22 @@ function Source({ setAlert, reFetch, canEdit }) {
                   register={register}
                   required
                 />
-                {formats && (
+                <FormInput
+                  disabled={!canEdit || loading}
+                  id="producer"
+                  label="Producer / Director / Artist"
+                  type="text"
+                  placeholder="Producer / Director / Artist"
+                  register={register}
+                  required
+                />
+                {types && (
                   <FormSelect
                     disabled={!canEdit || loading}
-                    label="Format"
+                    label="Type"
                     register={register}
-                    id="format"
-                    options={formats}
+                    id="type"
+                    options={types}
                     required
                   />
                 )}
@@ -151,7 +160,7 @@ function Source({ setAlert, reFetch, canEdit }) {
           reFetch();
         }
       } catch (error) {
-        console.log(error);
+        setAlert({ danger: error.message });
       } finally {
         setLoading(false);
       }
@@ -167,7 +176,7 @@ function Source({ setAlert, reFetch, canEdit }) {
           reFetch();
         }
       } catch (error) {
-        console.error(error);
+        setAlert({ danger: error.message });
       } finally {
         setLoading(false);
       }

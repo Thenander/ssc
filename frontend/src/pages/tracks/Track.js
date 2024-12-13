@@ -182,7 +182,7 @@ function Track({ setAlert, reFetch, canEdit }) {
           reFetch();
         }
       } catch (error) {
-        console.log(error);
+        setAlert({ danger: error.message });
       } finally {
         setLoading(false);
       }
@@ -197,7 +197,7 @@ function Track({ setAlert, reFetch, canEdit }) {
           reFetch();
         }
       } catch (error) {
-        console.log(error);
+        setAlert({ danger: error.message });
       } finally {
         setLoading(false);
       }

@@ -35,7 +35,7 @@ function FormInput({
             min,
             max,
             required,
-            setValueAs: (v) => v.toString(),
+            setValueAs: (v) => v?.toString(),
           })}
           {...props}
         />

@@ -91,7 +91,6 @@ function GenericTable({
     try {
       setLoading(true);
       const response = await axios.get(fetchUrl);
-
       setData(response.data);
     } catch (error) {
       setAlert({ danger: error.message });

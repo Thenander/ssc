@@ -12,11 +12,11 @@ const SourceController = {
 
     try {
       if (sourceId) {
-        // GET format options
+        // GET type options
         types = await SourceModel.getSourceTypes();
 
-        // GET tracks
-        tracks = await TrackModel.getAllTracksFromSourceById(sourceId);
+        // // GET tracks
+        // tracks = await TrackModel.getAllTracksFromSourceById(sourceId);
 
         if (isNaN(Number(sourceId))) {
           // New release
@@ -33,7 +33,7 @@ const SourceController = {
 
       const singleSource = {
         source: sourceData,
-        // formatOptions: types ?? [],
+        typeOptions: types ?? [],
         // tracks: tracks ?? [],
       };
 
@@ -57,51 +57,51 @@ const SourceController = {
 
   //////////
   // PUT
-  // updateSource: async (req, res) => {
-  //   const releaseId = req.query.id;
-  //   const { body } = req;
+  updateSource: async (req, res) => {
+    const sourceId = req.query.id;
+    const { body } = req;
 
-  //   try {
-  //     const result = await SourceModel.updateSource(releaseId, body);
-  //     res.json(result);
-  //   } catch (error) {
-  //     console.log(error);
+    try {
+      const result = await SourceModel.updateSource(sourceId, body);
+      res.json(result);
+    } catch (error) {
+      console.log(error);
 
-  //     res.status(500).send({ error });
-  //   }
-  // },
+      res.status(500).send({ error });
+    }
+  },
 
   //////////
   // POST
-  // createSource: async (req, res) => {
-  //   const { body } = req;
+  createSource: async (req, res) => {
+    const { body } = req;
 
-  //   try {
-  //     const result = await SourceModel.createSource(body);
+    try {
+      const result = await SourceModel.createSource(body);
 
-  //     res.json(result);
-  //   } catch (error) {
-  //     console.error(error);
+      res.json(result);
+    } catch (error) {
+      console.error(error);
 
-  //     res.status(500).json({ error });
-  //   }
-  // },
+      res.status(500).json({ error });
+    }
+  },
 
   //////////
   // DELETE
-  // deleteSource: async (req, res) => {
-  //   const releaseId = req.query.id;
+  deleteSource: async (req, res) => {
+    const sourceId = req.query.id;
 
-  //   try {
-  //     const result = await SourceModel.deleteSource(releaseId);
+    try {
+      const result = await SourceModel.deleteSource(sourceId);
 
-  //     res.json(result);
-  //   } catch (error) {
-  //     console.error(error);
+      res.json(result);
+    } catch (error) {
+      console.error(error);
 
-  //     res.status(500).json({ error });
-  //   }
-  // },
+      res.status(500).json({ error });
+    }
+  },
 };
 
 export default SourceController;

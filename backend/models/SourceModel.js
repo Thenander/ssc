@@ -4,6 +4,7 @@ import throwDbError from "../util/throwDbError.js";
 const SourceModel = {
   getAllSources: async () => {
     const sql = `SELECT CONVERT(s.id,CHARACTER)    AS "id"
+                        ,s.producer
                         ,s.title
                         ,t.text                    AS "type"
                         ,CONVERT(s.year,CHARACTER) AS "year"
@@ -11,7 +12,7 @@ const SourceModel = {
                   JOIN types AS t
                   ON s.source_type = t.sub_type
                   WHERE t.main_type = "SOURCE"
-                  ORDER BY s.year, s.title ASC;`;
+                  ORDER BY s.year, t.text, s.title ASC;`;
     try {
       const [results] = await pool.query(sql);
       return results;
@@ -20,81 +21,88 @@ const SourceModel = {
     }
   },
 
-  // getReleaseById: async (id) => {
-  //   const sql = `SELECT  CONVERT(id,CHARACTER)   AS 'id'
-  //                       ,title
-  //                       ,CONVERT(year,CHARACTER) AS 'year'
-  //                       ,format_type             AS 'format'
-  //                 FROM releases
-  //                 WHERE id = ?;`;
-  //   try {
-  //     const [results] = await pool.query(sql, [id]);
-  //     return results[0];
-  //   } catch (error) {
-  //     throwDbError(error);
-  //   }
-  // },
+  getSourceById: async (id) => {
+    const sql = `SELECT  CONVERT(id,CHARACTER)   AS "id"
+                        ,title
+                        ,producer
+                        ,source_type             AS "type"
+                        ,CONVERT(year,CHARACTER) AS "year"
+                  FROM sources
+                  WHERE id = ?;`;
+    try {
+      const [results] = await pool.query(sql, [id]);
+      return results[0];
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
 
-  // createRelease: async ({ title, year, format }) => {
-  //   const yearInt = parseInt(year, 10);
+  createSource: async ({ title, producer, year, type }) => {
+    const yearInt = parseInt(year, 10);
 
-  //   if (isNaN(yearInt) || yearInt < 1000 || yearInt > 9999) {
-  //     throw new Error("Invalid year format. Year must be a 4-digit number.");
-  //   }
-  //   const sql =
-  //     "INSERT INTO releases (title, year, format_type) VALUES (?, ?, ?);";
+    if (isNaN(yearInt) || yearInt < 1000 || yearInt > 9999) {
+      throw new Error("Invalid year format. Year must be a 4-digit number.");
+    }
+    const sql =
+      "INSERT INTO sources (title, producer, year, source_type) VALUES (?, ?, ?, ?);";
 
-  //   try {
-  //     const [result] = await pool.query(sql, [title, yearInt, format]);
-  //     const json = JSON.parse(JSON.stringify(result));
+    try {
+      const [result] = await pool.query(sql, [title, producer, yearInt, type]);
+      const json = JSON.parse(JSON.stringify(result));
 
-  //     return json;
-  //   } catch (error) {
-  //     throwDbError(error);
-  //   }
-  // },
+      return json;
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
 
-  // updateRelease: async (id, { title, year, format }) => {
-  //   const yearInt = parseInt(year, 10);
+  updateSource: async (id, { title, producer, year, type }) => {
+    const yearInt = parseInt(year, 10);
 
-  //   if (isNaN(yearInt) || yearInt < 1000 || yearInt > 9999) {
-  //     throw new Error("Invalid year format. Year must be a 4-digit number.");
-  //   }
+    if (isNaN(yearInt) || yearInt < 1000 || yearInt > 9999) {
+      throw new Error("Invalid year format. Year must be a 4-digit number.");
+    }
 
-  //   const sql = `UPDATE releases
-  //                 SET title = ?, year = ?, format_type = ?
-  //                 WHERE id = ?;`;
-  //   try {
-  //     const [result] = await pool.query(sql, [title, yearInt, format, id]);
-  //     return result;
-  //   } catch (error) {
-  //     throwDbError(error);
-  //   }
-  // },
+    const sql = `UPDATE sources
+                  SET title = ?, producer = ?, year = ?, source_type = ?
+                  WHERE id = ?;`;
+    try {
+      const [result] = await pool.query(sql, [
+        title,
+        producer,
+        yearInt,
+        type,
+        id,
+      ]);
+      return result;
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
 
-  // deleteRelease: async (id) => {
-  //   const sql = "DELETE FROM releases WHERE id = ?";
-  //   try {
-  //     const [result] = await pool.query(sql, [id]);
-  //     return result;
-  //   } catch (error) {
-  //     throwDbError(error);
-  //   }
-  // },
+  deleteSource: async (id) => {
+    const sql = "DELETE FROM sources WHERE id = ?";
+    try {
+      const [result] = await pool.query(sql, [id]);
+      return result;
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
 
-  // getReleaseTypes: async () => {
-  //   const sql = `SELECT  sub_type AS 'key'
-  //                       ,text     AS 'value'
-  //                 FROM types
-  //                 WHERE main_type = 'RELEASE'
-  //                 ORDER BY text;`;
-  //   try {
-  //     const [result] = await pool.query(sql);
-  //     return result;
-  //   } catch (error) {
-  //     throwDbError(error);
-  //   }
-  // },
+  getSourceTypes: async () => {
+    const sql = `SELECT  sub_type AS 'key'
+                        ,text     AS 'value'
+                  FROM types
+                  WHERE main_type = 'SOURCE'
+                  ORDER BY text;`;
+    try {
+      const [result] = await pool.query(sql);
+      return result;
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
 };
 
 export default SourceModel;

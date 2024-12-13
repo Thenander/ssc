@@ -151,7 +151,7 @@ function Release({ setAlert, reFetch, canEdit }) {
           reFetch();
         }
       } catch (error) {
-        console.log(error);
+        setAlert({ danger: error.message });
       } finally {
         setLoading(false);
       }
@@ -167,7 +167,7 @@ function Release({ setAlert, reFetch, canEdit }) {
           reFetch();
         }
       } catch (error) {
-        console.error(error);
+        setAlert({ danger: error.message });
       } finally {
         setLoading(false);
       }

@@ -12,7 +12,7 @@ router.use("/api/V1/tracks", trackRoutes);
 router.use("/api/V1/sources", sourceRoutes);
 
 router.use((req, res, next) => {
-  res.status(404).json({ err: "API path not found" });
+  res.status(500).json({ err: "API path not found" });
 });
 
 export default router;
