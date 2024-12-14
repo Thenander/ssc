@@ -18,6 +18,7 @@ import { BASE_URL, DEFAULT_TRACK_VALUES } from "../defaultValues";
 import isAuthorized from "../../util/isAuthorized";
 import classes from "./Track.module.scss";
 import mainClasses from "../pages.module.scss";
+import Loading from "../../components/Loading";
 
 axios.defaults.baseURL = BASE_URL;
 
@@ -77,7 +78,7 @@ function Track({ setAlert, reFetch, canEdit }) {
   }, [fetchData, id]);
 
   if (loading) {
-    return <p className="text-light">Loading...</p>;
+    return <Loading />;
   }
 
   return (

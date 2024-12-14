@@ -12,12 +12,14 @@ import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import Details from "../../components/Details/Details";
 import HeaderSection from "../../components/HeaderSection";
+import Loading from "../../components/Loading";
 import TrackList from "../Tracks/TrackList";
 
 import { BASE_URL, DEFAULT_RELEASE_VALUES } from "../defaultValues";
 import isAuthorized from "../../util/isAuthorized";
-import classes from "./Release.module.scss";
+
 import mainClasses from "../pages.module.scss";
+import classes from "./Release.module.scss";
 
 axios.defaults.baseURL = BASE_URL;
 
@@ -70,7 +72,7 @@ function Release({ setAlert, reFetch, canEdit }) {
   }, [fetchData, id]);
 
   if (loading) {
-    return <p className="text-light">Loading...</p>;
+    return <Loading />;
   }
 
   return (

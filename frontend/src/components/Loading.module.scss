@@ -1,8 +1,8 @@
-.fade-in {
+.loading {
   opacity: 0;
   animation-name: fade-in;
-  animation-duration: 250ms;
-  animation-timing-function: linear;
+  animation-duration: .5s;
+  animation-delay: .5s;
   animation-fill-mode: forwards;
 }
 

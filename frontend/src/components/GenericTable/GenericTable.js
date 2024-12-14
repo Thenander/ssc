@@ -10,6 +10,7 @@ import ConfirmModal from "../../components/ConfirmModal.js";
 
 import isAuthorized from "../../util/isAuthorized.js";
 import mainClasses from "../../pages/pages.module.scss";
+import Loading from "../Loading.js";
 
 function GenericTable({
   fetchUrl,
@@ -42,7 +43,7 @@ function GenericTable({
   useEffect(() => fetchDataCallback, [fetchDataCallback, setAlert]);
 
   if (loading) {
-    return <p className="text-light">Loading...</p>;
+    return <Loading />;
   }
 
   return (
