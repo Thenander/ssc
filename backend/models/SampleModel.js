@@ -5,8 +5,9 @@ const SampleModel = {
   getAllSamples: async () => {
     const sql = `SELECT  CONVERT(s.id,CHARACTER)        AS 'id'
                         ,s.sample
+                        ,t.text                         AS "type"
                         ,CONVERT(s.source_id,CHARACTER) AS 'sourceId'
-                        ,CONCAT(sr.title,' - ',t.text)  AS 'source'
+                        ,sr.title  AS 'source'
                         ,CONVERT(sr.year,CHARACTER)     AS 'year'
                   FROM samples AS s
                   JOIN sources AS sr
@@ -25,6 +26,7 @@ const SampleModel = {
   getSampleById: async (id) => {
     const sql = `SELECT  CONVERT(id,CHARACTER)           AS 'id'
                           ,sample
+                          ,sample_type AS 'type'
                           ,CONVERT(source_id,CHARACTER)  AS 'source'
                     FROM samples
                     WHERE id = ?;`;
@@ -55,6 +57,17 @@ const SampleModel = {
   },
 
   createSample: async ({ sample, type, source }) => {
+    const missingParams = [];
+    if (!sample) missingParams.push("sample");
+    if (!type) missingParams.push("type");
+    if (!source) missingParams.push("source");
+
+    if (missingParams.length > 0) {
+      throw new Error({
+        error: `Missing parameters: ${missingParams.join(", ")}`,
+      });
+    }
+
     const sql = `INSERT INTO samples (sample, sample_type, source_id) VALUES (?, ?, ?);`;
     try {
       const [result] = await pool.query(sql, [sample, type, source]);
@@ -109,6 +122,20 @@ const SampleModel = {
                   ORDER BY sample;`;
     try {
       const [result] = await pool.query(sql, [releaseId]);
+      return result;
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
+
+  getSampleTypes: async () => {
+    const sql = `SELECT  sub_type AS 'key'
+                        ,text     AS 'value'
+                  FROM types
+                  WHERE main_type = 'SAMPLE'
+                  ORDER BY text;`;
+    try {
+      const [result] = await pool.query(sql);
       return result;
     } catch (error) {
       throwDbError(error);

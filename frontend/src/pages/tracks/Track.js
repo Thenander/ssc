@@ -47,6 +47,8 @@ function Track({ setAlert, reFetch, canEdit }) {
       try {
         const res = await axios.get(url, { params });
 
+        console.log("res", res);
+
         if (!res.data?.releases || res.data?.releases.length === 0) {
           setAlert({
             danger: `Cannot create track with no release.\nMake sure to create release first.`,

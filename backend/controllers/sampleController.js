@@ -8,10 +8,14 @@ const SampleController = {
 
     let sampleData;
     let sources = [];
+    let types = [];
     let sourceSamples = [];
 
     try {
       if (sampleId) {
+        // GET type options
+        types = await SampleModel.getSampleTypes();
+
         // GET format options
         sources = await SampleModel.getAllSources();
 
@@ -33,6 +37,7 @@ const SampleController = {
       }
 
       const singleSample = {
+        types,
         sources,
         sample: sampleData,
         sourceSamples,
@@ -74,7 +79,7 @@ const SampleController = {
       res.json(result);
     } catch (error) {
       console.log(error);
-      res.status(500).send({ error });
+      res.status(500).json({ error });
     }
   },
 

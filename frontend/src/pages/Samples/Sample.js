@@ -42,11 +42,14 @@ function Sample({ setAlert, reFetch, canEdit }) {
   const [singleItem, setSingleItem] = useState();
   const [types, setTypes] = useState([]);
   const [items, setItems] = useState([]);
+  const [sources, setSources] = useState([]);
 
   const fetchData = useCallback(
     async (url, params) => {
       try {
         const res = await axios.get(url, { params });
+
+        console.log("res", res);
 
         if (!res.data?.sources || res.data?.sources.length === 0) {
           setAlert({
@@ -55,8 +58,9 @@ function Sample({ setAlert, reFetch, canEdit }) {
         }
 
         setSingleItem(res.data?.sample);
-        setTypes(res.data?.sources);
+        setTypes(res.data?.types);
         setItems(res.data?.sourceSamples);
+        setSources(res.data?.sources);
 
         reset(res.data.sample);
       } catch (error) {
@@ -102,22 +106,24 @@ function Sample({ setAlert, reFetch, canEdit }) {
                   register={register}
                   required
                 ></FormTextArea>
-                {/* <FormInput
-                  disabled={loading || !canEdit}
-                  id="sample"
-                  label="Sample"
-                  type="text"
-                  placeholder="Sample"
-                  register={register}
-                  required
-                /> */}
                 {types && (
+                  <FormSelect
+                    disabled={loading || !canEdit}
+                    label="Sample type"
+                    register={register}
+                    id="type"
+                    options={types}
+                    required
+                    setValue={setValue}
+                  />
+                )}
+                {sources && (
                   <FormSelect
                     disabled={loading || !canEdit}
                     label="Source"
                     register={register}
                     id="source"
-                    options={types}
+                    options={sources}
                     required
                     setValue={setValue}
                   />

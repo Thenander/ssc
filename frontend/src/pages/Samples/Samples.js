@@ -20,6 +20,10 @@ function Samples({ setAlert, canEdit = false }) {
       header: "Source",
       cell: (info) => cellLink(info, { id: "sourceId", path: "/sources" }),
     }),
+    columnHelper.accessor("type", {
+      header: "Sample type",
+      cell: (info) => info.getValue(),
+    }),
   ];
 
   return (
