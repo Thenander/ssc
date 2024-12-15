@@ -42,6 +42,8 @@ function GenericTable({
 
   useEffect(() => fetchDataCallback, [fetchDataCallback, setAlert]);
 
+  const hasData = data && data.length > 0;
+
   if (loading) {
     return <Loading />;
   }
@@ -69,7 +71,7 @@ function GenericTable({
           cancelLabel="No, keep it"
           confirmLabel="Yes, Delete"
         />
-        {data && data.length > 0 && (
+        {hasData && (
           <>
             {search && <h3>{`All ${item}s`}</h3>}
             <ReactTable
@@ -82,7 +84,11 @@ function GenericTable({
           </>
         )}
         {canEdit && (
-          <Button onClick={handleAdd} variant="primary" className="mb-5">
+          <Button
+            onClick={handleAdd}
+            variant="primary"
+            className={`${hasData ? "" : "mt-3"} mb-5`}
+          >
             {`Create new ${createButtonLabel.toLowerCase()}`}
           </Button>
         )}
@@ -94,6 +100,7 @@ function GenericTable({
     try {
       setLoading(true);
       const response = await axios.get(fetchUrl);
+
       setData(response.data);
     } catch (error) {
       setAlert({ danger: error.message });

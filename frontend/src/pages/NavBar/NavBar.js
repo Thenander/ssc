@@ -40,6 +40,11 @@ function NavBar() {
                 Sources
               </Nav.Link>
             </Nav>
+            <Nav className="position-relative">
+              <Nav.Link eventKey="samples" href="/samples" className="p-3">
+                Samples
+              </Nav.Link>
+            </Nav>
           </div>
           <div className={classes["cultivated-bimbo"]}>Cultivated Bimbo</div>
           <div className="d-flex">

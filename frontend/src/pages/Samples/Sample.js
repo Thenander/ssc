@@ -5,25 +5,27 @@ import axios from "axios";
 
 import Collapse from "react-bootstrap/Collapse";
 import Button from "react-bootstrap/Button";
-
+import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 
+import FormTextArea from "../../components/formComponents/FormTextArea.js";
 import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import Details from "../../components/Details/Details";
 import HeaderSection from "../../components/HeaderSection";
-import SampleList from "../Samples/SampleList.js";
-
-import { BASE_URL, DEFAULT_SOURCE_VALUES } from "../defaultValues";
-import isAuthorized from "../../util/isAuthorized";
-import classes from "./Source.module.scss";
-import mainClasses from "../pages.module.scss";
 import Loading from "../../components/Loading";
+import SampleList from "./SampleList.js";
+
+import { BASE_URL, DEFAULT_SAMPLE_VALUES } from "../defaultValues";
+import isAuthorized from "../../util/isAuthorized";
+import classes from "./Sample.module.scss";
+import mainClasses from "../pages.module.scss";
 
 axios.defaults.baseURL = BASE_URL;
 
-function Source({ setAlert, reFetch, canEdit }) {
-  const { register, formState, handleSubmit, reset, watch } = useForm();
+function Sample({ setAlert, reFetch, canEdit }) {
+  const { register, formState, handleSubmit, reset, watch, setValue } =
+    useForm();
   const { isDirty } = formState;
 
   const { pathname } = useLocation();
@@ -32,9 +34,9 @@ function Source({ setAlert, reFetch, canEdit }) {
   const id = searchParams.get("id");
   const isNew = id === "new";
 
-  const watchTitle = watch("title");
+  const watchTitle = watch("sample");
 
-  const buttonLabel = isNew ? "Add new source" : "Update source";
+  const buttonLabel = isNew ? "Add new sample" : "Update sample";
 
   const [loading, setLoading] = useState(true);
   const [singleItem, setSingleItem] = useState();
@@ -46,13 +48,17 @@ function Source({ setAlert, reFetch, canEdit }) {
       try {
         const res = await axios.get(url, { params });
 
-        console.log(res);
+        if (!res.data?.sources || res.data?.sources.length === 0) {
+          setAlert({
+            danger: `Cannot create sample with no source.\nMake sure to create source first.`,
+          });
+        }
 
-        setSingleItem(res.data?.source);
-        setTypes(res.data?.typeOptions);
-        setItems(res.data?.samples);
+        setSingleItem(res.data?.sample);
+        setTypes(res.data?.sources);
+        setItems(res.data?.sourceSamples);
 
-        reset(res.data.source);
+        reset(res.data.sample);
       } catch (error) {
         setAlert({ danger: error.message });
       }
@@ -62,13 +68,13 @@ function Source({ setAlert, reFetch, canEdit }) {
 
   useEffect(() => {
     if (isNew) {
-      reset(DEFAULT_SOURCE_VALUES);
+      reset(DEFAULT_SAMPLE_VALUES);
       setLoading(false);
     }
   }, [isNew, reset]);
 
   useEffect(() => {
-    fetchData("/sources", { id });
+    fetchData("/samples", { id });
     setLoading(false);
   }, [fetchData, id]);
 
@@ -80,70 +86,86 @@ function Source({ setAlert, reFetch, canEdit }) {
     <div className={mainClasses["fade-in"]}>
       <div className="container">
         <Details>
-          <HeaderSection badgeText="SOURCE" title={watchTitle} />
+          <HeaderSection badgeText="SAMPLE" title={watchTitle} />
           {singleItem && (
             <Form
               onSubmit={handleSubmit(onSubmit, onError)}
               onKeyDown={handleKeyDown}
             >
               <div className={classes.grid}>
-                <FormInput
-                  disabled={!canEdit || loading}
-                  id="title"
-                  label="Title"
+                <FormTextArea
+                  disabled={loading || !canEdit}
+                  id="sample"
+                  label="Sample"
                   type="text"
-                  placeholder="Title"
+                  placeholder="Sample"
                   register={register}
                   required
-                />
-                <FormInput
-                  disabled={!canEdit || loading}
-                  id="producer"
-                  label="Producer / Director / Artist"
+                ></FormTextArea>
+                {/* <FormInput
+                  disabled={loading || !canEdit}
+                  id="sample"
+                  label="Sample"
                   type="text"
-                  placeholder="Producer / Director / Artist"
+                  placeholder="Sample"
                   register={register}
                   required
-                />
+                /> */}
                 {types && (
                   <FormSelect
-                    disabled={!canEdit || loading}
-                    label="Type"
+                    disabled={loading || !canEdit}
+                    label="Source"
                     register={register}
-                    id="type"
+                    id="source"
                     options={types}
                     required
+                    setValue={setValue}
                   />
                 )}
-                <FormInput
-                  disabled={!canEdit || loading}
-                  id="year"
-                  label="Year"
-                  type="number"
-                  min={1950}
-                  max={2050}
-                  placeholder="Year"
-                  register={register}
-                  required
-                />
               </div>
-              {canEdit && (
+              {/* <h3 className="mt-0">Tracks</h3>
+              <Table bordered hover variant="dark">
+                <thead>
+                  <tr>
+                    <td>Quote</td>
+                    <td>Source</td>
+                    <td>Type</td>
+                    <td>Year</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                    <td>test</td>
+                  </tr>
+                </tbody>
+              </Table> */}
+              {types && types.length > 0 && (
                 <Collapse in={isDirty}>
                   <div>
                     <Button
                       type="submit"
                       disabled={!isDirty || !canEdit}
                       variant="primary"
+                      className="text-light mb-3"
                     >
                       {buttonLabel}
                     </Button>
-                    <hr className="text-light" />
                   </div>
                 </Collapse>
               )}
             </Form>
           )}
-          {items && items.length > 0 && <SampleList samples={items} />}
+          {items && items.length > 0 && (
+            <SampleList
+              samples={items}
+              sample={types.find(
+                (r) => r.key.toString() === singleItem.source.toString()
+              )}
+            />
+          )}
         </Details>
       </div>
     </div>
@@ -157,10 +179,10 @@ function Source({ setAlert, reFetch, canEdit }) {
     if (isNew) {
       try {
         setLoading(true);
-        const response = await axios.post("/sources", params);
+        const response = await axios.post("/samples", params);
 
         if (response.data.affectedRows) {
-          setAlert({ success: "New source added!" });
+          setAlert({ success: "New sample added!" });
           navigate(pathname);
           reFetch();
         }
@@ -172,12 +194,11 @@ function Source({ setAlert, reFetch, canEdit }) {
     } else {
       try {
         setLoading(true);
-        const response = await axios.put(`/sources?id=${id}`, params);
+        const response = await axios.put(`/samples?id=${id}`, params);
 
         if (response.data.changedRows) {
-          setAlert({ success: "Source updated!" });
+          setAlert({ success: "Sample updated!" });
           reFetchItem();
-          // navigate(pathname);
           reFetch();
         }
       } catch (error) {
@@ -207,8 +228,8 @@ function Source({ setAlert, reFetch, canEdit }) {
   }
 
   function reFetchItem() {
-    fetchData("/sources", { id });
+    fetchData("/samples", { id });
   }
 }
 
-export default Source;
+export default Sample;

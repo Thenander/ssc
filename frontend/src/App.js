@@ -12,6 +12,7 @@ import Start from "./pages/Start/Start.js";
 import Releases from "./pages/Releases/Releases.js";
 import Tracks from "./pages/Tracks/Tracks.js";
 import Sources from "./pages/Sources/Sources.js";
+import Samples from "./pages/Samples/Samples.js";
 import NotFound from "./pages/NotFound.js";
 import AuthForm from "./components/users/AuthForm.js";
 
@@ -42,6 +43,10 @@ function App() {
             <Route
               path="/sources"
               element={<Sources setAlert={setAlert} canEdit={CAN_EDIT} />}
+            />
+            <Route
+              path="/samples"
+              element={<Samples setAlert={setAlert} canEdit={CAN_EDIT} />}
             />
             <Route
               path="/login"

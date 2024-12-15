@@ -6,11 +6,13 @@ const SampleModel = {
     const sql = `SELECT  CONVERT(s.id,CHARACTER)        AS 'id'
                         ,s.sample
                         ,CONVERT(s.source_id,CHARACTER) AS 'sourceId'
-                        ,sr.title                       AS 'source'
+                        ,CONCAT(sr.title,' - ',t.text)  AS 'source'
                         ,CONVERT(sr.year,CHARACTER)     AS 'year'
                   FROM samples AS s
                   JOIN sources AS sr
                   ON s.source_id = sr.id
+                  JOIN types AS t
+                  ON t.main_type = "SOURCE" AND t.sub_type = sr.source_type
                   ORDER BY sr.year, sr.title, s.sample;`;
     try {
       const [results] = await pool.query(sql);
@@ -86,9 +88,11 @@ const SampleModel = {
   },
 
   getAllSources: async () => {
-    const sql = `SELECT  id    AS "key"
-                        ,title AS "value"
-                 FROM sources;`;
+    const sql = `SELECT  s.id                         AS "key"
+                        ,CONCAT(s.title,' - ',t.text) AS "value"
+                  FROM sources AS s
+                  JOIN types AS t
+                  ON t.main_type = "SOURCE" AND t.sub_type = s.source_type;`;
     try {
       const [result] = await pool.query(sql);
       return result;

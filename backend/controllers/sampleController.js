@@ -4,23 +4,23 @@ const SampleController = {
   //////////
   // GET
   getSample: async (req, res, err) => {
-    const sampleNumber = req.query.id;
+    const sampleId = req.query.id;
 
     let sampleData;
     let sources = [];
     let sourceSamples = [];
 
     try {
-      if (sampleNumber) {
+      if (sampleId) {
         // GET format options
         sources = await SampleModel.getAllSources();
 
-        if (isNaN(Number(sampleNumber))) {
+        if (isNaN(Number(sampleId))) {
           // New track
           sampleData = {};
-        } else if (sampleNumber) {
+        } else if (sampleId) {
           // Single track
-          sampleData = await SampleModel.getSampleById(sampleNumber);
+          sampleData = await SampleModel.getSampleById(sampleId);
           if (sampleData) {
             sourceSamples = await SampleModel.getSamplesBySource(
               sampleData.source
@@ -42,7 +42,7 @@ const SampleController = {
         return res.status(404).json({ error: "Not found" });
       }
 
-      res.json(sampleNumber ? singleSample : sampleData);
+      res.json(sampleId ? singleSample : sampleData);
     } catch (error) {
       if (error.code === "ECONNREFUSED") {
         return res.status(503).json({

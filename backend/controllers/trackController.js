@@ -4,23 +4,23 @@ const TrackController = {
   //////////
   // GET
   getTrack: async (req, res, err) => {
-    const trackNumber = req.query.id;
+    const trackId = req.query.id;
 
     let trackData;
     let releases = [];
     let releaseTracks = [];
 
     try {
-      if (trackNumber) {
+      if (trackId) {
         // GET format options
         releases = await TrackModel.getAllReleases();
 
-        if (isNaN(Number(trackNumber))) {
+        if (isNaN(Number(trackId))) {
           // New track
           trackData = {};
-        } else if (trackNumber) {
+        } else if (trackId) {
           // Single track
-          trackData = await TrackModel.getTrackById(trackNumber);
+          trackData = await TrackModel.getTrackById(trackId);
           if (trackData) {
             releaseTracks = await TrackModel.getTracksByRelease(
               trackData.release
@@ -38,13 +38,11 @@ const TrackController = {
         releaseTracks,
       };
 
-      console.log(singleTrack);
-
       if (!trackData) {
         return res.status(404).json({ error: "Not found" });
       }
 
-      res.json(trackNumber ? singleTrack : trackData);
+      res.json(trackId ? singleTrack : trackData);
     } catch (error) {
       if (error.code === "ECONNREFUSED") {
         return res.status(503).json({

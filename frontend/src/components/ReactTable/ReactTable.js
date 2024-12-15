@@ -51,17 +51,22 @@ function ReactTable({
   function body() {
     return table.getRowModel().rows.map((row) => (
       <tr key={row.id}>
-        {row.getVisibleCells().map((cell, index) => (
-          <td
-            key={cell.id}
-            className={classes["linked-cell"]}
-            style={{
-              ...(index === 0 ? { width: "0", whiteSpace: "nowrap" } : {}),
-            }}
-          >
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </td>
-        ))}
+        {row.getVisibleCells().map((cell, index, arr) => {
+          return (
+            <td
+              key={cell.id}
+              className={classes["linked-cell"]}
+              style={{
+                ...(index === 0 ? { width: "0" } : {}),
+                ...(index === 0 || index === arr.length - 1
+                  ? { whiteSpace: "nowrap" }
+                  : {}),
+              }}
+            >
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </td>
+          );
+        })}
         {canEdit && <td>{deleteButton(row)}</td>}
       </tr>
     ));

@@ -1,3 +1,4 @@
+import SampleModel from "../models/SampleModel.js";
 import SourceModel from "../models/SourceModel.js";
 
 const SourceController = {
@@ -8,7 +9,7 @@ const SourceController = {
 
     let sourceData;
     let types;
-    let tracks;
+    let samples;
 
     try {
       if (sourceId) {
@@ -16,7 +17,7 @@ const SourceController = {
         types = await SourceModel.getSourceTypes();
 
         // // GET tracks
-        // tracks = await TrackModel.getAllTracksFromSourceById(sourceId);
+        samples = await SampleModel.getAllSamplesFromSourceById(sourceId);
 
         if (isNaN(Number(sourceId))) {
           // New release
@@ -28,13 +29,12 @@ const SourceController = {
       } else {
         // All releases
         sourceData = await SourceModel.getAllSources();
-        console.log("sourceData", sourceData);
       }
 
       const singleSource = {
         source: sourceData,
         typeOptions: types ?? [],
-        // tracks: tracks ?? [],
+        samples: samples ?? [],
       };
 
       if (!sourceData) {

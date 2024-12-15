@@ -6,4 +6,9 @@ export const DEFAULT_SOURCE_VALUES = {
   year: "",
   type: "",
 };
+export const DEFAULT_SAMPLE_VALUES = {
+  sample: "",
+  type: "",
+  source: "",
+};
 export const BASE_URL = "http://localhost:8080/api/V1";
