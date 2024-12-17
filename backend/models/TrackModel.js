@@ -135,7 +135,7 @@ const TrackModel = {
                   ON smptps.sub_type = smp.sample_type AND smptps.main_type = "SAMPLE"
                   JOIN types AS srctps
                   ON srctps.sub_type = src.source_type AND srctps.main_type = "SOURCE"
-                  WHERE ref.track_id = 99;`;
+                  WHERE ref.track_id = ?;`;
     try {
       const [result] = await pool.query(sql, [id]);
       return result;

@@ -13,8 +13,6 @@ const TrackController = {
 
     try {
       if (trackId) {
-        console.log(trackId);
-
         // GET format options
         releases = await TrackModel.getAllReleases();
 

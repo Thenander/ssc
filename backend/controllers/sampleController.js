@@ -14,8 +14,6 @@ const SampleController = {
 
     try {
       if (sampleId) {
-        console.log(sampleId);
-
         // GET type options
         types = await SampleModel.getSampleTypes();
 

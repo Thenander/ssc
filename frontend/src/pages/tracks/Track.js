@@ -49,8 +49,6 @@ function Track({ setAlert, reFetch, canEdit }) {
   const [items, setItems] = useState([]);
   const [refs, setRefs] = useState([]);
 
-  console.log("refs", refs);
-
   const fetchData = useCallback(
     async (url, params) => {
       try {
@@ -133,50 +131,54 @@ function Track({ setAlert, reFetch, canEdit }) {
                   />
                 )}
               </div>
-              <h3 className="mt-0">Samples</h3>
-              <Table bordered hover variant="dark">
-                <thead>
-                  <tr>
-                    <th>Sample</th>
-                    <th>Sample type</th>
-                    <th>Source</th>
-                    <th>Source type</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {refs.map(
-                    ({
-                      sampleId,
-                      sample,
-                      sampleType,
-                      sourceId,
-                      source,
-                      sourceType,
-                    }) => (
-                      <tr key={sampleId}>
-                        <td className="position-relative">
-                          <Link
-                            to={`/samples?id=${sampleId}`}
-                            className="stretched-link"
-                          >
-                            {sample}
-                          </Link>
-                        </td>
-                        <td>{sampleType}</td>
-                        <td className="position-relative">
-                          <Link
-                            to={`/sources?id=${sourceId}`}
-                            className="stretched-link"
-                          >
-                            {source}
-                          </Link>
-                        </td>
-                        <td>{sourceType}</td>
+              {refs && refs.length > 0 && (
+                <>
+                  <h3 className="mt-0">Samples</h3>
+                  <Table bordered hover variant="dark">
+                    <thead>
+                      <tr>
+                        <th>Sample</th>
+                        <th>Sample type</th>
+                        <th>Source</th>
+                        <th>Source type</th>
                       </tr>
-                    )
-                  )}
-                </tbody>
-              </Table>
+                    </thead>
+                    <tbody>
+                      {refs.map(
+                        ({
+                          sampleId,
+                          sample,
+                          sampleType,
+                          sourceId,
+                          source,
+                          sourceType,
+                        }) => (
+                          <tr key={sampleId}>
+                            <td className="position-relative">
+                              <Link
+                                to={`/samples?id=${sampleId}`}
+                                className="stretched-link"
+                              >
+                                {sample}
+                              </Link>
+                            </td>
+                            <td>{sampleType}</td>
+                            <td className="position-relative">
+                              <Link
+                                to={`/sources?id=${sourceId}`}
+                                className="stretched-link"
+                              >
+                                {source}
+                              </Link>
+                            </td>
+                            <td>{sourceType}</td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </Table>
+                </>
+              )}
               {formats && formats.length > 0 && (
                 <Collapse in={isDirty}>
                   <div>
