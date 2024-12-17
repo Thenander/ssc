@@ -4,4 +4,23 @@
     grid-template-columns: 2fr 1fr 1fr;
     column-gap: 1rem;
   }  
+
+  .grid2 {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 1rem;
+  }  
+
+  .grid3 {
+    display: grid;
+    grid-template-columns: 1fr auto 2fr;
+    column-gap: 1rem;
+  }
+
+  .sample-header {
+    display: flex;
+    align-items: start;
+    justify-content: end;
+  }
 }
+

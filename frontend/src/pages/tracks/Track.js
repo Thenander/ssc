@@ -1,5 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
+import {
+  useSearchParams,
+  useNavigate,
+  useLocation,
+  Link,
+} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
@@ -19,6 +24,7 @@ import isAuthorized from "../../util/isAuthorized";
 import classes from "./Track.module.scss";
 import mainClasses from "../pages.module.scss";
 import Loading from "../../components/Loading";
+import { Accordion } from "react-bootstrap";
 
 axios.defaults.baseURL = BASE_URL;
 
@@ -41,13 +47,14 @@ function Track({ setAlert, reFetch, canEdit }) {
   const [singleItem, setSingleItem] = useState();
   const [formats, setFormats] = useState([]);
   const [items, setItems] = useState([]);
+  const [refs, setRefs] = useState([]);
+
+  console.log("refs", refs);
 
   const fetchData = useCallback(
     async (url, params) => {
       try {
         const res = await axios.get(url, { params });
-
-        console.log("res", res);
 
         if (!res.data?.releases || res.data?.releases.length === 0) {
           setAlert({
@@ -58,6 +65,7 @@ function Track({ setAlert, reFetch, canEdit }) {
         setSingleItem(res.data?.track);
         setFormats(res.data?.releases);
         setItems(res.data?.releaseTracks);
+        setRefs(res.data?.refs);
 
         reset(res.data.track);
       } catch (error) {
@@ -129,19 +137,44 @@ function Track({ setAlert, reFetch, canEdit }) {
               <Table bordered hover variant="dark">
                 <thead>
                   <tr>
-                    <td>Quote</td>
-                    <td>Source</td>
-                    <td>Type</td>
-                    <td>Year</td>
+                    <th>Sample</th>
+                    <th>Sample type</th>
+                    <th>Source</th>
+                    <th>Source type</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                  </tr>
+                  {refs.map(
+                    ({
+                      sampleId,
+                      sample,
+                      sampleType,
+                      sourceId,
+                      source,
+                      sourceType,
+                    }) => (
+                      <tr key={sampleId}>
+                        <td className="position-relative">
+                          <Link
+                            to={`/samples?id=${sampleId}`}
+                            className="stretched-link"
+                          >
+                            {sample}
+                          </Link>
+                        </td>
+                        <td>{sampleType}</td>
+                        <td className="position-relative">
+                          <Link
+                            to={`/sources?id=${sourceId}`}
+                            className="stretched-link"
+                          >
+                            {source}
+                          </Link>
+                        </td>
+                        <td>{sourceType}</td>
+                      </tr>
+                    )
+                  )}
                 </tbody>
               </Table>
               {formats && formats.length > 0 && (
@@ -150,8 +183,7 @@ function Track({ setAlert, reFetch, canEdit }) {
                     <Button
                       type="submit"
                       disabled={!isDirty || !canEdit}
-                      variant="primary"
-                      className="text-light mb-3"
+                      className="mb-3"
                     >
                       {buttonLabel}
                     </Button>
@@ -233,3 +265,61 @@ function Track({ setAlert, reFetch, canEdit }) {
 }
 
 export default Track;
+
+function ReleaseAccordion({ release, releaseIndex, register }) {
+  const { id, title: releaseTitle, year, tracks } = release;
+
+  return (
+    <Accordion key={id}>
+      <Accordion.Item eventKey={id}>
+        <Accordion.Header>
+          {releaseTitle} - {year}
+        </Accordion.Header>
+        <Accordion.Body>
+          {tracks.map((track, trackIndex) => (
+            <TrackCheckbox
+              key={track.id}
+              track={track}
+              releaseIndex={releaseIndex}
+              trackIndex={trackIndex}
+              register={register}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+
+function TrackCheckbox({ track, releaseIndex, trackIndex, register }) {
+  const { id, title: trackTitle } = track;
+
+  return (
+    <Form.Check
+      key={id}
+      type="checkbox"
+      label={trackTitle}
+      {...register(`releases.${releaseIndex}.tracks.${trackIndex}.checked`)}
+    />
+  );
+}
+
+function ReleasesAccordion({ fields, register }) {
+  return (
+    <Accordion className="mb-3">
+      <Accordion.Item eventKey="releases">
+        <Accordion.Header>Releases</Accordion.Header>
+        <Accordion.Body>
+          {fields.map((release, releaseIndex) => (
+            <ReleaseAccordion
+              key={release.id}
+              release={release}
+              releaseIndex={releaseIndex}
+              register={register}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}

@@ -118,6 +118,31 @@ const TrackModel = {
       throwDbError(error);
     }
   },
+
+  getRefsById: async (id) => {
+    const sql = `SELECT  smp.id      AS 'sampleId'
+                        ,smp.sample
+                        ,smptps.text AS 'sampleType'
+                        ,src.id      AS 'sourceId'
+                        ,src.title   AS 'source'
+                        ,srctps.text AS 'sourceType'
+                  FROM tracks_samples_ref AS ref
+                  JOIN samples AS smp
+                  ON smp.id = ref.sample_id
+                  JOIN sources AS src
+                  ON smp.source_id = src.id
+                  JOIN types AS smptps
+                  ON smptps.sub_type = smp.sample_type AND smptps.main_type = "SAMPLE"
+                  JOIN types AS srctps
+                  ON srctps.sub_type = src.source_type AND srctps.main_type = "SOURCE"
+                  WHERE ref.track_id = 99;`;
+    try {
+      const [result] = await pool.query(sql, [id]);
+      return result;
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
 };
 
 export default TrackModel;

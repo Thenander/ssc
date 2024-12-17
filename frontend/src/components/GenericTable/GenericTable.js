@@ -85,7 +85,10 @@ function GenericTable({
         )}
         {canEdit && (
           <Button
-            onClick={handleAdd}
+            onClick={(e) => {
+              e.target.blur();
+              handleAdd();
+            }}
             variant="primary"
             className={`${hasData ? "" : "mt-3"} mb-5`}
           >

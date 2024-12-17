@@ -1,19 +1,20 @@
 $border-radius: 2px;
-$primary: #38d7d3; // link
+$primary: #26282c; // link
 $secondary: #6c757d;
 $dark: hsl(210, 7%, 16%);
 $light: #f8f9fa;
 $danger: #dc3545;
-$primary-hover: #384d4c;
+$link-hover: #384d4c;
 $secondary-hover: #3b3b3b;
 $danger-hover: #8c2b35;
 $danger-hover-border: #ff001a;
 $h1-color: #A3954B;
 $h2-color: #706A4A;
 $thin-border: #525456;
+$link: #38d7d3;
 $link-hover: #37393c;
 
-$primay-complement: #D6BB38; // hover
+$primary-complement: #D6BB38; // hover
 
 $theme-colors: (
   "primary": $primary,
@@ -24,9 +25,62 @@ $theme-colors: (
   "danger": $danger,
   "light": #f8f9fa,
   "dark": $dark,
+  "link": $link,
 );
 
+$body-color: #a5a6a8;
+
 @import '~bootstrap/scss/bootstrap';
+
+.accordion {
+  --bs-accordion-color: $body-color;
+  --bs-accordion-active-color: $body-color;
+  --bs-accordion-bg: #26282c;
+  --bs-accordion-border-color: #42474d;
+  --bs-accordion-active-bg: #2b3035;
+}
+
+.accordion-header {
+  height: 32.5px;
+  display: flex;
+}
+
+.accordion-item {
+  margin-bottom: .5rem;
+  
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+  
+  button {
+    // color: #fff !important;
+    
+    &:hover, &:focus, &:focus-visible {
+      transition: none;
+      color: $link !important;
+      box-shadow: none;
+    }
+  }
+}
+
+.accordion-body {
+  padding: 0.5rem;
+  display: grid;
+  gap: .5rem;
+}
+
+.accordion-button {
+  padding: .25rem .5rem;
+}
+
+.form-check-input {
+  --bs-form-check-bg: #26282c;
+  border: 1px solid #6c747d;
+}
+
+.form-check-input[type=checkbox] {
+  border-radius: 0;
+}
 
 body {
   font-family: "Voltaire", Arial, Helvetica, sans-serif;
@@ -67,7 +121,7 @@ h1 {
 }
 
 .nav-link:hover {
-  color: $primay-complement;
+  color: $primary-complement;
   background-color: #2b303599;
 }
 
@@ -82,16 +136,19 @@ h1 {
 }
 
 .btn-primary, .btn-outline-primary {
+  background-color: transparent;
+  border-color: $link;
+
   &:not(:hover) {
     background-color: initial;
   }
   
-  &:hover {
+  &:hover, &:focus, &:focus-visible {
     transition: none;
-    color: $primay-complement !important;
+    color: $primary-complement !important;
     background-color: $link-hover;
     box-shadow: none;
-    border-color: $primay-complement;
+    border-color: $primary-complement;
   }
 }
 
@@ -124,6 +181,7 @@ button {
 
 h1 {
   margin-bottom: 1rem;
+  background-color: transparent;
 }
 
 h2 {
@@ -146,12 +204,12 @@ h3 {
 }
 
 a {
-  color: $primary;
+  color: $link;
   text-decoration: none;
 
-  &:hover {
+  &:hover, &:focus, &:focus-visible {
     outline: none ;
-    color: $primay-complement !important;
+    color: $primary-complement !important;
     box-shadow: none;
     background-color: $link-hover;
 
@@ -162,7 +220,7 @@ a {
       right: 2px;
       top: 2px;
       bottom: 2px;
-      border-bottom: 1px solid $primay-complement;
+      border-bottom: 1px solid $primary-complement;
     }
   }
 }
@@ -175,6 +233,7 @@ a {
     outline: none;
     background-color: $dark;
     box-shadow: none;
-    border-color: $primary !important;
+    border-color: $link !important;
   }
 }
+

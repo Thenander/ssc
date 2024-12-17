@@ -46,8 +46,6 @@ function Source({ setAlert, reFetch, canEdit }) {
       try {
         const res = await axios.get(url, { params });
 
-        console.log(res);
-
         setSingleItem(res.data?.source);
         setTypes(res.data?.typeOptions);
         setItems(res.data?.samples);
@@ -130,11 +128,7 @@ function Source({ setAlert, reFetch, canEdit }) {
               {canEdit && (
                 <Collapse in={isDirty}>
                   <div>
-                    <Button
-                      type="submit"
-                      disabled={!isDirty || !canEdit}
-                      variant="primary"
-                    >
+                    <Button type="submit" disabled={!isDirty || !canEdit}>
                       {buttonLabel}
                     </Button>
                     <hr className="text-light" />

@@ -23,7 +23,7 @@ export default function HeaderSection({ title, badgeText }) {
         className={classes.badge}
         onClick={() => navigate(pathname)}
         pill={true}
-        bg="primary"
+        bg="link"
         text="dark"
         style={{ padding: ".5rem 1rem" }}
       >

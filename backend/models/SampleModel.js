@@ -24,12 +24,15 @@ const SampleModel = {
   },
 
   getSampleById: async (id) => {
-    const sql = `SELECT  CONVERT(id,CHARACTER)           AS 'id'
-                          ,sample
-                          ,sample_type AS 'type'
-                          ,CONVERT(source_id,CHARACTER)  AS 'source'
-                    FROM samples
-                    WHERE id = ?;`;
+    const sql = `SELECT  CONVERT(smp.id,CHARACTER)        AS 'id'
+                        ,smp.sample
+                        ,smp.sample_type                  AS 'type'
+                        ,CONVERT(smp.source_id,CHARACTER) AS 'source'
+                        ,src.title                        AS 'sourceTitle'
+                  FROM samples AS smp
+                  JOIN sources AS src
+                  ON src.id = smp.source_id
+                  WHERE smp.id = ?;`;
     try {
       const [results] = await pool.query(sql, [id]);
       return results[0];
@@ -78,7 +81,7 @@ const SampleModel = {
     }
   },
 
-  updateSample: async (id, { sample, type, source }) => {
+  updateSample: async (id, { sample, type, source, refs }) => {
     const sql = `UPDATE samples
                   SET sample = ?, sample_type = ?, source_id = ?
                   WHERE id = ?;`;
@@ -140,6 +143,88 @@ const SampleModel = {
     } catch (error) {
       throwDbError(error);
     }
+  },
+
+  getAllTracks: async () => {
+    const sql = `SELECT  releases.id         AS 'releaseId'
+                        ,releases.title      AS 'releaseTitle'
+                        ,releases.year       AS 'releaseYear'
+                        ,tracks.id           AS 'trackId'
+                        ,tracks.title        AS 'trackTitle'
+                        ,tracks.track_number AS 'trackNumber'
+                  FROM releases
+                  LEFT JOIN tracks
+                  ON releases.id = tracks.release_id
+                  ORDER BY releases.year, tracks.track_number;`;
+    try {
+      const [result] = await pool.query(sql);
+      return result;
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
+
+  getRefsById: async (id) => {
+    const sql = `SELECT  CONCAT(ref.track_id,'-',ref.sample_id) AS refId
+                        ,t.id                                   AS trackId
+                        ,t.release_id                           AS releaseId
+                        ,t.title                                AS trackTitle
+                        ,t.track_number                         AS trackNumber
+                  FROM tracks_samples_ref AS ref
+                  JOIN tracks AS t
+                  ON t.id = ref.track_id
+                  JOIN releases AS r
+                  WHERE ref.sample_id = ?
+                  ORDER BY r.year, r.title, t.track_number;`;
+    try {
+      const [result] = await pool.query(sql, [id]);
+      return result;
+    } catch (error) {
+      throwDbError(error);
+    }
+  },
+
+  getRefBySampleId: async (sampleId) => {
+    const [rows] = await pool.query(
+      "SELECT track_id FROM tracks_samples_ref WHERE sample_id = ?",
+      [sampleId]
+    );
+    return rows;
+  },
+
+  deleteRef: async (sampleId, trackId) => {
+    await pool.query(
+      "DELETE FROM tracks_samples_ref WHERE sample_id = ? AND track_id = ?",
+      [sampleId, trackId]
+    );
+  },
+
+  addRef: async (sampleId, trackId) => {
+    const [existing] = await pool.query(
+      "SELECT 1 FROM tracks_samples_ref WHERE track_id = ? AND sample_id = ?",
+      [trackId, sampleId]
+    );
+
+    if (existing.length === 0) {
+      await pool.query(
+        "INSERT INTO tracks_samples_ref (track_id, sample_id) VALUES (?, ?)",
+        [trackId, sampleId]
+      );
+    }
+  },
+
+  addMultipleRefs: async (sampleId, trackIds) => {
+    const values = trackIds
+      .map((trackId) => `(${trackId}, ${sampleId})`)
+      .join(",");
+
+    const sql = `
+      INSERT INTO tracks_samples_ref (track_id, sample_id)
+      VALUES ${values}
+      ON DUPLICATE KEY UPDATE changed = CURRENT_TIMESTAMP
+    `;
+
+    await pool.query(sql);
   },
 };
 

@@ -7,6 +7,7 @@ export const DEFAULT_SOURCE_VALUES = {
   type: "",
 };
 export const DEFAULT_SAMPLE_VALUES = {
+  releases: [],
   sample: "",
   type: "",
   source: "",

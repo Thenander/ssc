@@ -9,11 +9,17 @@ const TrackController = {
     let trackData;
     let releases = [];
     let releaseTracks = [];
+    let refs = [];
 
     try {
       if (trackId) {
+        console.log(trackId);
+
         // GET format options
         releases = await TrackModel.getAllReleases();
+
+        // GET refs
+        refs = await TrackModel.getRefsById(trackId);
 
         if (isNaN(Number(trackId))) {
           // New track
@@ -36,6 +42,7 @@ const TrackController = {
         releases,
         track: trackData,
         releaseTracks,
+        refs,
       };
 
       if (!trackData) {

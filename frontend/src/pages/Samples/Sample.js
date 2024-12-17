@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams, useNavigate, useLocation } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import axios from "axios";
 
 import Collapse from "react-bootstrap/Collapse";
+import Accordion from "react-bootstrap/Accordion";
 import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
 
 import FormTextArea from "../../components/formComponents/FormTextArea.js";
-import FormInput from "../../components/formComponents/FormInput";
 import FormSelect from "../../components/formComponents/FormSelect";
 import Details from "../../components/Details/Details";
 import HeaderSection from "../../components/HeaderSection";
@@ -20,13 +19,19 @@ import { BASE_URL, DEFAULT_SAMPLE_VALUES } from "../defaultValues";
 import isAuthorized from "../../util/isAuthorized";
 import classes from "./Sample.module.scss";
 import mainClasses from "../pages.module.scss";
+import TrackList from "./TrackList.js";
 
 axios.defaults.baseURL = BASE_URL;
 
 function Sample({ setAlert, reFetch, canEdit }) {
-  const { register, formState, handleSubmit, reset, watch, setValue } =
+  const { register, formState, handleSubmit, reset, watch, setValue, control } =
     useForm();
   const { isDirty } = formState;
+
+  const { fields } = useFieldArray({
+    name: "releases",
+    control,
+  });
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
@@ -43,13 +48,13 @@ function Sample({ setAlert, reFetch, canEdit }) {
   const [types, setTypes] = useState([]);
   const [items, setItems] = useState([]);
   const [sources, setSources] = useState([]);
+  const [tracks, setTracks] = useState([]);
+  const [source, setSource] = useState();
 
   const fetchData = useCallback(
     async (url, params) => {
       try {
         const res = await axios.get(url, { params });
-
-        console.log("res", res);
 
         if (!res.data?.sources || res.data?.sources.length === 0) {
           setAlert({
@@ -57,12 +62,34 @@ function Sample({ setAlert, reFetch, canEdit }) {
           });
         }
 
+        const data = {
+          sample: res.data.sample.sample,
+          source: res.data.sample.source,
+          type: res.data.sample.type,
+          releases: res.data.releases,
+        };
+
+        const transformedReleaseTracks = res.data?.releases.flatMap((release) =>
+          release.tracks
+            .filter((track) => track.checked)
+            .map((track) => ({
+              releaseId: release.id,
+              releaseTitle: release.title,
+              year: release.year,
+              trackId: track.id,
+              trackTitle: track.title,
+              trackNumber: track.trackNumber,
+            }))
+        );
+
         setSingleItem(res.data?.sample);
         setTypes(res.data?.types);
         setItems(res.data?.sourceSamples);
         setSources(res.data?.sources);
+        setTracks(transformedReleaseTracks);
+        setSource(res.data?.sample.sourceTitle);
 
-        reset(res.data.sample);
+        reset(data);
       } catch (error) {
         setAlert({ danger: error.message });
       }
@@ -129,48 +156,45 @@ function Sample({ setAlert, reFetch, canEdit }) {
                   />
                 )}
               </div>
-              {/* <h3 className="mt-0">Tracks</h3>
-              <Table bordered hover variant="dark">
-                <thead>
-                  <tr>
-                    <td>Quote</td>
-                    <td>Source</td>
-                    <td>Type</td>
-                    <td>Year</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                    <td>test</td>
-                  </tr>
-                </tbody>
-              </Table> */}
+              <div className={canEdit ? classes.grid3 : classes.grid2}>
+                {canEdit && (
+                  <ReleasesAccordion fields={fields} register={register} />
+                )}
+                {items && items.length > 0 && (
+                  <>
+                    <div
+                      className={`${classes["sample-header"]} ${
+                        canEdit && "ms-3"
+                      }`}
+                    >
+                      <h3 className="m-0">{source}:</h3>
+                    </div>
+                    <SampleList
+                      samples={items}
+                      sample={types.find(
+                        (r) => r.key.toString() === singleItem.source.toString()
+                      )}
+                    />
+                  </>
+                )}
+              </div>
               {types && types.length > 0 && (
                 <Collapse in={isDirty}>
                   <div>
                     <Button
                       type="submit"
                       disabled={!isDirty || !canEdit}
-                      variant="primary"
-                      className="text-light mb-3"
+                      className="mb-3"
                     >
                       {buttonLabel}
                     </Button>
                   </div>
                 </Collapse>
               )}
+              <div>
+                {tracks && tracks.length > 0 && <TrackList tracks={tracks} />}
+              </div>
             </Form>
-          )}
-          {items && items.length > 0 && (
-            <SampleList
-              samples={items}
-              sample={types.find(
-                (r) => r.key.toString() === singleItem.source.toString()
-              )}
-            />
           )}
         </Details>
       </div>
@@ -187,7 +211,7 @@ function Sample({ setAlert, reFetch, canEdit }) {
         setLoading(true);
         const response = await axios.post("/samples", params);
 
-        if (response.data.affectedRows) {
+        if (response.status === 200) {
           setAlert({ success: "New sample added!" });
           navigate(pathname);
           reFetch();
@@ -202,7 +226,7 @@ function Sample({ setAlert, reFetch, canEdit }) {
         setLoading(true);
         const response = await axios.put(`/samples?id=${id}`, params);
 
-        if (response.data.changedRows) {
+        if (response.status === 200) {
           setAlert({ success: "Sample updated!" });
           reFetchItem();
           reFetch();
@@ -239,3 +263,61 @@ function Sample({ setAlert, reFetch, canEdit }) {
 }
 
 export default Sample;
+
+function ReleaseAccordion({ release, releaseIndex, register }) {
+  const { id, title: releaseTitle, year, tracks } = release;
+
+  return (
+    <Accordion key={id}>
+      <Accordion.Item eventKey={id}>
+        <Accordion.Header>
+          {releaseTitle} - {year}
+        </Accordion.Header>
+        <Accordion.Body>
+          {tracks.map((track, trackIndex) => (
+            <TrackCheckbox
+              key={track.id}
+              track={track}
+              releaseIndex={releaseIndex}
+              trackIndex={trackIndex}
+              register={register}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}
+
+function TrackCheckbox({ track, releaseIndex, trackIndex, register }) {
+  const { id, title: trackTitle } = track;
+
+  return (
+    <Form.Check
+      key={id}
+      type="checkbox"
+      label={trackTitle}
+      {...register(`releases.${releaseIndex}.tracks.${trackIndex}.checked`)}
+    />
+  );
+}
+
+function ReleasesAccordion({ fields, register }) {
+  return (
+    <Accordion className="mb-3">
+      <Accordion.Item eventKey="releases">
+        <Accordion.Header>Releases</Accordion.Header>
+        <Accordion.Body>
+          {fields.map((release, releaseIndex) => (
+            <ReleaseAccordion
+              key={release.id}
+              release={release}
+              releaseIndex={releaseIndex}
+              register={register}
+            />
+          ))}
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  );
+}

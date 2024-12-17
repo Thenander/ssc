@@ -120,11 +120,7 @@ function Release({ setAlert, reFetch, canEdit }) {
               {canEdit && (
                 <Collapse in={isDirty}>
                   <div>
-                    <Button
-                      type="submit"
-                      disabled={!isDirty || !canEdit}
-                      variant="primary"
-                    >
+                    <Button type="submit" disabled={!isDirty || !canEdit}>
                       {buttonLabel}
                     </Button>
                     <hr className="text-light" />
